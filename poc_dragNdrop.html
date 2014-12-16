@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+      <meta charset="utf-8">
+      <title>jQuery UI Draggable Boyd</title>
+      <link rel="stylesheet" href="scripts/css/jquery-ui.min.css">
+      <script src="scripts/js/jquery.min.js"></script>
+      <script src="scripts/js/jquery-ui.min.js"></script>
+
+        <style>
+        
+        #sortable1, #sortable2 {
+            border: 1px solid #000;
+            width: 142px;
+            min-height: 20px;
+            list-style-type: none;
+            margin: 0;
+            padding: 5px 0 0 0;
+            float: left;
+            margin-right: 10px;
+        }
+        
+        #sortable1 li, #sortable2 li {
+            margin: 0 5px 5px 5px;
+            padding: 5px;
+            font-size: 1.2em;
+            width: 120px;
+            background-color: #efefef;
+            border: 1px solid #c2c2c2;
+        }
+
+        ul { 
+            list-style-type: none; 
+            margin: 0; 
+            padding: 0; 
+            margin-bottom: 10px; 
+        }
+        </style>
+    <script>
+    
+    $(function() {
+        $( "#sortable1, #sortable2" ).sortable({
+            connectWith: ".connectedSortable"
+        }).disableSelection();
+        
+        document.getElementById('jsonData').innerHTML = '{"data":[{"id":"0","value":"Item 0"},{"id":"1","value":"Item 1"},{"id":"2","value":"Item 2"},{"id":"3","value":"Item 3"},{"id":"4","value":"Item 4"},{"id":"5","value":"Item 5"}]}';
+        
+    });
+    
+    function generateItems(){
+        var jsonObj = JSON.parse( document.getElementById('jsonData').innerHTML );
+        for(var i=0; i < jsonObj['data'].length; i++){
+                var item = document.createElement('li');
+                item.innerHTML = jsonObj['data'][i].value ;
+                item.id = 'sortableItem' + jsonObj['data'][i].id ;
+                document.getElementById('sortable1').appendChild( item );
+        }
+    }    
+    </script>
+</head>
+        
+<body>
+        <div style='background-color: #efefef;'>
+            <textarea  id='jsonData' rows="5" cols="70">
+            </textarea>
+            <button style='vertical-align: top' onclick="generateItems();">Generate item</button>
+        </div>
+        
+        <div style='margin-top: 20px;'>
+            <div>
+                <ul id="sortable1" class="connectedSortable">
+                </ul>
+            </div>
+            
+             <div>
+                <ul id="sortable2" class="connectedSortable">
+                </ul>
+            </div>
+        </div>
+</body>
+</html>
