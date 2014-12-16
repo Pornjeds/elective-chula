@@ -44,17 +44,20 @@
             connectWith: ".connectedSortable"
         }).disableSelection();
         
-        document.getElementById('jsonData').innerHTML = '{"data":[{"id":"0","value":"Item 0"},{"id":"1","value":"Item 1"},{"id":"2","value":"Item 2"},{"id":"3","value":"Item 3"},{"id":"4","value":"Item 4"},{"id":"5","value":"Item 5"}]}';
+        document.getElementById('jsonData').value = '{"data":[{"id":"0","value":"Item 0"},{"id":"1","value":"Item 1"},{"id":"2","value":"Item 2"},{"id":"3","value":"Item 3"},{"id":"4","value":"Item 4"},{"id":"5","value":"Item 5"}]}';
         
     });
     
     function generateItems(){
-        var jsonObj = JSON.parse( document.getElementById('jsonData').innerHTML );
+        $('#sortable1').empty();
+        $('#sortable2').empty();
+        
+        var jsonObj = JSON.parse( document.getElementById('jsonData').value );
         for(var i=0; i < jsonObj['data'].length; i++){
                 var item = document.createElement('li');
                 item.innerHTML = jsonObj['data'][i].value ;
                 item.id = 'sortableItem' + jsonObj['data'][i].id ;
-                document.getElementById('sortable1').appendChild( item );
+                $('#sortable1').append( item );
         }
     }    
     </script>
