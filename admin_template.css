@@ -37,12 +37,9 @@
 
 .topnavbar-right > ul li {
   float: left!important;
-  margin-right: -15px;
   display: inline;
-  padding-right: 25px;
 }
 
-.topnavbar-text {
-  margin-top: 15px;
-  margin-bottom: 15px;
+p.topnavbar-text {
+  margin: 15px;
 }
