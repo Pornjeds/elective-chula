@@ -120,20 +120,20 @@
     <script src="../scripts/js/ie10-viewport-bug-workaround.js"></script>
 
     <script>
-    $(document).ready(function () {
-        $('.selectpicker').selectpicker();
+        $(document).ready(function () {
+            $('.selectpicker').selectpicker();
 
-    });
-    
-    function generateReport(){
-        var result1 = $('#studentClass').val();
-        var result2 = $('#studentSubject').val();
-        if( result1 === null || result2 === null ){
-            alert( 'Please select criteria first');
-        }else{        
-            alert( result1 + ' , ' + result2 );
-        }
-    };
+        });
+        
+        function generateReport(){
+            var result1 = $('#studentClass').val();
+            var result2 = $('#studentSubject').val();
+            if( result1 === null || result2 === null ){
+                alert( 'Please select criteria first');
+            }else{        
+                alert( result1 + ' , ' + result2 );
+            }
+        };
     </script>
   
     </body>
