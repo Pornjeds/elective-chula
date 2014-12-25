@@ -52,8 +52,6 @@ $sql_droptable[3] = "DROP table semester";
 $sql_droptable[4] = "DROP table classof";
 $sql_droptable[5] = "DROP table enrollment";
 
-submitData($sql_droptable, "Step1: Drop table");
-
 
 //2. Create table
 $sql_createtable[0] = "CREATE TABLE `classof` (
@@ -127,8 +125,6 @@ $sql_createtable[13] = "ALTER TABLE `semester`
 MODIFY `semester_id` int(4) NOT NULL AUTO_INCREMENT;";
 
 $sql_createtable[14] = "ALTER TABLE `enrollment` CHANGE `status` `status` INT(2) NOT NULL DEFAULT '0';";
-
-submitData($sql_createtable, "Step2: create table");
 
 //3. insert new data into database
 
@@ -279,6 +275,10 @@ $sql_data[3] = generateInsert("semester", "semester_description", $semester_arr)
 $sql_data[4] = generateInsert("subject_semester_classof", "subject_id, semester_id, classof_id, maxstudent, description, modification_date", $subject_semester_classof_arr);
 $sql_data[5] = generateInsert("enrollment", "user_id, subject_id, semester_id, rank, modification_date, timestamp", $enrollment_arr);
 
+
+//Submit data
+submitData($sql_droptable, "Step1: Drop table");
+submitData($sql_createtable, "Step2: create table");
 for ($i=0;$i<count($sql_data);$i++)
 {
 	submitData($sql_data[$i], "Step3: prepare data - $i");	
