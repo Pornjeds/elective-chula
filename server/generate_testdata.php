@@ -140,11 +140,11 @@ $semester_arr = array(
 	);
 
 $subject_semester_classof_arr = array(
-		0 => array(1000000, 0, 0, 20, "'desc 1'", "localtime()"),
-		0 => array(1000001, 0, 0, 20, "'desc 2'", "localtime()"),
-		0 => array(1000002, 0, 0, 20, "'desc 3'", "localtime()"),
-		0 => array(1000003, 0, 0, 20, "'desc 4'", "localtime()"),
-		0 => array(1000004, 0, 0, 20, "'desc 5'", "localtime()"),
+		0 => array(1000000, 0, 0, 40, "'desc 1'", "localtime()"),
+		1 => array(1000001, 0, 0, 20, "'desc 2'", "localtime()"),
+		2 => array(1000002, 0, 0, 20, "'desc 3'", "localtime()"),
+		3 => array(1000003, 0, 0, 20, "'desc 4'", "localtime()"),
+		4 => array(1000004, 0, 0, 20, "'desc 5'", "localtime()"),
 	);
 
 $subject_arr = array(
