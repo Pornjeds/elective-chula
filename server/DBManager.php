@@ -25,8 +25,20 @@ Class DBManager
 		mysqli_query($this->con, 'SET CHARACTER SET utf8');
 		mysqli_query($this->con, 'SET collation_connection utf8_unicode_ci'); 
 		$result = mysqli_query($this->con, $sql);
-		return $result;
 		mysqli_close($this->con);
+		return $result;
+	}
+
+	function countRow($sql_result)
+	{
+		$this->con = mysqli_connect($this->ihost,$this->iuser,$this->ipasswd);
+		mysqli_select_db($this->con, $this->idbname);
+		mysqli_query($this->con, "SET NAMES 'utf8'");
+		mysqli_query($this->con, 'SET CHARACTER SET utf8');
+		mysqli_query($this->con, 'SET collation_connection utf8_unicode_ci'); 
+		$result = mysqli_num_rows($sql_result);
+		mysqli_close($this->con);
+		return $result;
 	}
 
 	function setData($sql)
