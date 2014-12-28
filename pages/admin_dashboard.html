@@ -29,21 +29,7 @@
 
     <nav class="navbar navbar-default navbar-static-top" role="navigation">
       <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">Y-Ex, subjective</a>
-        </div>
         <div id="navbar" class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
-          </ul>
           <ul class="nav navbar-nav navbar-right">
             <li><p class="navbar-text"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Logged in as Admin</p></li>
             <li><a href="index.html">Log out</a></li>
@@ -56,30 +42,38 @@
 
       <div class="starter-template">
         <h1>Administrator: Y-Ex</h1>
-        <p class="lead">Use this document as a way to quickly start any new project.</p>
+        <p class="lead">ระบบจัดการลงทะเบียนวิชาเลือก Y-Ex</p>
       </div>
 
-      <div class="row">
-        <div class="col-md-4">
+      <div class="row" style="margin-bottom: 30px; margin-top: 30px">
+        <div class="col-md-4" style="border=1px solid">
           <h2><b>Import ข้อมูล</b></h2>
           <p>
-            <a class="btn btn-default" href="admin_importdata.html" role="button">View details »</a>
+            <a class="btn btn-primary" href="admin_importdata.html" role="button">View details »</a>
           </p>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+          <p>ระบบนำข้อมูลจาก template (.csv) เข้าสู่ระบบ โดยข้อมูลนี้จะเป็นข้อมูลที่ใช้แสดงให้กับนิสิตในการลงทะเบียนของแต่ละเทอม/ปีการศึกษา</p>
         </div>
         <div class="col-md-4">
-          <h2><b>จัดการวิชาเรียน</b></h2>
+          <h2><b>การลงทะเบียนวิชาเรียน</b></h2>
           <p>
-            <a class="btn btn-default" href="admin_enrollconfig.html" role="button">View details »</a>
+            <a class="btn btn-primary" href="admin_enrollconfig.html" role="button">View details »</a>
           </p>
-          <p>config ว่าวิชานี้ลงได้กี่ตัว เปิดหรือป่าว เรียนกี่โมง</p>
+          <p>
+            ระบบจัดการการลงทะเบียนวิชาเรียนของนิสิต เช่น
+            <ul>
+              <li>กำหนด/แก้ไข จำนวนวิชาที่เปิดสอน</li>
+              <li>กำหนดแก้ไขจำนวนนิสิตที่รับได้ต่อ class</li>
+              <li>แก้ไขรายละเอียดวิชาเรียน</li>
+              <li>เลือกวิธีการรับนิสิต</li>
+            </ul>
+          </p>
         </div>
         <div class="col-md-4">
           <h2><b>แสดงผลการเลือก</b></h2>
           <p>
-            <a class="btn btn-default" href="admin_displayresult.html" role="button">View details »</a>
+            <a class="btn btn-primary" href="admin_displayresult.html" role="button">View details »</a>
           </p>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+          <p>ระบบแสดงผลการคัดเลือกในแต่ละวิชาเรียนแบ่งแยกตามเทอม/ปีการศึกษา โดย Admin สามารถพิมพ์ออกมาเป็นรายงานข้อมูลนิสิต/วิชาเรียนได้จากระบบนี้</p>
         </div>
       </div>
 
@@ -88,15 +82,17 @@
           <h3 class="panel-title">Advance</h3>
         </div>
         <div class="panel-body">
-          <li><a href="admin_account.html">จัดการสิทธิ์</a></li>
+          <li><a href="admin_account.html">จัดการสิทธิ์การเข้าถึงระบบ Admin</a></li>
           <li><a href="admin_dataeditor.html">แก้ไขข้อมูลใน Database</a></li>
         </div>
       </div>
 
       <hr>
-      <footer>
-        Project 2014
-      </footer>
+      <footer class="footer">
+          <div>
+            We are the same <span style='color:#cb70d7; font-weight: bold;'>CHULA</span> so let talk together.
+          </div>
+        </footer>
 
     </div><!-- /.container -->
 
