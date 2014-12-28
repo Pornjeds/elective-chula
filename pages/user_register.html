@@ -26,20 +26,24 @@
             margin-top: 10px;
             text-align: center;
             width: 100px;
-            background: transparent !important;
+            background: #f7f7f9 !important;
             font-weight: bold;
-            color: #000 !important;
+            color: #666 !important;
             height: 35px !important;
         }
         .registerControl{
             min-width: 900px;
-            border: 1px solid #a19d9f;
+            border: 1px solid #e1e1e8;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 10px;
+            margin-top: 10px;
         }
         .registerControl tr td{
             width: 100px;
         }
         .registerControl tr td div{
-            background: #3b393a;
+            background: #efefef;
             color: #efefef;
             width: 125px;
             height: 80px;
@@ -48,10 +52,16 @@
             margin-right: 1px;
             padding: 10px 5px 5px 5px;
             word-wrap: break-word;
+            
+            -webkit-user-select: none;  
+            -moz-user-select: none;    
+            -ms-user-select: none;      
+            user-select: none;
         }
-        .registerControl tr td div:hover{
-            background: #231f20;
+        .registerControl tr td div:hover:not(.registerMile):not(.emptyClass){
+            background: #231f20 !important;
             color: orange;
+            cursor: default;
         }
     </style>
   </head>
@@ -85,44 +95,8 @@
               <h3 class="panel-title">ลงทะเบียนวิชาเลือก</h3>
             </div>
             
-            <div style='background: #efefef; width: 100%; margin-top: 5px;'>
-                <table class='registerControl'>
-                    <!--<tr>
-                        <td><div></div></td>
-                        <td><div></div></td>
-                        <td><div></div></td>
-                        <td><div></div></td>
-                        <td><div></div></td>
-                        <td><div></div></td>
-                        <td><div></div></td>
-                    </tr>-->
-                    <tr>
-                        <td><div style='background: #e7e7e7'></div></td>
-                        <td><div></div></td>
-                        <td><div>กลยุทธ์การตลาดเพื่อการเข่งขัน</div></td>
-                        <td><div></div></td>
-                        <td><div></div></td>
-                        <td><div>วิเคราะห์พฤติกรรมผู้บริโภค</div></td>
-                        <td><div style='background: #e7e7e7'></div></td>
-                    </tr>
-                    <tr>
-                        <td><div style='background: #e7e7e7'></div></td>
-                        <td><div>การเงินธุรกิจระหว่างประเทศ</div></td>
-                        <td><div>การเป็นผู้ประกอบการและการสร้างธุรกิจ</div></td>
-                        <td><div>สัมนาหัวข้อร่วมสมัยทางการจัดการ</div></td>
-                        <td><div>วิเคราะห์การลงทุน</div></td>
-                        <td><div>ตลาดเงินและตลาดทุน</div></td>
-                        <td><div style='background: #e7e7e7'></div></td>
-                    </tr>
-                    <tr>
-                        <td><div class='registerMile'>SUN</div></td>
-                        <td><div class='registerMile'>MON</div></td>
-                        <td><div class='registerMile'>TUE</div></td>
-                        <td><div class='registerMile'>WED</div></td>
-                        <td><div class='registerMile'>THU</div></td>
-                        <td><div class='registerMile'>FRI</div></td>
-                        <td><div class='registerMile'>SAT</div></td>
-                    </tr>
+            <div style=' width: 100%; margin-top: 5px;'>
+                <table id='registerControlElement' class='registerControl'>
                 </table>
             </div>
             
@@ -148,6 +122,65 @@
     
     <script>
         $(document).ready(function () {
+            var registerControlElement = document.getElementById('registerControlElement');
+            var dayArry = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+            var mocData  = {
+                subjects : [ 
+                    { subjectId: 28, subjectName: 'การเงินธุรกิจระหว่างประเทศ', studyDate: 1 },
+                    { subjectId: 43, subjectName: 'กลยุทธ์การตลาดเพื่อการแข่งขัน', studyDate: 2 },
+                    { subjectId: 12, subjectName: 'การเป็นผู้ประกอบการณ์และการสร้างธุรกิจ', studyDate: 2 },
+                    { subjectId: 54, subjectName: 'สัมนาหัวข้อร่วมสมัยทางการจัดการ', studyDate: 3 },
+                    { subjectId: 23, subjectName: 'วิเคราะห์การลงทุน', studyDate: 4 },
+                    { subjectId: 12, subjectName: 'วิเคราะห์พฤติกรรมผู้บริโภค', studyDate: 5 },
+                    { subjectId: 8, subjectName: 'ตลาดเงินและตลาดทุน', studyDate: 5 }
+                ]
+            };
+            //CALCULATE NUBER SUBJECT IN A DAY
+            var numberOfSubjectInDay = 0;
+            var counts = {};
+            for( var index = 0; index < mocData.subjects.length; index++ ){
+                var value = mocData.subjects[ index ].studyDate;
+                counts[ value ] = (counts[ value ] || 0)+1;
+                if( numberOfSubjectInDay < counts[ value ] ){
+                    numberOfSubjectInDay = counts[value];
+                }
+            };
+            //GENERATE ROW OF DIV
+            for(var i=0; i< numberOfSubjectInDay + 1; i++){
+                var tmpTRElement = document.createElement('tr');
+                registerControlElement.appendChild( tmpTRElement );
+                for(var day=0; day < dayArry.length; day++){
+                    var tmpTDElement = document.createElement('td');
+                    tmpTRElement.appendChild( tmpTDElement );
+                    var tmpDivElement = document.createElement('div');
+                    tmpTDElement.appendChild( tmpDivElement );
+                    tmpDivElement.id = 'cell' + day + '-' +  i    //(day, nomberOfSubjectInDay)
+                    //ADD SUBJECT TO DIV
+                    var subjectInformation = getInformationFromData( mocData.subjects, day);
+                    if( subjectInformation !== null ){
+                        tmpDivElement.innerHTML = subjectInformation;
+                        tmpDivElement.style.background = '#9d9d9d';
+                    }else{
+                        tmpDivElement.className = 'emptyClass';
+                    }
+                    //DATES ROW
+                    if( i === numberOfSubjectInDay ){
+                        tmpDivElement.className = 'registerMile';
+                        tmpDivElement.innerHTML = dayArry[ day ];
+                        tmpDivElement.id = 'mileStone' + day;
+                    }
+                }
+            }
+            //GET/CHANGE INFORMATION FROM DATA
+            function getInformationFromData( objectDataArray, targetDate ){
+                for( var i=0; i< objectDataArray.length; i++ ){
+                    if( objectDataArray[i].studyDate === targetDate ){
+                        objectDataArray[i].studyDate = -1;
+                        return objectDataArray[i].subjectName;
+                    }
+                }
+                return null;
+            }
             
         });
     </script>
