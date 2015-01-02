@@ -14,10 +14,62 @@
     <link href="../scripts/css/bootstrap.min.css" rel="stylesheet">
     <link href="../scripts/css/jasny-bootstrap.min.css" rel="stylesheet">
     <link href="../scripts/css/bootstrap-select.min.css" rel="stylesheet">
+    <link href="../scripts/css/jquery-ui.min.css" rel="stylesheet" >
 
     <!-- Custom styles for this template -->
     <link href="../scripts/css/admin_template.css" rel="stylesheet">
-  
+    
+    <style>
+        #sortableMain {
+            width: 125px;
+            list-style-type: none;
+            text-align: center;
+            background: #ddd;
+            padding: 0px;
+            position: relative;
+            min-height: 26px;
+            vertical-align: top;
+            display: inline-block;
+            margin-bottom: 5px;
+        }
+        
+        #sortableMain li{
+            position: relative;
+        }
+        
+        ul[id*='sortable']:not(#sortableMain) {
+            width: 125px;
+            min-height: 26px;
+            height: 26px;
+            list-style-type: none;
+            margin-top: 2px;
+            background: #ddd;
+            text-align: center;
+            margin-left: 1px;
+            position: relative;
+        }
+        
+        ul[id*='sortable'] li {
+            font-size: 1.2em;
+            background-color: #dff0d8;
+            border: 1px solid #d6e9c6;
+            color: #000;
+            width: 120px;
+            margin-left: 3px;
+            
+            color: green;
+        }
+        
+        li:hover{
+            cursor: default;
+        }
+        
+        tr{
+            vertical-align: top;
+            text-align: center;
+        }
+    </style>
+    
   </head>
 
   <body>
@@ -104,17 +156,43 @@
                 <input style='margin-left: 8px;' type='button' class="btn btn-success" onClick=';' value='Update' />
             </div>
          </div>
-
       <hr>
       
-      <div style='display:none'>
-        <h4 id='criteriaSelection'></h4>
-        <div style='margin-bottom: 18px;'>ดับเบิ้ลคลิ๊กแก้ไข cell ที่ต้องการ จากนั้นกดปุ่ม submit ครับ</div>
-        <!-- EDITABLE GRID-->
-        <div id="resultGridTable"></div>
-        <input style='margin-top: 18px;' id='bt_submit' type='button' class="btn btn-success" onClick='sendToDB();' value='submit' />
+      <div style='line-height: 26px; width: 900px;'>
+            <table>
+                <tr>
+                    <td><h4>วิชาเลือกทั้งหมด</h4></td>
+                    <td style='width: 40px;'></td>
+                    <td><h4>วิชาเลือกสำหรับเทอมนี้<span id='countSelected'>(0)</span></h4></td>
+                </tr>
+                <tr>
+                    <td>
+                        <ul id="sortableMain" class="connectedSortable">
+                            <li>วิชา A</li>
+                            <li>วิชา B</li>
+                            <li>วิชา C</li>
+                            <li>วิชา D</li>
+                            <li>วิชา E</li>
+                            <li>วิชา F</li>
+                            <li>วิชา G</li>
+                            <li>วิชา H</li>
+                            <li>วิชา I</li>
+                            <li>วิชา J</li>
+                            <li>วิชา K</li>
+                        </ul>
+                    </td>
+                    <td></td>
+                    <td>
+                        <div id='selectedZone' style='display: inline-block; background: #efefef; display: inline-block; color: #666;'></div>
+                    </td>
+                </tr>
+            </table>
+            
+            <div style='margin-top: 20px;'>
+                <input id='bt_confirm' type='button' class="btn btn-primary" onClick='' value='Next' />
+            </div>
       </div>
-
+    
       <hr>
       <footer class="footer">
           <div style='margin-bottom: 60px'>
@@ -129,6 +207,7 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="../scripts/js/jquery.min.js"></script>
+    <script src="../scripts/js/jquery-ui.min.js"></script>
     <script src="../scripts/js/bootstrap.min.js"></script>
     <script src="../scripts/js/jasny-bootstrap.min.js"></script>    
     <script src="../scripts/js/bootstrap-select.min.js"></script>
@@ -138,7 +217,43 @@
     <script>
         $(document).ready(function () {
             $('.selectpicker').selectpicker();
-                   
+            
+            //ADD <UL> LANDING ITEMS
+            var selectedZoneElement = document.getElementById('selectedZone');
+            var initialNum = 5;
+            for( var i=0; i< initialNum; i++){
+                var tmpUIElement =  document.createElement('ul');
+                tmpUIElement.id = 'sortable' + i;
+                tmpUIElement.className = 'connectedSortable';
+                tmpUIElement.style.padding = '0px';
+                tmpUIElement.style.marginBottom = '0px';
+                selectedZoneElement.appendChild( tmpUIElement );
+            }
+            
+            //BIND DRAG/SORABLE EVENT
+            $( '.connectedSortable' ).sortable({
+                connectWith: ".connectedSortable",
+                stop: function( event, ui) {
+                    var sortableElements = $('.connectedSortable');
+                    for(var i=0; i< sortableElements.length; i++){
+                        if( sortableElements[ i ].id !== 'sortableMain' && sortableElements[ i ].children.length > 1 ){
+                            $(this).sortable( 'cancel');
+                        }
+                    }
+                    //COUNT <LI> FOR MANAGE ADDTIONAL <UL> LANDING ITEMS
+                    var countSelectedItem = 0;
+                    $('#selectedZone').children().each(function(){
+                        if( $(this).children().length > 0 ){
+                            countSelectedItem++;
+                        }
+                    });
+                    if( $('#selectedZone').children().length <= countSelectedItem ){
+                        alert('add si');
+                    }
+                    //
+                    $('#countSelected').text( '(' + countSelectedItem +')' );
+                }
+            }).disableSelection();
         });
     </script>
   
