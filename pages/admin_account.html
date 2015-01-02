@@ -9,7 +9,7 @@
     <meta name="author" content="">
     <link rel="icon" href="../../favicon.ico">
 
-    <title>Export data: Y-Ex, subjective</title>
+    <title>จัดการสิทธิ์การเข้าถึงระบบ Admin: Y-Ex, subjective</title>
 
     <!-- Bootstrap core CSS -->
     <link href="../scripts/css/bootstrap.min.css" rel="stylesheet">
@@ -18,21 +18,12 @@
 
     <!-- Custom styles for this template -->
     <link href="../scripts/css/admin_template.css" rel="stylesheet">
-
-    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
-    <!--[if lt IE 9]><script src="scripts/js/ie8-responsive-file-warning.js"></script><![endif]-->
-    <script src="../scripts/js/ie-emulation-modes-warning.js"></script>
-
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-  
+    <link rel="stylesheet" media="screen" href="../scripts/css/select2.css">
+ 
   </head>
 
   <body>
-      <div class="topnavbar">
+    <div class="topnavbar">
         <div class="topnavbar-right">
           <ul>
             <li>
@@ -45,7 +36,7 @@
         </div>
     </div>
 
-    <div class="navmenu navmenu-default navmenu-fixed-left offcanvas">
+  <div class="navmenu navmenu-default navmenu-fixed-left offcanvas">
       <a class="navmenu-brand" href="#">Y-EX MBA</a>
       <ul class="nav navmenu-nav">
         <li><a href="../navmenu/">Import ข้อมูล</a></li>
@@ -79,34 +70,39 @@
     </div>
 
     <div class="container">
-      <div class="page-header">
-        <h1  style='text-align: center'>แสดงผลการเลือก</h1>
-      </div>
-      <p class="lead" style='text-align: center'>โปรดเลือกเงื่อนไขเพื่อของดูข้อมูลตามที่คุณต้องการ</p>
-         <div style='background:#f6f6f6; width: 100%; border: 1px solid #c8c8c8; text-align: center;'>
-            <div style='padding:10px;'>
-                <div style='padding: 5px 5px 0px 5px;'>
-                    <select id='studentClass' class="selectpicker">
-                        <option value="" selected disabled>รุ่นนักศึกษา</option>
-                        <option>20/1</option>
-                        <option>20/2</option>
-                        <option>21/1</option>
-                        <option>21/2</option>
-                    </select>
-                </div>
-                <div style='padding: 5px 5px 5px 5px;'>
-                    <select id='studentSubject' class="selectpicker" >
-                        <option value="" selected disabled>วิชา</option>
-                        <option>MARKETING MANAGEMENT</option>
-                        <option>FINANCIAL MANAGEMENT</option>
-                        <option>OPERATION MANAGMENT</option>
-                    </select>
-                </div>
-                <div style='padding: 0px 0px 5px 5px;'>
-                    <input id='bt_query' type='button' class="btn btn-success" onClick='generateReport();' value='Query' />
-                </div>
+        <ol class="breadcrumb">
+            <li><a href="admin_dashboard.html">Home</a></li>
+            <li class="active">จัดการสิทธิ์การเข้าถึงระบบ Admin<li>
+        </ol>
+
+        <div class="starter-template">
+            <h1>แจัดการสิทธิ์การเข้าถึงระบบ Admin</h1>
+            <p>เลือกชื่อของ user ที่ต้องการจากนั้นกดปุ่ม confirm ครับ</p>
+        </div>
+        
+        <div style='border: 1px solid #efefef;'>
+            <div style='color:#777; background-color: #e7e7e7; border-color: #e1e1e1;padding: 10px;'>
+                <h3 class="panel-title">Administrators</h3>
+            </div>        
+            <div class="panel-body" style='text-align:center;'>
+                <select multiple="" name="e1" id="e1" style="width: 300px;" tabindex="-1">
+                    <option value='1'>นายบอย</option>
+                    <option value='2'>นายกี้</option>
+                    <option value='3'>นายเบียร์</option>
+                    <option value='4'>นายเอี่ยว</option>
+                    <option value='5'>นายลิง</option>
+                    <option value='6'>นายแก่</option>
+                </select>
+                <input style='margin-left: 8px;' type='button' class="btn btn-success" onClick='submitAdminValue();' value='Confirm' />
             </div>
-         </div>
+        </div>
+        
+        <hr>
+        <footer class="footer">
+            <div style='margin-bottom: 60px'>
+            We are the same <span style='color:#cb70d7; font-weight: bold;'>CHULA</span> so let talk together.
+        </div>
+        </footer>
     </div><!-- /.container -->
 
     <!-- Bootstrap core JavaScript
@@ -118,23 +114,26 @@
     <script src="../scripts/js/bootstrap-select.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="../scripts/js/ie10-viewport-bug-workaround.js"></script>
-
+    <script src="../scripts/js/select2.min.js"></script>
+    
     <script>
         $(document).ready(function () {
-            $('.selectpicker').selectpicker();
-
+            
+            $("#e1").select2();
+            $("#e1").select2("data", [{id: "1", text: "นายบอย"},{id:"2", text: "นายกี้"}]);
+            
         });
-        
-        function generateReport(){
-            var result1 = $('#studentClass').val();
-            var result2 = $('#studentSubject').val();
-            if( result1 === null || result2 === null ){
-                alert( 'Please select criteria first');
-            }else{        
-                alert( result1 + ' , ' + result2 );
+        function submitAdminValue(){
+            var data = $("#e1").select2("data"); 
+            //delete data.element; 
+            //alert("Selected data is: "+JSON.stringify(data));
+            var result = '';
+            for(var i=0; i < data.length; i++){
+                result += 'id:' + data[i].id + ', ' + 'text:' + data[i].text + '\n' ;
             }
-        };
+            alert( 'Administrator as follows:\n' + result );
+        }
     </script>
-  
+ 
     </body>
 </html>

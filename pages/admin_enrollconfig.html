@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>แก้ไขข้อมูลใน Database: Y-Ex, subjective</title>
+    <title>การลงทะเบียนวิชาเรียน: Y-Ex, subjective</title>
 
     <!-- Bootstrap core CSS -->
     <link href="../scripts/css/bootstrap.min.css" rel="stylesheet">
@@ -17,12 +17,6 @@
 
     <!-- Custom styles for this template -->
     <link href="../scripts/css/admin_template.css" rel="stylesheet">
-
-    <!--
-      Loading Handsontable (full distribution that includes all dependencies apart from jQuery)
-      -->
-      <script src="../scripts/js/handsontable.full.min.js"></script>
-      <link rel="stylesheet" media="screen" href="../scripts/css/handsontable.full.min.css">
   
   </head>
 
@@ -79,24 +73,18 @@
 
       <ol class="breadcrumb">
         <li><a href="admin_dashboard.html">Home</a></li>
-        <li class="active">แก้ไขข้อมูลใน Database<li>
+        <li class="active">การลงทะเบียนวิชาเรียน<li>
       </ol>
 
       <div class="starter-template">
-        <h1>แก้ไขข้อมูลใน Database</h1>
+        <h1>การลงทะเบียนวิชาเรียน</h1>
         <p>
-          โปรดเลือก template ที่คุณต้องการ
+          โปรดเลือกรุ่นของนักศึกษาและเทอมที่ต้องการอัพเดทวิชาเลือก
         </p>
       </div>
       <div style='background:#f6f6f6; width: 100%; border: 1px solid #c8c8c8; text-align: center;'>
             <div style='padding:10px;'>
-                <div style='padding: 5px 5px 5px 5px; margin-right: 5px; float:left;'>
-                    <select id='templateList' class="selectpicker">
-                        <option value="" selected disabled>Template list</option>
-                        <option value='studentInformation'>ข้อมูลของนักศึกษา</option>
-                    </select>
-                </div> 
-                <div style='padding: 5px 5px 5px 5px; margin-right: 5px; float:left; display: none;'>
+                <div style='padding: 5px 5px 5px 5px; margin-right: 5px; display: inline-block;'>
                     <select id='studentClass' class="selectpicker">
                         <option value="" selected disabled>รุ่นนักศึกษา</option>
                         <option>20/1</option>
@@ -105,10 +93,15 @@
                         <option>21/2</option>
                     </select>
                 </div> 
-                <div style='padding: 5px 5px 5px 5px; float: left;display: none;'>
-                    <input id='bt_query' type='button' class="btn btn-success" onClick='generateReport();' value='ค้นหา' />
-                </div>
-                <div style='clear:both'></div>
+                <div style='padding: 5px 5px 5px 5px; margin-right: 5px; display: inline-block;'>
+                    <select id='studentClass' class="selectpicker">
+                        <option value="" selected disabled>เทอม</option>
+                        <option>4</option>
+                        <option>5</option>
+                        <option>6</option>
+                    </select>
+                </div> 
+                <input style='margin-left: 8px;' type='button' class="btn btn-success" onClick=';' value='Update' />
             </div>
          </div>
 
@@ -145,56 +138,8 @@
     <script>
         $(document).ready(function () {
             $('.selectpicker').selectpicker();
-            $('#templateList').change(function(){
-                if( $(this).val() === 'studentInformation'){
-                    $('#studentClass').parent().css('display', '');
-                    $('#bt_query').parent().css('display','');
-                }
-            });            
+                   
         });
-        
-        var hot;
-        
-        function generateReport(){
-            var result1 = $('#templateList').val();
-            var result2 = $('#studentClass').val();
-            if( result1 === null || result2 === null ){
-                alert( 'Please select criteria first');
-            }else{
-                //DISPLAY MOC-DATA
-                $('#criteriaSelection').parent().css('display','');
-                $('#criteriaSelection').text( result1 + ',' + result2);
-                var header = ["รหัสนิสิต", "ชื่อ-นามสกุล", "ที่ทำงาน" ,"สิทธิ์"];
-                var data = [
-                    ["47010675", "นายกี้ นามสมมุติ", "Reuters", "admin"],
-                    ["47010676", "นายเอี่ยว นามสมมุติ", "I am consultant", "user"],
-                    ["47010677", "นายเบียร์ นามสมมติ", "Reuters", "user"],
-                    ["47010678", "นายวบอย นามสมมติ","Reuters", "admin"],
-                    ["47010731", "นายลิง นามสมมติ", "SCG", "user"]
-                ];
-                
-                //DESTROY EXISTING
-                if( hot ){
-                    hot.destroy();
-                }
-                
-                var container = document.getElementById('resultGridTable');
-                hot = new Handsontable(container,
-                {
-                    colHeaders: header,
-                    data: data,
-                    minSpareRows: 1
-                });
-                
-                $('#resultGridTable table')[0].className = 'table';
-                $('#resultGridTable table')[1].className = 'table';
-                hot.render();
-            }
-        };
-        
-        function sendToDB(){
-            alert( hot.getData() );
-        }
     </script>
   
     </body>
