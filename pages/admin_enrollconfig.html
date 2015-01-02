@@ -1,0 +1,146 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>การลงทะเบียนวิชาเรียน: Y-Ex, subjective</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../scripts/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../scripts/css/jasny-bootstrap.min.css" rel="stylesheet">
+    <link href="../scripts/css/bootstrap-select.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../scripts/css/admin_template.css" rel="stylesheet">
+  
+  </head>
+
+  <body>
+
+    <div class="topnavbar">
+        <div class="topnavbar-right">
+          <ul>
+            <li>
+              <p class="topnavbar-text"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Logged in as Admin</p>
+            </li>
+            <li>
+              <p class="topnavbar-text"><a href="../index.html">Log out</a></p>
+            </li>
+          </ul>
+        </div>
+    </div>
+
+  <div class="navmenu navmenu-default navmenu-fixed-left offcanvas">
+      <a class="navmenu-brand" href="#">Y-EX MBA</a>
+      <ul class="nav navmenu-nav">
+        <li><a href="../navmenu/">Import ข้อมูล</a></li>
+        <li class="active"><a href="./">จัดการวิชาเรียน</a></li>
+        <li><a href="../navmenu-reveal/">แสดงผลการเลือก</a></li>
+      </ul>
+      <ul class="nav navmenu-nav">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Advance<b class="caret"></b></a>
+          <ul class="dropdown-menu navmenu-nav">
+            <li><a href="#">จัดการสิทธิ์</a></li>
+            <li><a href="#">แก้ไขข้อมูลใน Database</a></li>
+            <li class="divider"></li>
+            <li class="dropdown-header">Nav header</li>
+            <li><a href="#">Separated link</a></li>
+            <li><a href="#">One more separated link</a></li>
+          </ul>
+        </li>
+      </ul>
+      <ul class="nav navmenu-nav">
+        <li><a href="#"><font color="red">ออกจากระบบ</font></a></li>
+      </uL>
+    </div>
+
+    <div class="navbar navbar-default navbar-fixed-top">
+      <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target=".navmenu" data-canvas="body">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+
+
+    <div class="container">
+
+      <ol class="breadcrumb">
+        <li><a href="admin_dashboard.html">Home</a></li>
+        <li class="active">การลงทะเบียนวิชาเรียน<li>
+      </ol>
+
+      <div class="starter-template">
+        <h1>การลงทะเบียนวิชาเรียน</h1>
+        <p>
+          โปรดเลือกรุ่นของนักศึกษาและเทอมที่ต้องการอัพเดทวิชาเลือก
+        </p>
+      </div>
+      <div style='background:#f6f6f6; width: 100%; border: 1px solid #c8c8c8; text-align: center;'>
+            <div style='padding:10px;'>
+                <div style='padding: 5px 5px 5px 5px; margin-right: 5px; display: inline-block;'>
+                    <select id='studentClass' class="selectpicker">
+                        <option value="" selected disabled>รุ่นนักศึกษา</option>
+                        <option>20/1</option>
+                        <option>20/2</option>
+                        <option>21/1</option>
+                        <option>21/2</option>
+                    </select>
+                </div> 
+                <div style='padding: 5px 5px 5px 5px; margin-right: 5px; display: inline-block;'>
+                    <select id='studentClass' class="selectpicker">
+                        <option value="" selected disabled>เทอม</option>
+                        <option>4</option>
+                        <option>5</option>
+                        <option>6</option>
+                    </select>
+                </div> 
+                <input style='margin-left: 8px;' type='button' class="btn btn-success" onClick=';' value='Update' />
+            </div>
+         </div>
+
+      <hr>
+      
+      <div style='display:none'>
+        <h4 id='criteriaSelection'></h4>
+        <div style='margin-bottom: 18px;'>ดับเบิ้ลคลิ๊กแก้ไข cell ที่ต้องการ จากนั้นกดปุ่ม submit ครับ</div>
+        <!-- EDITABLE GRID-->
+        <div id="resultGridTable"></div>
+        <input style='margin-top: 18px;' id='bt_submit' type='button' class="btn btn-success" onClick='sendToDB();' value='submit' />
+      </div>
+
+      <hr>
+      <footer class="footer">
+          <div style='margin-bottom: 60px'>
+            We are the same <span style='color:#cb70d7; font-weight: bold;'>CHULA</span> so let talk together.
+          </div>
+        </footer>
+
+    </div><!-- /.container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../scripts/js/jquery.min.js"></script>
+    <script src="../scripts/js/bootstrap.min.js"></script>
+    <script src="../scripts/js/jasny-bootstrap.min.js"></script>    
+    <script src="../scripts/js/bootstrap-select.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../scripts/js/ie10-viewport-bug-workaround.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('.selectpicker').selectpicker();
+                   
+        });
+    </script>
+  
+    </body>
+</html>
