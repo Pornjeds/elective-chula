@@ -9,11 +9,12 @@
     <meta name="author" content="">
     <link rel="icon" href="../../favicon.ico">
 
-    <title>Export data: Y-Ex, subjective</title>
+    <title>Import data: Y-Ex, subjective</title>
 
     <!-- Bootstrap core CSS -->
     <link href="../scripts/css/bootstrap.min.css" rel="stylesheet">
     <link href="../scripts/css/jasny-bootstrap.min.css" rel="stylesheet">
+    <link href="../scripts/css/bootstrap-select.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <link href="../scripts/css/admin_template.css" rel="stylesheet">
@@ -31,7 +32,8 @@
   </head>
 
   <body>
-      <div class="topnavbar">
+
+    <div class="topnavbar">
         <div class="topnavbar-right">
           <ul>
             <li>
@@ -44,11 +46,11 @@
         </div>
     </div>
 
-    <div class="navmenu navmenu-default navmenu-fixed-left offcanvas">
+  <div class="navmenu navmenu-default navmenu-fixed-left offcanvas">
       <a class="navmenu-brand" href="#">Y-EX MBA</a>
       <ul class="nav navmenu-nav">
-        <li><a href="../navmenu/">Import ข้อมูล</a></li>
-        <li class="active"><a href="./">จัดการวิชาเรียน</a></li>
+        <li class="active">Import ข้อมูล</li>
+        <li>จัดการวิชาเรียน</li>
         <li><a href="../navmenu-reveal/">แสดงผลการเลือก</a></li>
       </ul>
       <ul class="nav navmenu-nav">
@@ -77,25 +79,171 @@
       </button>
     </div>
 
+
     <div class="container">
-      <div class="page-header">
-        <h1>Off Canvas Push Menu Template</h1>
+
+      <ol class="breadcrumb">
+        <li><a href="admin_dashboard.html">Home</a></li>
+        <li class="active">ระบบ Import ข้อมูล</li>
+      </ol>
+
+      <div class="starter-template">
+        <h1>ระบบ Import ข้อมูล</h1>
+        <p>
+          ระบบนำข้อมูลจาก template (.csv) เข้าสู่ระบบ โดยข้อมูลนี้จะเป็นข้อมูลที่ใช้แสดงให้กับนิสิตในการลงทะเบียนของแต่ละเทอม/ปีการศึกษา
+        </p>
       </div>
-      <p class="lead">This example demonstrates the use of the offcanvas plugin with a push effect.</p>
-      <p>You get the push effect by setting the <code>canvas</code> option to 'body'.</p>
-      <p>Also take a look at the example for a navmenu with <a href="../navmenu">slide in effect</a> and <a href="../navmenu-reveal">reveal effect</a>.</p>
+
+      <hr>
+
+      <div class="row">
+        <div class="col-md-4">
+          <div class="panel panel-primary">
+            <div class="panel-heading">
+              <h3 class="panel-title">1. รุ่น</h3>
+            </div>
+            <div class="panel-body">
+              <select id='studentClass' class="selectpicker">
+                <option value="" selected disabled>รุ่นนักศึกษา</option>
+                <option>20/1</option>
+                <option>20/2</option>
+                <option>21/1</option>
+                <option>21/2</option>
+              </select> 
+              <a class="btn btn-primary" href="#" role="button"  data-toggle="modal" data-target=".bs-example-modal-lg">เพิ่ม</a>
+              <a href="#">แก้ไข</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="panel panel-info">
+            <div class="panel-heading">
+              <h3 class="panel-title">2. เทอม</h3>
+            </div>
+            <div class="panel-body">
+              <select id='studentClass' class="selectpicker">
+                <option value="" selected disabled>เทอม</option>
+                <option>4</option>
+                <option>5</option>
+              </select> 
+              <a class="btn btn-primary" href="#" role="button"  data-toggle="modal" data-target=".bs-classterm-modal-lg">เพิ่ม</a>
+              <a href="#">แก้ไข</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="panel panel-info">
+            <div class="panel-heading">
+              <h3 class="panel-title">3. วิชา</h3>
+            </div>
+            <div class="panel-body">
+              <a class="btn btn-primary" href="#" role="button">IMPORT วิชาเรียน</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr>
+      <footer class="footer">
+          <div style='margin-bottom: 60px'>
+            We are the same <span style='color:#cb70d7; font-weight: bold;'>CHULA</span> so let talk together.
+          </div>
+        </footer>
+
     </div><!-- /.container -->
 
 
+    <!-- Modal -->
+    <!-- 1. เลือกรุ่น -->
+    <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="padding: 15px">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">1. เพิ่มรุ่น</h4>
+          </div>
+          <br>
+          <form class="form-inline">
+            <div class="form-group" style="margin-bottom: 15px">
+              <label for="recipient-name" class="control-label">1.1 รุ่น:</label>
+              <div class="input-group">
+                <input type="text" class="form-control" placeholder="รุ่น">
+                <div class="input-group-addon">ยังไม่มี</div>
+              </div>
+            </div>
+            <br>
+            <div class="form-group" style="margin-bottom: 15px">
+              <label for="recipient-name" class="control-label">1.2 Import สมาชิกในรุ่น:</label>
+              <div class="input-group">
+                <input type="file">
+              </div>
+            </div>
+            <p>
+              <button type="button" class="btn btn-primary btn-lg">เพิ่ม</button>
+            </p>
+          </form>
+          
+        </div>
+      </div>
+    </div>
+    <!-- /1. เลือกรุ่น -->
 
+    <!-- 2. เทอม -->
+    <div class="modal fade bs-classterm-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="padding: 15px">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">2. เทอม</h4>
+          </div>
+          <br>
+          <form class="form-inline">
+            <div class="form-group" style="margin-bottom: 15px">
+              <label for="recipient-name" class="control-label">2.1 เทอม:</label>
+              <div class="input-group">
+                <select id='studentClass' class="selectpicker">
+                  <option value="" selected disabled>เทอม</option>
+                  <option>6</option>
+              </select> 
+               <button type="button" class="btn btn-primary">เพิ่ม</button>
+              </div>
+            </div>
+              
+          </form>
+          
+        </div>
+      </div>
+    </div>
+    <!-- /1. เทอม -->
+
+    <!-- /Modal -->
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="../scripts/js/jquery.min.js"></script>
     <script src="../scripts/js/bootstrap.min.js"></script>
-    <script src="../scripts/js/jasny-bootstrap.min.js"></script>
+    <script src="../scripts/js/jasny-bootstrap.min.js"></script>    
+    <script src="../scripts/js/bootstrap-select.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="../scripts/js/ie10-viewport-bug-workaround.js"></script>
-  </body>
+
+    <script>
+        $(document).ready(function () {
+            $('.selectpicker').selectpicker();
+
+        });
+        
+        function generateReport(){
+            var result1 = $('#studentClass').val();
+            var result2 = $('#studentSubject').val();
+            if( result1 === null || result2 === null ){
+                alert( 'Please select criteria first');
+            }else{        
+                alert( result1 + ' , ' + result2 );
+            }
+        };
+    </script>
+  
+    </body>
 </html>
