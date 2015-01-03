@@ -1,0 +1,193 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Import data: Y-Ex, subjective</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../scripts/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../scripts/css/jasny-bootstrap.min.css" rel="stylesheet">
+    <link href="../scripts/css/bootstrap-select.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../scripts/css/admin_template.css" rel="stylesheet">
+    <style>
+      <style>
+#yourBtn{
+   position: relative;
+       top: 150px;
+   font-family: calibri;
+   width: 150px;
+   padding: 10px;
+   -webkit-border-radius: 5px;
+   -moz-border-radius: 5px;
+   border: 1px dashed #BBB; 
+   text-align: center;
+   background-color: #DDD;
+   cursor:pointer;
+  }
+</style>
+    </style>
+  
+  </head>
+
+  <body>
+
+    <div class="topnavbar">
+        <div class="topnavbar-right">
+          <ul>
+            <li>
+              <p class="topnavbar-text"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Logged in as Admin</p>
+            </li>
+            <li>
+              <p class="topnavbar-text"><a href="../index.html">Log out</a></p>
+            </li>
+          </ul>
+        </div>
+    </div>
+
+  <div class="navmenu navmenu-default navmenu-fixed-left offcanvas">
+      <a class="navmenu-brand" href="#">Y-EX MBA</a>
+      <ul class="nav navmenu-nav">
+        <li class="active">Import ข้อมูล</li>
+        <li>จัดการวิชาเรียน</li>
+        <li><a href="../navmenu-reveal/">แสดงผลการเลือก</a></li>
+      </ul>
+      <ul class="nav navmenu-nav">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Advance<b class="caret"></b></a>
+          <ul class="dropdown-menu navmenu-nav">
+            <li><a href="#">จัดการสิทธิ์</a></li>
+            <li><a href="#">แก้ไขข้อมูลใน Database</a></li>
+            <li class="divider"></li>
+            <li class="dropdown-header">Nav header</li>
+            <li><a href="#">Separated link</a></li>
+            <li><a href="#">One more separated link</a></li>
+          </ul>
+        </li>
+      </ul>
+      <ul class="nav navmenu-nav">
+        <li><a href="#"><font color="red">ออกจากระบบ</font></a></li>
+      </uL>
+    </div>
+
+    <div class="navbar navbar-default navbar-fixed-top">
+      <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target=".navmenu" data-canvas="body">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+
+
+    <div class="container">
+
+      <ol class="breadcrumb">
+        <li><a href="admin_dashboard.html">Home</a></li>
+        <li class="active">ระบบ Import ข้อมูลนิสิต</li>
+      </ol>
+
+      <div class="starter-template">
+        <h1>ระบบ Import ข้อมูลนิสิต</h1>
+        <p>
+          ระบบนำข้อมูลจาก template (.csv) เข้าสู่ระบบ โดยข้อมูลนี้จะเป็นข้อมูลที่ใช้แสดงให้กับนิสิตในการลงทะเบียนของแต่ละเทอม/ปีการศึกษา
+        </p>
+      </div>
+
+      <hr>
+
+      <div class="alert alert-success" role="alert" id="import-success" style="display:none;"><b>SUCCESS</b> ทำการ Import ข้อมูลนิสิตรุ่น 20/1 เรียบร้อยแล้ว</div>
+
+      <div style='background:#f6f6f6; width: 100%; border: 1px solid #c8c8c8; text-align: center; margin-bottom:5px'>
+        <div style='padding:10px;'>
+          <div style='padding: 5px 5px 5px 5px; margin-right: 5px; display:inline-block;'>
+            <select id='studentClass' class="selectpicker" onchange='studentClassOnChange(this);'>
+              <option value="" selected disabled>รุ่นนักศึกษา</option>
+              <option>20/1</option>
+              <option>20/2</option>
+              <option>21/1</option>
+              <option>21/2</option>
+              <option>เพิ่มรุ่นนิสิต</option>
+            </select>
+          </div> 
+          <div style='padding: 5px 5px 5px 5px; margin-right: 5px; display:none;' id='import-input'>
+            <input type="text" class="form-control" placeholder="รุ่น">
+          </div>
+          <div style='padding: 5px 5px 5px 5px; display:none;' id='import-input-button'>
+            <input id='bt_query' type='button' class="btn btn-success" value='เลือก' />
+          </div>
+          <div style='clear:both'></div>
+        </div>
+      </div>
+
+      <div style='background:#ffffff; width: 100%; border: 1px solid #c8c8c8; text-align: center;'>
+        <div style='padding:10px;'>
+          <div class="alert alert-warning" role="alert" id="import-warning" style="display:none"><b>WARNING</b> มีข้อมูลนิสิตของรุ่น 20/1 อยู่แล้ว การ Import นี้จะทำการลบข้อมูลเดิมออกทั้งหมดแล้วแทนที่ด้วยข้อมูลใหม่</div>
+          
+            <div id="yourBtn" style="height: 50px; width: 200px;border: 1px dashed #BBB; cursor:pointer; display:inline-block" onclick="getFile()">Click to upload!</div>
+            <!-- this is your file input tag, so i hide it!-->
+            <div style='height: 0px;width:0px; overflow:hidden;'><input id="upfile" type="file" value="upload"/></div>
+            <!-- here you can have file submit button or you can write a simple script to upload the file automatically-->
+            <br>
+            <input type="submit" value='Import' onClick='importBtClicked();'>
+          
+        </div>
+      </div>
+      <hr>
+      <footer class="footer">
+        <div style='margin-bottom: 60px'>
+          We are the same <span style='color:#cb70d7; font-weight: bold;'>CHULA</span> so let talk together.
+        </div>
+      </footer>
+
+    </div><!-- /.container -->
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../scripts/js/jquery.min.js"></script>
+    <script src="../scripts/js/bootstrap.min.js"></script>
+    <script src="../scripts/js/jasny-bootstrap.min.js"></script>    
+    <script src="../scripts/js/bootstrap-select.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../scripts/js/ie10-viewport-bug-workaround.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('.selectpicker').selectpicker();
+
+        });
+
+        function getFile(){
+          document.getElementById("upfile").click();
+        };
+
+        function importBtClicked(){
+          document.getElementById('import-success').style.display = 'block';
+          document.getElementById('import-warning').style.display = 'none';
+        };
+
+        function studentClassOnChange(sel){
+          if (sel.value === 'เพิ่มรุ่นนิสิต'){
+            document.getElementById('import-input').style.display = 'inline-block';
+            document.getElementById('import-input-button').style.display = 'inline-block';
+            document.getElementById('import-warning').style.display = 'none';
+            document.getElementById('import-success').style.display = 'none';
+          }
+          else
+          {
+            document.getElementById('import-warning').style.display = 'block';
+            document.getElementById('import-success').style.display = 'none';
+          }
+        };
+
+    </script>
+  
+    </body>
+</html>
