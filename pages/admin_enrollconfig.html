@@ -158,7 +158,7 @@
          </div>
       <hr>
       
-      <div style='line-height: 26px; width: 900px;'>
+      <div id='step1Area' style='line-height: 26px; width: 900px;'>
             <table>
                 <tr>
                     <td><h4>วิชาเลือกทั้งหมด</h4></td>
@@ -189,10 +189,17 @@
             </table>
             
             <div style='margin-top: 20px;'>
-                <input id='bt_confirm' type='button' class="btn btn-primary" onClick='' value='Next' />
+                <input id='bt_next' type='button' class="btn btn-primary" onClick='toggleToSteps(2)' value='Next' />
             </div>
       </div>
-    
+        
+      <div id='step2Area' style='line-height: 26px; width: 900px;display:none;'>
+            <div style='margin-top: 20px;'>
+                <input id='bt_back' type='button' class="btn btn-primary" onClick='toggleToSteps(1)' value='Back' />
+                <input style='margin-left: 20px;' id='bt_submit' type='button' class="btn btn-success" onClick='' value='Submit' />
+            </div>
+      </div>
+      
       <hr>
       <footer class="footer">
           <div style='margin-bottom: 60px'>
@@ -240,21 +247,52 @@
                             $(this).sortable( 'cancel');
                         }
                     }
-                    //COUNT <LI> FOR MANAGE ADDTIONAL <UL> LANDING ITEMS
-                    var countSelectedItem = 0;
-                    $('#selectedZone').children().each(function(){
-                        if( $(this).children().length > 0 ){
-                            countSelectedItem++;
-                        }
-                    });
+                    var countSelectedItem = countSelectedItemText();
                     if( $('#selectedZone').children().length <= countSelectedItem ){
-                        alert('add si');
+                        var tmpUIElement =  document.createElement('ul');
+                        tmpUIElement.id = 'sortable' + (countSelectedItem+1) ;
+                        tmpUIElement.className = 'connectedSortable';
+                        tmpUIElement.style.padding = '0px';
+                        tmpUIElement.style.marginBottom = '0px';
+                        $('#selectedZone').append( tmpUIElement );
+                        //ACTIVATE FOR NEW ITEM ADDED
+                        $( '.connectedSortable' ).sortable({
+                            connectWith: ".connectedSortable"
+                        }).disableSelection();
                     }
-                    //
-                    $('#countSelected').text( '(' + countSelectedItem +')' );
+                },
+                receive: function(){
+                    countSelectedItemText();
                 }
             }).disableSelection();
         });
+        
+        //COUNT <LI> FOR MANAGE ADDTIONAL <UL> LANDING ITEMS
+        function countSelectedItemText(){
+            var countSelectedItem = 0;
+            $('#selectedZone').children().each(function(){
+                if( $(this).children().length > 0 ){
+                    countSelectedItem++;
+                }
+            });
+            //UPDATE NUMBER OF SELECTION
+            $('#countSelected').text( '(' + countSelectedItem +')' );
+            return countSelectedItem;
+        }
+
+        function toggleToSteps( value ){
+            if( value === 1 ){
+                $('#step1Area').fadeIn(300);
+                $('#step2Area').fadeOut(300);
+            }else if( value === 2 ){
+                if( countSelectedItemText() === 0 ){
+                    alert( 'Please select subjects first.' );
+                    return;
+                }
+                $('#step1Area').fadeOut(300);
+                $('#step2Area').fadeIn(300);
+            }
+        }
     </script>
   
     </body>
