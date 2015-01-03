@@ -77,6 +77,11 @@
             line-height: 60px; 
             min-width: 900px;
         }
+        
+        #step2Area div.btn-group.bootstrap-select{
+            width: 133px;
+        }
+        
     </style>
     
   </head>
@@ -303,7 +308,7 @@
                 $('#step2Area').children().first().empty();
                 //
                 $('#step1Area').fadeIn(300);
-                $('#step2Area').fadeOut(300);
+                $('#step2Area').fadeOut(10);
             }
             else if( value === 2 ){
                 if( countSelectedItemText() === 0 ){
@@ -322,7 +327,7 @@
                         var itemDivTextSubject = document.createElement('div');
                         itemDivTextSubject.id = 'item' + index + '_subject';
                         itemDivTextSubject.style.display = 'inline-block';
-                        itemDivTextSubject.style.marginRight = '20px';
+                        itemDivTextSubject.style.marginRight = '10px';
                         itemDivTextSubject.style.width = '200px';
                         itemDivTextSubject.style.textAlign = 'right';
                         itemDivTextSubject.style.verticalAlign = 'middle';
@@ -364,6 +369,20 @@
                         itemDivTeacherInput.setAttribute('type', 'text');
                         itemDivTeacherInput.setAttribute('placeholder', 'ชื่ออาจารย์ผู้สอน');
                         itemDivTeacher.appendChild( itemDivTeacherInput );
+                        //TEXT NUMBER SUPPORT
+                        var itemDivNumberSupport = document.createElement('div');
+                        itemDivNumberSupport.style.display = 'inline-block';
+                        itemDivNumberSupport.style.marginRight = '10px';
+                        itemDivNumberSupport.style.width = '70px';
+                        itemDiv.appendChild( itemDivNumberSupport );
+                        //
+                        var itemDivNumberSupportInput = document.createElement('input');
+                        itemDivNumberSupportInput.className = 'form-control';
+                        itemDivNumberSupportInput.id = 'item' + index + '_numberSupport';
+                        itemDivNumberSupportInput.style.paddingTop = '4px';
+                        itemDivNumberSupportInput.setAttribute('type', 'text');
+                        itemDivNumberSupportInput.setAttribute('placeholder', 'จำนวน');
+                        itemDivNumberSupport.appendChild( itemDivNumberSupportInput );
                         //DDL METHOD
                         var itemDivMethod = document.createElement('div');
                         itemDivMethod.style.display = 'inline-block';
@@ -404,9 +423,10 @@
                 var idTextSubject = '#item' + index + '_subject';
                 var idDate = '#item' + index + '_date';
                 var idTeacher = '#item' + index + '_teacher';
+                var idNumSupport = '#item' + index + '_numberSupport';
                 var idMethod = '#item' + index + '_method';
                 
-                result += $(idTextSubject).text() + ',' + $(idDate).val() + ',' + $(idTeacher).val() + ',' + $(idMethod).val() + '\n';
+                result += $(idTextSubject).text() + ',' + $(idDate).val() + ',' + $(idTeacher).val() + ',' + $(idNumSupport).val() + ',' + $(idMethod).val() + '\n';
             });
             alert( result);
         }
