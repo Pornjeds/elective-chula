@@ -21,7 +21,6 @@
     
     <style>
         #sortableMain {
-            width: 125px;
             list-style-type: none;
             text-align: center;
             background: #ddd;
@@ -38,9 +37,8 @@
         }
         
         ul[id*='sortable']:not(#sortableMain) {
-            width: 125px;
-            min-height: 26px;
-            height: 26px;
+            width: 200px;
+            min-height: 35px;
             list-style-type: none;
             margin-top: 2px;
             background: #ddd;
@@ -54,10 +52,11 @@
             background-color: #dff0d8;
             border: 1px solid #d6e9c6;
             color: #000;
-            width: 120px;
+            width: 200px;
             margin-left: 3px;
-            
+            padding: 5px;
             color: green;
+            word-wrap: break-word;
         }
         
         li:hover{
@@ -73,9 +72,8 @@
             background: #f6f6f6; 
             width: 100%; 
             border: 1px solid #c8c8c8;
-            height: 60px; 
-            line-height: 60px; 
             min-width: 900px;
+            margin-bottom: 5px;
         }
         
         #step2Area div.btn-group.bootstrap-select{
@@ -172,8 +170,8 @@
          </div>
       <hr>
       
-      <div id='step1Area' style='line-height: 26px; width: 900px; display: none;'>
-            <table>
+      <div id='step1Area' style='line-height: 26px; min-width: 600px; display: none; text-align: center;'>
+            <table style='margin-left: auto; margin-right: auto;'>
                 <tr>
                     <td><h4>วิชาเลือกทั้งหมด</h4></td>
                     <td style='width: 40px;'></td>
@@ -196,8 +194,11 @@
             </div>
       </div>
         
-      <div id='step2Area' style='line-height: 26px; display:none;'>
+      <div id='step2Area' style='line-height: 26px; display:none; text-align: center;'>
             <div></div>
+            <div style='display: inline-block; background: #efefef; color: #666; margin-top: 20px;'>
+                        - หากเราใส่ค่าในช่อง '#สูงสุด' หรือ '#ขั้นต่ำ' จะถูกนำมาใช้เป็นเงื่อนไขในการเปิดสอนรายวิชา
+            </div>
             <div style='margin-top: 20px;'>
                 <input  type='button' class="btn btn-primary" onClick='toggleToSteps(1)' value='Back' />
                 <input style='margin-left: 20px;' type='button' class="btn btn-success" onClick='onSubmitSubject();' value='Submit' />
@@ -229,47 +230,6 @@
         $(document).ready(function () {
             //ACTIVATE DDL
             $('.selectpicker').selectpicker();
-
-            //ADD <UL> LANDING ITEMS
-            var selectedZoneElement = document.getElementById('selectedZone');
-            var initialNum = 5;
-            for( var i=0; i< initialNum; i++){
-                var tmpUIElement =  document.createElement('ul');
-                tmpUIElement.id = 'sortable' + i;
-                tmpUIElement.className = 'connectedSortable';
-                tmpUIElement.style.padding = '0px';
-                tmpUIElement.style.marginBottom = '0px';
-                selectedZoneElement.appendChild( tmpUIElement );
-            }
-            
-            //BIND DRAG/SORABLE EVENT
-            $( '.connectedSortable' ).sortable({
-                connectWith: ".connectedSortable",
-                stop: function( event, ui) {
-                    var sortableElements = $('.connectedSortable');
-                    for(var i=0; i< sortableElements.length; i++){
-                        if( sortableElements[ i ].id !== 'sortableMain' && sortableElements[ i ].children.length > 1 ){
-                            $(this).sortable( 'cancel');
-                        }
-                    }
-                    var countSelectedItem = countSelectedItemText();
-                    if( $('#selectedZone').children().length <= countSelectedItem ){
-                        var tmpUIElement =  document.createElement('ul');
-                        tmpUIElement.id = 'sortable' + (countSelectedItem+1) ;
-                        tmpUIElement.className = 'connectedSortable';
-                        tmpUIElement.style.padding = '0px';
-                        tmpUIElement.style.marginBottom = '0px';
-                        $('#selectedZone').append( tmpUIElement );
-                        //ACTIVATE FOR NEW ITEM ADDED
-                        $( '.connectedSortable' ).sortable({
-                            connectWith: ".connectedSortable"
-                        }).disableSelection();
-                    }
-                },
-                receive: function(){
-                    countSelectedItemText();
-                }
-            }).disableSelection();
         });
         //
         //WHEN SELECT CLASS FROM CRITERIA
@@ -279,12 +239,55 @@
             }
             else{
                 $('#sortableMain').empty();
-                var mocTotalSubject = ['วิชา A', 'วิชา B', 'วิชา C', 'วิชา D', 'วิชา E', 'วิชา F', 'วิชา G', 'วิชา H', 'วิชา I', 'วิชา J', 'วิชา K' ]
+                $('#selectedZone').empty();
+                var mocTotalSubject = ['INTER FINANCIAL', 'ENTREPRENEUR', 'ORGANIZATION BEHAVIOUR', 'OPERATION MANAGEMENT', 'MARKETING MANAGEMENT', 'FINANCIAL MANAGEMENT', 'FOUNDAMENTAL ACCOUNTING', 'DECISION MAKING', 'ECON BUS MANAGEMENT', 'MANAGEMENT ACCOUNT', 'STAT BUS ADMIN' ]
                 for(var i =0; i < mocTotalSubject.length; i++){
                     var tmpLiElement = document.createElement('li');
                     tmpLiElement.innerHTML = mocTotalSubject[ i ];
                     $('#sortableMain').append( tmpLiElement );
                 }
+                //
+                //ADD <UL> LANDING ITEMS
+                var selectedZoneElement = document.getElementById('selectedZone');
+                var initialNum = 5;
+                for( var i=0; i< initialNum; i++){
+                    var tmpUIElement =  document.createElement('ul');
+                    tmpUIElement.id = 'sortable' + i;
+                    tmpUIElement.className = 'connectedSortable';
+                    tmpUIElement.style.padding = '0px';
+                    tmpUIElement.style.marginBottom = '0px';
+                    selectedZoneElement.appendChild( tmpUIElement );
+                }
+                
+                //BIND DRAG/SORABLE EVENT
+                $( '.connectedSortable' ).sortable({
+                    connectWith: ".connectedSortable",
+                    stop: function( event, ui) {
+                        var sortableElements = $('.connectedSortable');
+                        for(var i=0; i< sortableElements.length; i++){
+                            if( sortableElements[ i ].id !== 'sortableMain' && sortableElements[ i ].children.length > 1 ){
+                                $(this).sortable( 'cancel');
+                            }
+                        }
+                        var countSelectedItem = countSelectedItemText();
+                        if( $('#selectedZone').children().length <= countSelectedItem ){
+                            var tmpUIElement =  document.createElement('ul');
+                            tmpUIElement.id = 'sortable' + (countSelectedItem+1) ;
+                            tmpUIElement.className = 'connectedSortable';
+                            tmpUIElement.style.padding = '0px';
+                            tmpUIElement.style.marginBottom = '0px';
+                            $('#selectedZone').append( tmpUIElement );
+                            //ACTIVATE FOR NEW ITEM ADDED
+                            $( '.connectedSortable' ).sortable({
+                                connectWith: ".connectedSortable"
+                            }).disableSelection();
+                        }
+                    },
+                    receive: function(){
+                        countSelectedItemText();
+                    }
+                }).disableSelection();
+                //
                 $('#step1Area').fadeIn(300);
             }
         }
@@ -329,7 +332,7 @@
                         itemDivTextSubject.style.display = 'inline-block';
                         itemDivTextSubject.style.marginRight = '10px';
                         itemDivTextSubject.style.width = '200px';
-                        itemDivTextSubject.style.textAlign = 'right';
+                        itemDivTextSubject.style.wordWrap = 'break-word';
                         itemDivTextSubject.style.verticalAlign = 'middle';
                         itemDivTextSubject.innerHTML = $(this).children().text();
                         itemDiv.appendChild( itemDivTextSubject )
@@ -381,8 +384,22 @@
                         itemDivNumberSupportInput.id = 'item' + index + '_numberSupport';
                         itemDivNumberSupportInput.style.paddingTop = '4px';
                         itemDivNumberSupportInput.setAttribute('type', 'text');
-                        itemDivNumberSupportInput.setAttribute('placeholder', 'จำนวน');
+                        itemDivNumberSupportInput.setAttribute('placeholder', '#สูงสุด');
                         itemDivNumberSupport.appendChild( itemDivNumberSupportInput );
+                        //TEXT MINIMUM NUMBER TO OPEN
+                        var itemDivMinNumber = document.createElement('div');
+                        itemDivMinNumber.style.display = 'inline-block';
+                        itemDivMinNumber.style.margin = '5px 10px 5px 0px';
+                        itemDivMinNumber.style.width = '70px';
+                        itemDiv.appendChild( itemDivMinNumber );
+                        //
+                        var itemDivMinNumberInput = document.createElement('input');
+                        itemDivMinNumberInput.className = 'form-control';
+                        itemDivMinNumberInput.id = 'item' + index + '_minNumber';
+                        itemDivMinNumberInput.style.paddingTop = '4px';
+                        itemDivMinNumberInput.setAttribute('type', 'text');
+                        itemDivMinNumberInput.setAttribute('placeholder', '#ขั้นต่ำ');
+                        itemDivMinNumber.appendChild( itemDivMinNumberInput );
                         //DDL METHOD
                         var itemDivMethod = document.createElement('div');
                         itemDivMethod.style.display = 'inline-block';
@@ -424,9 +441,10 @@
                 var idDate = '#item' + index + '_date';
                 var idTeacher = '#item' + index + '_teacher';
                 var idNumSupport = '#item' + index + '_numberSupport';
+                var idNumMin = '#item' + index + '_minNumber';
                 var idMethod = '#item' + index + '_method';
                 
-                result += $(idTextSubject).text() + ',' + $(idDate).val() + ',' + $(idTeacher).val() + ',' + $(idNumSupport).val() + ',' + $(idMethod).val() + '\n';
+                result += $(idTextSubject).text() + ',' + $(idDate).val() + ',' + $(idTeacher).val() + ',' + $(idNumSupport).val() + ',' + $(idNumMin).val() + ',' + $(idMethod).val() + '\n';
             });
             alert( result);
         }
