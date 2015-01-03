@@ -68,6 +68,15 @@
             vertical-align: top;
             text-align: center;
         }
+        
+        .step2div{
+            background: #f6f6f6; 
+            width: 100%; 
+            border: 1px solid #c8c8c8;
+            height: 60px; 
+            line-height: 60px; 
+            min-width: 900px;
+        }
     </style>
     
   </head>
@@ -137,7 +146,7 @@
       <div style='background:#f6f6f6; width: 100%; border: 1px solid #c8c8c8; text-align: center;'>
             <div style='padding:10px;'>
                 <div style='padding: 5px 5px 5px 5px; margin-right: 5px; display: inline-block;'>
-                    <select id='studentClass' class="selectpicker">
+                    <select id='studentYear' class="selectpicker">
                         <option value="" selected disabled>รุ่นนักศึกษา</option>
                         <option>20/1</option>
                         <option>20/2</option>
@@ -146,19 +155,19 @@
                     </select>
                 </div> 
                 <div style='padding: 5px 5px 5px 5px; margin-right: 5px; display: inline-block;'>
-                    <select id='studentClass' class="selectpicker">
+                    <select id='studentSemester' class="selectpicker">
                         <option value="" selected disabled>เทอม</option>
                         <option>4</option>
                         <option>5</option>
                         <option>6</option>
                     </select>
                 </div> 
-                <input style='margin-left: 8px;' type='button' class="btn btn-success" onClick=';' value='Update' />
+                <input style='margin-left: 8px;' type='button' class="btn btn-success" onClick='queryFromCriteria();' value='Update' />
             </div>
          </div>
       <hr>
       
-      <div id='step1Area' style='line-height: 26px; width: 900px;'>
+      <div id='step1Area' style='line-height: 26px; width: 900px; display: none;'>
             <table>
                 <tr>
                     <td><h4>วิชาเลือกทั้งหมด</h4></td>
@@ -168,17 +177,6 @@
                 <tr>
                     <td>
                         <ul id="sortableMain" class="connectedSortable">
-                            <li>วิชา A</li>
-                            <li>วิชา B</li>
-                            <li>วิชา C</li>
-                            <li>วิชา D</li>
-                            <li>วิชา E</li>
-                            <li>วิชา F</li>
-                            <li>วิชา G</li>
-                            <li>วิชา H</li>
-                            <li>วิชา I</li>
-                            <li>วิชา J</li>
-                            <li>วิชา K</li>
                         </ul>
                     </td>
                     <td></td>
@@ -189,14 +187,15 @@
             </table>
             
             <div style='margin-top: 20px;'>
-                <input id='bt_next' type='button' class="btn btn-primary" onClick='toggleToSteps(2)' value='Next' />
+                <input type='button' class="btn btn-primary" onClick='toggleToSteps(2)' value='Next' />
             </div>
       </div>
         
-      <div id='step2Area' style='line-height: 26px; width: 900px;display:none;'>
+      <div id='step2Area' style='line-height: 26px; display:none;'>
+            <div></div>
             <div style='margin-top: 20px;'>
-                <input id='bt_back' type='button' class="btn btn-primary" onClick='toggleToSteps(1)' value='Back' />
-                <input style='margin-left: 20px;' id='bt_submit' type='button' class="btn btn-success" onClick='' value='Submit' />
+                <input  type='button' class="btn btn-primary" onClick='toggleToSteps(1)' value='Back' />
+                <input style='margin-left: 20px;' type='button' class="btn btn-success" onClick='onSubmitSubject();' value='Submit' />
             </div>
       </div>
       
@@ -223,8 +222,9 @@
 
     <script>
         $(document).ready(function () {
+            //ACTIVATE DDL
             $('.selectpicker').selectpicker();
-            
+
             //ADD <UL> LANDING ITEMS
             var selectedZoneElement = document.getElementById('selectedZone');
             var initialNum = 5;
@@ -266,7 +266,23 @@
                 }
             }).disableSelection();
         });
-        
+        //
+        //WHEN SELECT CLASS FROM CRITERIA
+        function queryFromCriteria(){
+            if( $('#studentYear').val() === null || $('#studentSemester').val() === null ){
+                alert('Please select criteria first');
+            }
+            else{
+                $('#sortableMain').empty();
+                var mocTotalSubject = ['วิชา A', 'วิชา B', 'วิชา C', 'วิชา D', 'วิชา E', 'วิชา F', 'วิชา G', 'วิชา H', 'วิชา I', 'วิชา J', 'วิชา K' ]
+                for(var i =0; i < mocTotalSubject.length; i++){
+                    var tmpLiElement = document.createElement('li');
+                    tmpLiElement.innerHTML = mocTotalSubject[ i ];
+                    $('#sortableMain').append( tmpLiElement );
+                }
+                $('#step1Area').fadeIn(300);
+            }
+        }
         //COUNT <LI> FOR MANAGE ADDTIONAL <UL> LANDING ITEMS
         function countSelectedItemText(){
             var countSelectedItem = 0;
@@ -279,20 +295,122 @@
             $('#countSelected').text( '(' + countSelectedItem +')' );
             return countSelectedItem;
         }
-
+        
+        //SWITCHER BETWEEN 1/2
         function toggleToSteps( value ){
             if( value === 1 ){
+                //REMOVE CURRENT EXISTING ITEMS
+                $('#step2Area').children().first().empty();
+                //
                 $('#step1Area').fadeIn(300);
                 $('#step2Area').fadeOut(300);
-            }else if( value === 2 ){
+            }
+            else if( value === 2 ){
                 if( countSelectedItemText() === 0 ){
                     alert( 'Please select subjects first.' );
                     return;
                 }
-                $('#step1Area').fadeOut(300);
+                var index = 0;
+                //GENERATE ITEMS FOLLOW STEP-1
+                $('#selectedZone').children().each(function(){
+                    if( $(this).children().length > 0 ){
+                        var itemDiv = document.createElement('div');
+                        itemDiv.id = 'item' + index;
+                        itemDiv.className = 'step2div';
+                        $('#step2Area').children().first().append( itemDiv );
+                        //TEXT SUBJECT
+                        var itemDivTextSubject = document.createElement('div');
+                        itemDivTextSubject.id = 'item' + index + '_subject';
+                        itemDivTextSubject.style.display = 'inline-block';
+                        itemDivTextSubject.style.marginRight = '20px';
+                        itemDivTextSubject.style.width = '200px';
+                        itemDivTextSubject.style.textAlign = 'right';
+                        itemDivTextSubject.style.verticalAlign = 'middle';
+                        itemDivTextSubject.innerHTML = $(this).children().text();
+                        itemDiv.appendChild( itemDivTextSubject )
+                        //DDL DATE
+                        var itemDivSubject = document.createElement('div');
+                        itemDivSubject.style.display = 'inline-block';
+                        itemDiv.appendChild( itemDivSubject );
+                        var itemDivSubjectSelect = document.createElement('select');
+                        itemDivSubjectSelect.className = 'selectpicker';
+                        itemDivSubjectSelect.id = 'item' + index + '_date';
+                        itemDivSubject.appendChild( itemDivSubjectSelect );
+                        //
+                        var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                        var tmpPlaceHolder = document.createElement('option');
+                        tmpPlaceHolder.setAttribute('value', 'N/A');
+                        tmpPlaceHolder.setAttribute('selected','true');
+                        tmpPlaceHolder.setAttribute('disabled','true');
+                        tmpPlaceHolder.innerHTML = 'วันที่สอน';
+                        itemDivSubjectSelect.appendChild( tmpPlaceHolder );
+                        for(var i=0; i < days.length; i++){
+                            var tmpOption = document.createElement('option');
+                            tmpOption.setAttribute('value', i );
+                            tmpOption.innerHTML = days[i];
+                            itemDivSubjectSelect.appendChild( tmpOption );
+                        }
+                        //TEXT TEACHER
+                        var itemDivTeacher = document.createElement('div');
+                        itemDivTeacher.style.display = 'inline-block';
+                        itemDivTeacher.style.marginRight = '10px';
+                        itemDivTeacher.style.marginLeft = '20px';
+                        itemDiv.appendChild( itemDivTeacher );
+                        //
+                        var itemDivTeacherInput = document.createElement('input');
+                        itemDivTeacherInput.className = 'form-control';
+                        itemDivTeacherInput.id = 'item' + index + '_teacher';
+                        itemDivTeacherInput.style.paddingTop = '4px';
+                        itemDivTeacherInput.setAttribute('type', 'text');
+                        itemDivTeacherInput.setAttribute('placeholder', 'ชื่ออาจารย์ผู้สอน');
+                        itemDivTeacher.appendChild( itemDivTeacherInput );
+                        //DDL METHOD
+                        var itemDivMethod = document.createElement('div');
+                        itemDivMethod.style.display = 'inline-block';
+                        itemDiv.appendChild( itemDivMethod );
+                        var itemDivMethodSelect = document.createElement('select');
+                        itemDivMethodSelect.className = 'selectpicker';
+                        itemDivMethodSelect.id = 'item' + index + '_method';
+                        itemDivMethod.appendChild( itemDivMethodSelect );
+                        //
+                        var methods = ['First Come First Serve', 'Sorting by GPA', 'Random out by rank'];
+                        var tmpPlaceHolderMethod = document.createElement('option');
+                        tmpPlaceHolderMethod.setAttribute('value', 'N/A');
+                        tmpPlaceHolderMethod.setAttribute('selected','true');
+                        tmpPlaceHolderMethod.setAttribute('disabled','true');
+                        tmpPlaceHolderMethod.innerHTML = 'วิธีที่ใช้ตัดสินกรณีไม่ลงตัว';
+                        itemDivMethodSelect.appendChild( tmpPlaceHolderMethod );
+                        for(var i=0; i < methods.length; i++){
+                            var tmpOptionMethod = document.createElement('option');
+                            tmpOptionMethod.setAttribute('value', i );
+                            tmpOptionMethod.innerHTML = methods[i];
+                            itemDivMethodSelect.appendChild( tmpOptionMethod );
+                        }
+                        //
+                        index++;
+                    }
+                });
+                $('.selectpicker').selectpicker();
+                //
+                $('#step1Area').fadeOut(10);
                 $('#step2Area').fadeIn(300);
             }
         }
+    
+        //WHEN SUBMIT
+        function onSubmitSubject(){
+            var result = '';
+            $('#step2Area').children().first().children().each( function(index){
+                var idTextSubject = '#item' + index + '_subject';
+                var idDate = '#item' + index + '_date';
+                var idTeacher = '#item' + index + '_teacher';
+                var idMethod = '#item' + index + '_method';
+                
+                result += $(idTextSubject).text() + ',' + $(idDate).val() + ',' + $(idTeacher).val() + ',' + $(idMethod).val() + '\n';
+            });
+            alert( result);
+        }
+        
     </script>
   
     </body>
