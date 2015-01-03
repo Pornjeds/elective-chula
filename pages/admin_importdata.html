@@ -17,6 +17,23 @@
 
     <!-- Custom styles for this template -->
     <link href="../scripts/css/admin_template.css" rel="stylesheet">
+    <style>
+      <style>
+#yourBtn{
+   position: relative;
+       top: 150px;
+   font-family: calibri;
+   width: 150px;
+   padding: 10px;
+   -webkit-border-radius: 5px;
+   -moz-border-radius: 5px;
+   border: 1px dashed #BBB; 
+   text-align: center;
+   background-color: #DDD;
+   cursor:pointer;
+  }
+</style>
+    </style>
   
   </head>
 
@@ -85,128 +102,55 @@
 
       <hr>
 
-      <div class="row">
-        <div class="col-md-4">
-          <div class="panel panel-primary">
-            <div class="panel-heading">
-              <h3 class="panel-title">1. รุ่น</h3>
-            </div>
-            <div class="panel-body">
-              <select id='studentClass' class="selectpicker">
-                <option value="" selected disabled>รุ่นนักศึกษา</option>
-                <option>20/1</option>
-                <option>20/2</option>
-                <option>21/1</option>
-                <option>21/2</option>
-              </select> 
-              <a class="btn btn-primary" href="#" role="button"  data-toggle="modal" data-target=".bs-example-modal-lg">เพิ่ม</a>
-              <a href="#">แก้ไข</a>
-            </div>
+      <div class="alert alert-success" role="alert" id="import-success" style="display:none;"><b>SUCCESS</b> ทำการ Import ข้อมูลวิชาเรียนของนิสิตรุ่น 20/1 เทอม 5 เรียบร้อยแล้ว</div>
+
+      <div style='background:#f6f6f6; width: 100%; border: 1px solid #c8c8c8; text-align: center; margin-bottom:5px'>
+        <div style='padding:10px;'>
+          <div style='padding: 5px 5px 5px 5px; margin-right: 5px; display:inline-block;'>
+            <select id='studentClass' class="selectpicker">
+              <option value="" selected disabled>รุ่นนักศึกษา</option>
+              <option>20/1</option>
+              <option>20/2</option>
+              <option>21/1</option>
+              <option>21/2</option>
+            </select>
+          </div> 
+          <div style='padding: 5px 5px 5px 5px; margin-right: 5px; display:inline-block;'>
+            <select id='studentSemester' class="selectpicker">
+              <option value="" selected disabled>เทอม</option>
+              <option>4</option>
+              <option>5</option>
+              <option>6</option>
+            </select>
+          </div> 
+          <div style='padding: 5px 5px 5px 5px; display:inline-block;'>
+            <input id='bt_query' type='button' class="btn btn-success" onClick='generateReport();' value='เลือก' />
           </div>
-        </div>
-        <div class="col-md-4">
-          <div class="panel panel-info">
-            <div class="panel-heading">
-              <h3 class="panel-title">2. เทอม</h3>
-            </div>
-            <div class="panel-body">
-              <select id='studentClass' class="selectpicker">
-                <option value="" selected disabled>เทอม</option>
-                <option>4</option>
-                <option>5</option>
-              </select> 
-              <a class="btn btn-primary" href="#" role="button"  data-toggle="modal" data-target=".bs-classterm-modal-lg">เพิ่ม</a>
-              <a href="#">แก้ไข</a>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="panel panel-info">
-            <div class="panel-heading">
-              <h3 class="panel-title">3. วิชา</h3>
-            </div>
-            <div class="panel-body">
-              <a class="btn btn-primary" href="#" role="button">IMPORT วิชาเรียน</a>
-            </div>
-          </div>
+          <div style='clear:both'></div>
         </div>
       </div>
 
+      <div style='background:#ffffff; width: 100%; border: 1px solid #c8c8c8; text-align: center;'>
+        <div style='padding:10px;'>
+          <div class="alert alert-warning" role="alert" id="import-warning" style="display:none"><b>WARNING</b> นิสิตรุ่น 20/1 เทอม 4 มีข้อมูลวิชาเรียนอยู่แล้ว ท่านต้องการจะ Import ซ้ำใช่หรือไม่</div>
+          
+            <div id="yourBtn" style="height: 50px; width: 200px;border: 1px dashed #BBB; cursor:pointer; display:inline-block" onclick="getFile()">Click to upload!</div>
+            <!-- this is your file input tag, so i hide it!-->
+            <div style='height: 0px;width:0px; overflow:hidden;'><input id="upfile" type="file" value="upload"/></div>
+            <!-- here you can have file submit button or you can write a simple script to upload the file automatically-->
+            <br>
+            <input type="submit" value='Import' onClick='importBtClicked();'>
+          
+        </div>
+      </div>
       <hr>
       <footer class="footer">
-          <div style='margin-bottom: 60px'>
-            We are the same <span style='color:#cb70d7; font-weight: bold;'>CHULA</span> so let talk together.
-          </div>
-        </footer>
+        <div style='margin-bottom: 60px'>
+          We are the same <span style='color:#cb70d7; font-weight: bold;'>CHULA</span> so let talk together.
+        </div>
+      </footer>
 
     </div><!-- /.container -->
-
-
-<<<<<<< HEAD
-    <!-- Modal -->
-    <!-- 1. เลือกรุ่น -->
-    <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content" style="padding: 15px">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="myModalLabel">1. เพิ่มรุ่น</h4>
-          </div>
-          <br>
-          <form class="form-inline">
-            <div class="form-group" style="margin-bottom: 15px">
-              <label for="recipient-name" class="control-label">1.1 รุ่น:</label>
-              <div class="input-group">
-                <input type="text" class="form-control" placeholder="รุ่น">
-                <div class="input-group-addon">ยังไม่มี</div>
-              </div>
-            </div>
-            <br>
-            <div class="form-group" style="margin-bottom: 15px">
-              <label for="recipient-name" class="control-label">1.2 Import สมาชิกในรุ่น:</label>
-              <div class="input-group">
-                <input type="file">
-              </div>
-            </div>
-            <p>
-              <button type="button" class="btn btn-primary btn-lg">เพิ่ม</button>
-            </p>
-          </form>
-          
-        </div>
-      </div>
-    </div>
-    <!-- /1. เลือกรุ่น -->
-
-    <!-- 2. เทอม -->
-    <div class="modal fade bs-classterm-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content" style="padding: 15px">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="myModalLabel">2. เทอม</h4>
-          </div>
-          <br>
-          <form class="form-inline">
-            <div class="form-group" style="margin-bottom: 15px">
-              <label for="recipient-name" class="control-label">2.1 เทอม:</label>
-              <div class="input-group">
-                <select id='studentClass' class="selectpicker">
-                  <option value="" selected disabled>เทอม</option>
-                  <option>6</option>
-              </select> 
-               <button type="button" class="btn btn-primary">เพิ่ม</button>
-              </div>
-            </div>
-              
-          </form>
-          
-        </div>
-      </div>
-    </div>
-    <!-- /1. เทอม -->
-
-    <!-- /Modal -->
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
@@ -226,13 +170,32 @@
         
         function generateReport(){
             var result1 = $('#studentClass').val();
-            var result2 = $('#studentSubject').val();
+            var result2 = $('#studentSemester').val();
             if( result1 === null || result2 === null ){
                 alert( 'Please select criteria first');
             }else{        
                 alert( result1 + ' , ' + result2 );
             }
+
+            if( result1 === '20/1' && result2 === '4')
+            {
+              document.getElementById('import-warning').style.display = 'block';
+            }
+            else
+            {
+              document.getElementById('import-warning').style.display = 'none';
+              document.getElementById('import-success').style.display = 'none';
+            }
         };
+
+        function getFile(){
+          document.getElementById("upfile").click();
+        };
+
+        function importBtClicked(){
+          document.getElementById('import-success').style.display = 'block';
+        };
+
     </script>
   
     </body>
