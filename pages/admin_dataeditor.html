@@ -91,6 +91,7 @@
                     <select id='templateList' class="selectpicker">
                         <option value="" selected disabled>Template list</option>
                         <option value='studentInformation'>ข้อมูลของนิสิต</option>
+                        <option value='subjectInformation'>ข้อมูลรายวิชา</option>
                     </select>
                 </div> 
                 <div style='padding: 5px 5px 5px 5px; margin-right: 5px; float:left; display: none;'>
@@ -143,7 +144,7 @@
         $(document).ready(function () {
             $('.selectpicker').selectpicker();
             $('#templateList').change(function(){
-                if( $(this).val() === 'studentInformation'){
+                if( $(this).val() === 'studentInformation' || $(this).val() === 'subjectInformation' ){
                     $('#studentClass').parent().css('display', '');
                     $('#bt_query').parent().css('display','');
                 }
@@ -161,14 +162,30 @@
                 //DISPLAY MOC-DATA
                 $('#criteriaSelection').parent().css('display','');
                 $('#criteriaSelection').text( result1 + ',' + result2);
-                var header = ["รหัสนิสิต", "ชื่อ-นามสกุล", "ที่ทำงาน" ,"สิทธิ์"];
-                var data = [
-                    ["47010675", "นายกี้ นามสมมุติ", "Reuters", "admin"],
-                    ["47010676", "นายเอี่ยว นามสมมุติ", "I am consultant", "user"],
-                    ["47010677", "นายเบียร์ นามสมมติ", "Reuters", "user"],
-                    ["47010678", "นายวบอย นามสมมติ","Reuters", "admin"],
-                    ["47010731", "นายลิง นามสมมติ", "SCG", "user"]
+                var headerStudentInformation = ["รหัสนิสิต", "ชื่อ-นามสกุล", "รุ่นนิสิต", "ที่ทำงาน" ,"สิทธิ์"];
+                var dataStudentInformation = [
+                    ["47010675", "นายกี้ นามสมมุติ", "20/2", "Reuters", "admin"],
+                    ["47010676", "นายเอี่ยว นามสมมุติ", "20/2", "I am consultant", "user"],
+                    ["47010677", "นายเบียร์ นามสมมติ", "20/2", "Reuters", "user"],
+                    ["47010678", "นายวบอย นามสมมติ", "20/2", "Reuters", "admin"],
+                    ["47010731", "นายลิง นามสมมติ", "20/2", "SCG", "user"]
                 ];
+                var headerSubjectInformation = ["ชื่อวิชา","วันที่เปิดสอน", "ชื่อผู้สอน", "จำนวนสูงสุดที่รับ", "จำนวนขั้นต่ำ","วิธีที่ใช้ตัดสินกรณีไม่ลงตัว", "รายละเอียด"]
+                var dataSubjectInformation = [
+                    ["MARKETING MANAGEMENT", "Mon", "อ.มาเก็ตติ้ง นามสมมติ", "40", "20", "Random out by rank", "สอนเกี่ยวกับการจัดการมาร์เก็ตติ้ง"],
+                    ["FINANCIAL MANAGEMENT", "Tue", "อ.ไฟแนนท์ นามสมมติ", "40", "20", "First Come First Serve","สอนเกี่ยวกับการจัดการเงิน"],
+                    ["OPERATION MANAGEMENT", "Wed", "อ.ไฟแนนท์ นามสมมติ", "40", "N/A", "N/A", "สอนเกี่ยวกับการจัดการกระบวนการ"],
+                    ["ECON BUS MANAGEMENT", "Wed", "อ.อีคอน นามสมมิติ", "N/A", "20", "N/A", "สอนเกี่ยวกับการจัดการเศรษฐศาสตร์"]
+                ];
+                var header, data;
+                if( result1 === 'studentInformation' ){
+                    header = headerStudentInformation;
+                    data = dataStudentInformation;
+                }
+                else if( result1 === 'subjectInformation' ){
+                    header = headerSubjectInformation;
+                    data = dataSubjectInformation;
+                }
                 
                 //DESTROY EXISTING
                 if( hot ){
