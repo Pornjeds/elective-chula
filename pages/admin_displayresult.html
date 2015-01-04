@@ -18,7 +18,19 @@
 
     <!-- Custom styles for this template -->
     <link href="../scripts/css/admin_template.css" rel="stylesheet">
-  
+    <style>
+      .display-selection-function {
+        display: none;
+        background:#f6f6f6; 
+        width: 100%; 
+        border: 1px solid #c8c8c8; 
+        text-align: center;
+      }
+
+      .display-table-result {
+        display: none;
+      }
+    </style>
   </head>
 
   <body>
@@ -104,7 +116,7 @@
                         <option>ทุกวิชา</option>
                         <option>MARKETING MANAGEMENT</option>
                         <option>FINANCIAL MANAGEMENT</option>
-                        <option>OPERATION MANAGMENT</option>
+                        <option>OPERATION MANAGEMENT</option>
                     </select>
                 </div> 
                 <div style='padding: 5px 5px 5px 5px; float: left;'>
@@ -115,411 +127,859 @@
          </div>
 
       <hr>
-      <h4>MARKETING MANAGEMENT <button type="button" class="btn btn-warning">Export data</button></h4>
+      <div class="display-selection-function" id="display-selection-function-marketing">
+        <h4>MARKETING MANAGEMENT</h4>
 
-      <p>
-        เวลาเรียน: 18:00 - 21:00 ทุกวันพฤหัส<br>
-        ตั้งแต่วันที่ 25 มีนาคม 2557 - 25 สิงหาคม 2557<br>
-      </p>
-      <table class="table table-hover">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>รหัสนิสิต</th>
-            <th>ชื่อ-นามสกุล</th>
-            <th>วันเวลาที่ลงทะเบียน</th>
-            <th>สถานะ</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="success">มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="danger">ไม่มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="danger">ไม่มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="danger">ไม่มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="danger">ไม่มีสิทธิ์</td>
-          </tr>
-          <tr class="active">
-            <td>1</td>
-            <td>47010675</td>
-            <td>นาย ทดสอบ ทดสอบ</td>
-            <td>2014-12-25 06:00:01 AM</td>
-            <td class="danger">ไม่มีสิทธิ์</td>
-          </tr>
+        <p>
+          เวลาเรียน: 18:00 - 21:00 ทุกวันพฤหัส<br>
+          ตั้งแต่วันที่ 25 มีนาคม 2557 - 25 สิงหาคม 2557<br>
+        </p>
+        <p>
+          <font color="#337ab7">
+          มีนิสิตลงทะเบียนทั้งหมด <b>40 คน</b> / รับได้ <b>35 คน</b><br>
+          กดที่ปุ่มด้านล่างเพื่อทำการเลือกนิสิตด้วยวิธี:<b> First come first serve</b><br>
+          </font>
+        </p>
+        <p>
+          <button type="button" class="btn btn-primary" id="selection-marketing" onclick="submitRandom();">ทำการเลือกนิสิต</button>
+        </p>
+      </div>
+      <div class="display-selection-function" id="display-selection-function-financial" style="display:none">
+        <h4>FINANCIAL MANAGEMENT</h4>
 
-        </tbody>
-      </table>
+        <p>
+          เวลาเรียน: 18:00 - 21:00 ทุกวันพฤหัส<br>
+          ตั้งแต่วันที่ 25 มีนาคม 2557 - 25 สิงหาคม 2557<br>
+        </p>
+        <p>
+          <font color="#ff9900">
+          มีนิสิตลงทะเบียนทั้งหมด <b>10 คน</b> / ขั้นต่ำ <b>20 คน</b><br>
+          ยังไม่สามารถเปิดได้
+          </font>
+        </p>
+      </div>
+      <div class="display-table-result" id="display-table-result-marketing">
+        <h4>MARKETING MANAGEMENT <button type="button" class="btn btn-warning">Export data</button></h4>
+
+        <p>
+          เวลาเรียน: 18:00 - 21:00 ทุกวันพฤหัส<br>
+          ตั้งแต่วันที่ 25 มีนาคม 2557 - 25 สิงหาคม 2557<br>
+          <font color="#337ab7">
+          มีนิสิตลงทะเบียนทั้งหมด <b>40 คน</b> / รับได้ <b>35 คน</b><br>
+          ตารางข้างล่างแสดงรายชื่อนิสิตที่ได้รับการคัดเลือก<br>
+          </font>
+        </p>
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>รหัสนิสิต</th>
+              <th>ชื่อ-นามสกุล</th>
+              <th>วันเวลาที่ลงทะเบียน</th>
+              <th>สถานะ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="danger">ไม่มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="danger">ไม่มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="danger">ไม่มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="danger">ไม่มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="danger">ไม่มีสิทธิ์</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+      <div class="display-table-result" id="display-table-result-operational" style="display:none">
+        <h4>OPERATIONAL MANAGEMENT <button type="button" class="btn btn-warning">Export data</button></h4>
+
+        <p>
+          เวลาเรียน: 18:00 - 21:00 ทุกวันพฤหัส<br>
+          ตั้งแต่วันที่ 25 มีนาคม 2557 - 25 สิงหาคม 2557<br>
+          <font color="#337ab7">
+          มีนิสิตลงทะเบียนทั้งหมด <b>30 คน</b> / รับได้ <b>35 คน</b><br>
+          นิสิตทุกคนที่เลือกวิชานี้ได้รับการคัดเลือกให้เรียนวิชานี้<br>
+          </font>
+        </p>
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>รหัสนิสิต</th>
+              <th>ชื่อ-นามสกุล</th>
+              <th>วันเวลาที่ลงทะเบียน</th>
+              <th>สถานะ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="success">มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="danger">ไม่มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="danger">ไม่มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="danger">ไม่มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="danger">ไม่มีสิทธิ์</td>
+            </tr>
+            <tr class="active">
+              <td>1</td>
+              <td>47010675</td>
+              <td>นาย ทดสอบ ทดสอบ</td>
+              <td>2014-12-25 06:00:01 AM</td>
+              <td class="danger">ไม่มีสิทธิ์</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
 
       <hr>
       <footer class="footer">
@@ -551,10 +1011,35 @@
             var result1 = $('#studentClass').val();
             var result2 = $('#studentSubject').val();
             if( result1 === null || result2 === null ){
-                alert( 'Please select criteria first');
+                //alert( 'Please select criteria first');
             }else{        
-                alert( result1 + ' , ' + result2 );
+                //alert( result1 + ' , ' + result2 );
             }
+
+            if ( result2 === "MARKETING MANAGEMENT" ){
+              $('#display-selection-function-marketing').fadeIn(300);
+              $('#display-selection-function-financial').fadeOut(10);
+              $('#display-table-result-operational').fadeOut(10);
+              $('#display-table-result-marketing').fadeOut(10);
+            }else if (result2 === "FINANCIAL MANAGEMENT"){
+              $('#display-selection-function-marketing').fadeOut(10);
+              $('#display-selection-function-financial').fadeIn(300);
+              $('#display-table-result-operational').fadeOut(10);
+              $('#display-table-result-marketing').fadeOut(10);
+            }else if (result2 === "OPERATION MANAGEMENT"){
+              $('#display-selection-function-marketing').fadeOut(10);
+              $('#display-selection-function-financial').fadeOut(10);
+              $('#display-table-result-operational').fadeIn(300);
+              $('#display-table-result-marketing').fadeOut(10);
+            }
+
+        };
+
+        function submitRandom(){
+          $('#display-selection-function-marketing').fadeOut(10);
+          $('#display-selection-function-financial').fadeOut(10);
+          $('#display-table-result-operational').fadeOut(10);
+          $('#display-table-result-marketing').fadeIn(300);
         };
     </script>
   
