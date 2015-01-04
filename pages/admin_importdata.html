@@ -18,21 +18,18 @@
     <!-- Custom styles for this template -->
     <link href="../scripts/css/admin_template.css" rel="stylesheet">
     <style>
-      <style>
-#yourBtn{
-   position: relative;
-       top: 150px;
-   font-family: calibri;
-   width: 150px;
-   padding: 10px;
-   -webkit-border-radius: 5px;
-   -moz-border-radius: 5px;
-   border: 1px dashed #BBB; 
-   text-align: center;
-   background-color: #DDD;
-   cursor:pointer;
-  }
-</style>
+        #yourBtn{
+           width: 250px;
+           height: 40px;
+           display: inline-block;
+           padding: 10px;
+           -webkit-border-radius: 5px;
+           -moz-border-radius: 5px;
+           border: 1px dashed #BBB; 
+           text-align: center;
+           background-color: #DDD;
+           cursor:pointer;
+      }
     </style>
   
   </head>
@@ -131,7 +128,7 @@
         <div style='padding:10px;'>
           <div class="alert alert-warning" role="alert" id="import-warning" style="display:none"><b>WARNING</b> นิสิตรุ่น 20/1 เทอม 4 มีข้อมูลวิชาเรียนอยู่แล้ว ท่านต้องการจะ Import ซ้ำใช่หรือไม่</div>
           
-            <div id="yourBtn" style="height: 50px; width: 200px;border: 1px dashed #BBB; cursor:pointer; display:inline-block" onclick="getFile()">Click to upload!</div>
+            <div id="yourBtn" onclick="getFile()">Click to upload!</div>
             <!-- this is your file input tag, so i hide it!-->
             <div style='height: 0px;width:0px; overflow:hidden;'><input id="upfile" type="file" value="upload"/></div>
             <!-- here you can have file submit button or you can write a simple script to upload the file automatically-->
