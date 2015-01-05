@@ -93,7 +93,7 @@
       </div>
       <div style='background:#f6f6f6; width: 100%; border: 1px solid #c8c8c8; text-align: center;'>
             <div style='padding:10px;'>
-                <div style='padding: 5px 5px 5px 5px; margin-right: 5px; float:left;'>
+                <div style='padding: 5px 5px 5px 5px; margin-right: 5px; display: inline-block;'>
                     <select id='studentClass' class="selectpicker">
                         <option value="" selected disabled>รุ่นนิสิต</option>
                         <option>20/1</option>
@@ -102,7 +102,7 @@
                         <option>21/2</option>
                     </select>
                 </div> 
-                <div style='padding: 5px 5px 5px 5px; margin-right: 5px; float:left;'>
+                <div style='padding: 5px 5px 5px 5px; margin-right: 5px; display: inline-block;'>
                     <select id='studentClass' class="selectpicker">
                         <option value="" selected disabled>เทอม</option>
                         <option>4</option>
@@ -110,519 +110,114 @@
                         <option>6</option>
                     </select>
                 </div> 
-                <div style='padding: 5px 5px 5px 5px; margin-right:5px; float:left;'>
-                    <select id='studentSubject' class="selectpicker" >
-                        <option value="" selected disabled>วิชา</option>
-                        <option>ทุกวิชา</option>
-                        <option>MARKETING MANAGEMENT</option>
-                        <option>FINANCIAL MANAGEMENT</option>
-                        <option>OPERATION MANAGEMENT</option>
-                    </select>
-                </div> 
-                <div style='padding: 5px 5px 5px 5px; float: left;'>
-                    <input id='bt_query' type='button' class="btn btn-success" onClick='generateReport();' value='ค้นหา' />
+                <div style='padding: 5px 5px 5px 5px; display: inline-block;'>
+                    <input id='bt_query' type='button' class="btn btn-success" onClick='generateReport();' value='เลือก' />
                 </div>
                 <div style='clear:both'></div>
             </div>
-         </div>
+      </div>
 
       <hr>
-      <div class="display-selection-function" id="display-selection-function-marketing">
-        <h4>MARKETING MANAGEMENT</h4>
 
-        <p>
-          เวลาเรียน: 18:00 - 21:00 ทุกวันพฤหัส<br>
-          ตั้งแต่วันที่ 25 มีนาคม 2557 - 25 สิงหาคม 2557<br>
-        </p>
-        <p>
-          <font color="#337ab7">
-          มีนิสิตลงทะเบียนทั้งหมด <b>40 คน</b> / รับได้ <b>35 คน</b><br>
-          กดที่ปุ่มด้านล่างเพื่อทำการเลือกนิสิตด้วยวิธี:<b> First come first serve</b><br>
-          </font>
-        </p>
-        <p>
-          <button type="button" class="btn btn-primary" id="selection-marketing" onclick="submitRandom();">ทำการเลือกนิสิต</button>
-        </p>
-      </div>
-      <div class="display-selection-function" id="display-selection-function-financial" style="display:none">
-        <h4>FINANCIAL MANAGEMENT</h4>
-
-        <p>
-          เวลาเรียน: 18:00 - 21:00 ทุกวันพฤหัส<br>
-          ตั้งแต่วันที่ 25 มีนาคม 2557 - 25 สิงหาคม 2557<br>
-        </p>
-        <p>
-          <font color="#ff9900">
-          มีนิสิตลงทะเบียนทั้งหมด <b>10 คน</b> / ขั้นต่ำ <b>20 คน</b><br>
-          ยังไม่สามารถเปิดได้
-          </font>
-        </p>
-      </div>
-      <div class="display-table-result" id="display-table-result-marketing">
-        <h4>MARKETING MANAGEMENT <button type="button" class="btn btn-warning">Export data</button></h4>
-
-        <p>
-          เวลาเรียน: 18:00 - 21:00 ทุกวันพฤหัส<br>
-          ตั้งแต่วันที่ 25 มีนาคม 2557 - 25 สิงหาคม 2557<br>
-          <font color="#337ab7">
-          มีนิสิตลงทะเบียนทั้งหมด <b>40 คน</b> / รับได้ <b>35 คน</b><br>
-          ตารางข้างล่างแสดงรายชื่อนิสิตที่ได้รับการคัดเลือก<br>
-          </font>
-        </p>
-        <table class="table table-hover">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>รหัสนิสิต</th>
-              <th>ชื่อ-นามสกุล</th>
-              <th>วันเวลาที่ลงทะเบียน</th>
-              <th>สถานะ</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="danger">ไม่มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="danger">ไม่มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="danger">ไม่มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="danger">ไม่มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="danger">ไม่มีสิทธิ์</td>
-            </tr>
-
-          </tbody>
-        </table>
-      </div>
-      <div class="display-table-result" id="display-table-result-operational" style="display:none">
-        <h4>OPERATIONAL MANAGEMENT <button type="button" class="btn btn-warning">Export data</button></h4>
-
-        <p>
-          เวลาเรียน: 18:00 - 21:00 ทุกวันพฤหัส<br>
-          ตั้งแต่วันที่ 25 มีนาคม 2557 - 25 สิงหาคม 2557<br>
-          <font color="#337ab7">
-          มีนิสิตลงทะเบียนทั้งหมด <b>30 คน</b> / รับได้ <b>35 คน</b><br>
-          นิสิตทุกคนที่เลือกวิชานี้ได้รับการคัดเลือกให้เรียนวิชานี้<br>
-          </font>
-        </p>
-        <table class="table table-hover">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>รหัสนิสิต</th>
-              <th>ชื่อ-นามสกุล</th>
-              <th>วันเวลาที่ลงทะเบียน</th>
-              <th>สถานะ</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-            <tr class="active">
-              <td>1</td>
-              <td>47010675</td>
-              <td>นาย ทดสอบ ทดสอบ</td>
-              <td>2014-12-25 06:00:01 AM</td>
-              <td class="success">มีสิทธิ์</td>
-            </tr>
-          </tbody>
-        </table>
+      <div style='margin-top:10px;display:block' id="listallsubject-notdone">
+        <div class="alert alert-danger" role="alert">
+          มีในบางวิชามีนิสิตต้องการลงทะเบียนมากกว่าจำนวนที่สามารถรองรับได้ ต้องทำการตัดสินก่อนที่จะแสดงผลการคัดเลือกสู่นิสิต
+          <button type="button" class="btn btn-warning" onclick="submitRandom()">กดที่นี่เพื่อทำการคัดเลือก</button>
+        </div>
+          <table class="table table-hover table-bordered">
+            <thead>
+              <tr>
+                <th>วิชา</th>
+                <th>เวลาเรียน</th>
+                <th>จำนวนนิสิตที่ต้องการลงทะเบียน</th>
+                <th>จำนวนนิสิตที่สามารถรับได้</th>
+                <th>จำนวนนิสิตขั้นต่ำสำหรับการเปิดสอน</th>
+                <th>วิธีที่ใช้ตัดสินในกรณีที่ไม่ลงตัว</th>
+                <th>สถานะ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="active">
+                <td><a href='admin_displayresult_subject.html?subject=MARKETING_MANAGEMENT&test_status=NOSHOW'>MARKETING MANAGEMENT</a></td>
+                <td>18:00 - 21:00 ทุกวันพฤหัส</td>
+                <td>40</td>
+                <td>35</td>
+                <td>ไม่มี</td>
+                <td>First come First serve</td>
+                <td class="warning">ต้องทำการเลือก</td>
+              </tr>
+              <tr class="active">
+                <td><a href='admin_displayresult_subject.html?subject=FINANCIAL_MANAGEMENT&test_status=NOSHOW'>FINANCIAL MANAGEMENT</a></td>
+                <td>18:00 - 21:00 ทุกวันอังคาร</td>
+                <td>10</td>
+                <td>30</td>
+                <td>20</td>
+                <td>Random out by rank</td>         
+                <td class="danger">ไม่สามารถเปิดได้</td>
+              </tr>
+              <tr class="active">
+                <td><a href='admin_displayresult_subject.html?subject=OPERATION_MANAGEMENT&test_status=NOSHOW'>OPERATION MANAGEMENT</a></td>
+                <td>18:00 - 21:00 ทุกวันพฤหัส</td>
+                <td>30</td>
+                <td>35</td>
+                <td>ไม่มี</td>
+                <td>Sorting by GPA</td>
+                <td class="success">พร้อมยืนยัน</td>
+              </tr>
+            </table>
       </div>
 
+      <div style='margin-top:10px;display:none' id="listallsubject-done">
+        <div class="alert alert-success" role="alert" id="successRandom">
+          ระบบได้ทำการคัดเลือกนิสิตเรียบร้อยแล้ว Admin สามารถ click เข้าไปในแต่ละรายวิชาเพื่อตรวจสอบชื่อนิสิตหรือกดปุ่มเพื่อทำการส่งข้อมูลนี้ไปสู่นิสิต
+          <button type="button" class="btn btn-success" onclick="publishSubmit()" id="publishBtn">Publish ข้อมูลสู่นิสิต</button>
+        </div>
+        <div class="alert alert-success" role="alert" id="successPublish" style="display:none">
+          ข้อมูลวิชาเรียนและการลงทะเบียนได้ถูกนำส่งไปสู่นิสิตแล้ว
+        </div>
+          <table class="table table-hover table-bordered">
+            <thead>
+              <tr>
+                <th>วิชา</th>
+                <th>เวลาเรียน</th>
+                <th>จำนวนนิสิตที่ต้องการลงทะเบียน</th>
+                <th>จำนวนนิสิตที่สามารถรับได้</th>
+                <th>จำนวนนิสิตขั้นต่ำสำหรับการเปิดสอน</th>
+                <th>วิธีที่ใช้ตัดสินในกรณีที่ไม่ลงตัว</th>
+                <th>สถานะ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="active">
+                <td><a href='admin_displayresult_subject.html?subject=MARKETING_MANAGEMENT&test_status=SHOW'>MARKETING MANAGEMENT</a></td>
+                <td>18:00 - 21:00 ทุกวันพฤหัส</td>
+                <td>40</td>
+                <td>35</td>
+                <td>ไม่มี</td>
+                <td>First come First serve</td>
+                <td class="success">ยืนยัน</td>
+              </tr>
+              <tr class="active">
+                <td><a href='admin_displayresult_subject.html?subject=FINANCIAL_MANAGEMENT&test_status=SHOW'>FINANCIAL MANAGEMENT</a></td>
+                <td>18:00 - 21:00 ทุกวันอังคาร</td>
+                <td>10</td>
+                <td>30</td>
+                <td>20</td>
+                <td>Random out by rank</td>         
+                <td class="danger">ไม่สามารถเปิดได้</td>
+              </tr>
+              <tr class="active">
+                <td><a href='admin_displayresult_subject.html?subject=OPERATION_MANAGEMENT&test_status=SHOW'>OPERATION MANAGEMENT</a></td>
+                <td>18:00 - 21:00 ทุกวันพฤหัส</td>
+                <td>35</td>
+                <td>35</td>
+                <td>ไม่มี</td>
+                <td>Sorting by GPA</td>
+                <td class="success">ยืนยัน</td>
+              </tr>
+            </table>
+      </div>
+      
       <hr>
       <footer class="footer">
           <div style='margin-bottom: 60px'>
@@ -648,41 +243,16 @@
             $('.selectpicker').selectpicker();
 
         });
-        
-        function generateReport(){
-            var result1 = $('#studentClass').val();
-            var result2 = $('#studentSubject').val();
-            if( result1 === null || result2 === null ){
-                //alert( 'Please select criteria first');
-            }else{        
-                //alert( result1 + ' , ' + result2 );
-            }
-
-            if ( result2 === "MARKETING MANAGEMENT" ){
-              $('#display-selection-function-marketing').fadeIn(300);
-              $('#display-selection-function-financial').fadeOut(10);
-              $('#display-table-result-operational').fadeOut(10);
-              $('#display-table-result-marketing').fadeOut(10);
-            }else if (result2 === "FINANCIAL MANAGEMENT"){
-              $('#display-selection-function-marketing').fadeOut(10);
-              $('#display-selection-function-financial').fadeIn(300);
-              $('#display-table-result-operational').fadeOut(10);
-              $('#display-table-result-marketing').fadeOut(10);
-            }else if (result2 === "OPERATION MANAGEMENT"){
-              $('#display-selection-function-marketing').fadeOut(10);
-              $('#display-selection-function-financial').fadeOut(10);
-              $('#display-table-result-operational').fadeIn(300);
-              $('#display-table-result-marketing').fadeOut(10);
-            }
-
-        };
 
         function submitRandom(){
-          $('#display-selection-function-marketing').fadeOut(10);
-          $('#display-selection-function-financial').fadeOut(10);
-          $('#display-table-result-operational').fadeOut(10);
-          $('#display-table-result-marketing').fadeIn(300);
+          $('#listallsubject-notdone').fadeOut(10);
+          $('#listallsubject-done').fadeIn(300);
         };
+
+        function publishSubmit(){
+          $('#successRandom').fadeOut(10);
+          $('#successPublish').fadeIn(300);
+        }
     </script>
   
     </body>
