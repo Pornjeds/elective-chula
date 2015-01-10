@@ -197,7 +197,7 @@
         
       <div id='step2Area' style='line-height: 26px; display:none; text-align: center;'>
             <div></div>
-            <div style='display: inline-block; background: #efefef; color: #666; margin-top: 20px;'>
+            <div style='display: inline-block; background: #efefef; color: #666; margin-top: 10px;'>
                         - หากเราใส่ค่าในช่อง '#สูงสุด' หรือ '#ขั้นต่ำ' จะถูกนำมาใช้เป็นเงื่อนไขในการเปิดสอนรายวิชา
             </div>
             <div class="alert alert-info" role="alert" style='padding:10px; margin-top: 10px;' id='pickerAread'>
@@ -279,12 +279,27 @@
                 $( '.connectedSortable' ).sortable({
                     connectWith: ".connectedSortable",
                     stop: function( event, ui) {
+                        //SUPPORT SWAP
+                        var parentElement = event.toElement.parentElement;
+                        if( parentElement.childElementCount > 1 && parentElement.id !== 'sortableMain' ){
+                            for( var i=0; i< parentElement.childElementCount; i++ ){
+                                if( event.toElement.innerHTML !== parentElement.children[ i ].innerHTML ){
+                                    event.target.appendChild( parentElement.children[i] );
+                                    break;
+                                }
+                            }
+                        }
+                        
+                        
+                        /*
                         var sortableElements = $('.connectedSortable');
                         for(var i=0; i< sortableElements.length; i++){
                             if( sortableElements[ i ].id !== 'sortableMain' && sortableElements[ i ].children.length > 1 ){
                                 $(this).sortable( 'cancel');
                             }
                         }
+                        */
+                        
                         var countSelectedItem = countSelectedItemText();
                         if( $('#selectedZone').children().length <= countSelectedItem ){
                             var tmpUIElement =  document.createElement('ul');

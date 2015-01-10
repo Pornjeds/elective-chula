@@ -173,8 +173,7 @@
         <ul id="sortableRequired" class="connectedSortableR" style='display: inline-block; padding-left: 0px; margin-right: 10px;'></ul>
         <ul id="sortableElective" class="connectedSortableE" style='display: inline-block; margin-right: 10px;'></ul>
         <div style='display: inline-block; background: #efefef; display: inline-block; color: #666;'>
-            - Drag your number priority to subject that you wish.<br>
-            - Drag back to here first if you want to change between each subject.
+            - Drag your number priority to subject that you wish.
         </div>
         <div style='margin-top:20px;'>
             <input id='bt_confirm' type='button' class="btn btn-disable" onClick='sendConfirm(this)' value='Confirm' />
@@ -327,10 +326,14 @@
             $( '.connectedSortableE' ).sortable({
                 connectWith: ".connectedSortableE",
                 stop: function( event, ui) {
-                    var sortableElements = $('.connectedSortableE');
-                    for(var i=0; i< sortableElements.length; i++){
-                        if( sortableElements[ i ].id !== 'sortableElective' && sortableElements[ i ].children.length > 1 ){
-                            $(this).sortable( 'cancel');
+                    //SUPPORT SWAP
+                    var parentElement = event.toElement.parentElement;
+                    if( parentElement.childElementCount > 1 && parentElement.id !== 'sortableElective' ){
+                        for( var i=0; i< parentElement.childElementCount; i++ ){
+                            if( event.toElement.innerHTML !== parentElement.children[ i ].innerHTML ){
+                                event.target.appendChild( parentElement.children[i] );
+                                break;
+                            }
                         }
                     }
                     checkConfirmButtonReady();
@@ -430,10 +433,14 @@
             $( '.connectedSortableR' ).sortable({
                 connectWith: ".connectedSortableR",
                 stop: function( event, ui) {
-                    var sortableElements = $('.connectedSortableR');
-                    for(var i=0; i< sortableElements.length; i++){
-                        if( sortableElements[ i ].id !== 'sortableRequired' && sortableElements[ i ].children.length > 1 ){
-                            $(this).sortable( 'cancel');
+                    //SUPPORT SWAP
+                    var parentElement = event.toElement.parentElement;
+                    if( parentElement.childElementCount > 1 && parentElement.id !== 'sortableRequired' ){
+                        for( var i=0; i< parentElement.childElementCount; i++ ){
+                            if( event.toElement.innerHTML !== parentElement.children[ i ].innerHTML ){
+                                event.target.appendChild( parentElement.children[i] );
+                                break;
+                            }
                         }
                     }
                     checkConfirmButtonReady();
