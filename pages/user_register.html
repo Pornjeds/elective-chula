@@ -52,13 +52,13 @@
             -ms-user-select: none;      
             user-select: none;
         }
-        .registerControl tr td div:hover:not(.registerMile):not(.emptyClass):not(.ui-sortable-handle){
+        .registerControl tr td div:hover:not(.registerMile):not(.emptyClass):not(.ui-sortable-handle):not(.emptyHover){
             background: #231f20 !important;
             color: orange;
             cursor: default;
         }
         
-        #sortableElective {
+        #sortableElective, #sortableRequired {
             list-style-type: none;
             text-align: center;
             background: #ddd;
@@ -70,11 +70,11 @@
             margin-bottom: 5px;
         }
         
-        #sortableElective li{
+        #sortableElective li, #sortableRequired li{
             position: relative;
         }
         
-        ul[id*='sortable']:not(#sortableElective) {
+        ul[id*='sortable']:not(#sortableElective):not(#sortableRequired) {
             width: 125px;
             min-height: 26px;
             list-style-type: none;
@@ -85,18 +85,28 @@
             position: relative;
         }
         
-        ul[id*='sortable'] li {
+        ul[id*='sortableE'] li {
             font-size: 1.2em;
-            background-color: #dff0d8;
-            border: 1px solid #d6e9c6;
-            color: #000;
+            background-color: #f0ad4e;
+            border: 1px solid #eea236;
             width: 125px;
             margin-left: 3px;
             padding: 2px;           
-            color: green;
+            color: #fff;
             word-wrap: break-word;
         }
-
+        
+        ul[id*='sortableR'] li {
+            font-size: 1.2em;
+            background-color: #d9534f;
+            border: 1px solid #d43f3a;
+            width: 125px;
+            margin-left: 3px;
+            padding: 2px;           
+            color: #fff;
+            word-wrap: break-word;
+        }
+        
          .registerControl  ul { 
             list-style-type: none; 
             margin: 0; 
@@ -129,32 +139,29 @@
     </nav>
 
     <div class="container">
-      <div>
-        <!-- INITIAL REGISTER -->
-        <div style='border: 1px solid #efefef; min-width: 1020px;'>
-            <div style='color:#777; background-color: #e7e7e7; border-color: #e1e1e1;padding: 10px;'>
-              <h3 class="panel-title">ลงทะเบียนวิชาเลือก</h3>
-            </div>
-            
-            <div style=' width: 100%; margin-top: 5px;'>
-                <table id='registerControlElement' class='registerControl'>
-                </table>
-            </div>
-        </div>
+        <ol class="breadcrumb">
+        <li><a href="user_dashboard.html">Home</a></li>
+        <li class="active">ลงทะเบียนวิชาเรียน</li>
+      </ol>
+    <!-- INITIAL REGISTER -->
+    <div style=' width: 100%; margin-top: 5px;'>
+        <table id='registerControlElement' class='registerControl'>
+        </table>
+    </div>
         
-        <div style='line-height: 26px; width: 900px;'>
-            <ul id="sortableRequired" class="connectedSortable" style='display: inline-block; padding-left: 0px; margin-right: 10px;'></ul>
-            <ul id="sortableElective" class="connectedSortable" style='display: inline-block; margin-right: 10px;'></ul>
-            <div style='display: inline-block; background: #efefef; display: inline-block; color: #666;'>
-                - Drag your number priority to subject that you wish.<br>
-                - Drag back to here first if you want to change between each subject.
-            </div>
-            <div>
-                <input id='bt_confirm' type='button' class="btn btn-disable" onClick='sendConfirm(this)' value='Confirm' />
-            </div>
+    <div style='line-height: 26px; width: 900px; margin-top: 30px;'>
+        <ul id="sortableRequired" class="connectedSortable" style='display: inline-block; padding-left: 0px; margin-right: 10px;'></ul>
+        <ul id="sortableElective" class="connectedSortable" style='display: inline-block; margin-right: 10px;'></ul>
+        <div style='display: inline-block; background: #efefef; display: inline-block; color: #666;'>
+            - Drag your number priority to subject that you wish.<br>
+            - Drag back to here first if you want to change between each subject.
         </div>
-            
-      </div><!-- body item-->
+        <div style='margin-top:20px;'>
+            <input id='bt_confirm' type='button' class="btn btn-disable" onClick='sendConfirm(this)' value='Confirm' />
+            <input id='bt_reset' type='button' class="btn btn-primary" onClick='location.reload();' value='Reset' style='margin-left: 20px;' />
+        </div>
+    </div>
+    
       <hr style='margin-top: 10px;'>
       <footer>
         <div>
@@ -177,139 +184,199 @@
     <script>
         $(document).ready(function () {
             var registerControlElement = document.getElementById('registerControlElement');
-            var dayArry = ['', 'SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+            var dayArry = ['', 'SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']; //start sun at 1 to 7
+            var timeArry = ['เช้า', 'บ่าย', 'เย็น'];
             var mocData  = {
                 subjects : [ 
                     { subjectId: 28, subjectName: 'การเงินธุรกิจระหว่างประเทศ', studyDate: 1, studyTime: 0, numUnit: 3, isRequired: false },
-                    { subjectId: 43, subjectName: 'กลยุทธ์การตลาดเพื่อการแข่งขัน', studyDate: 1, studyTime: 1, numUnit: 3, isRequired: false },
-                    { subjectId: 12, subjectName: 'การเป็นผู้ประกอบการณ์และการสร้างธุรกิจ', studyDate: 2, studyTime: 1, isRequired: true },
+                    { subjectId: 43, subjectName: 'กลยุทธ์การตลาดเพื่อการแข่งขัน', studyDate: 1, studyTime: 0, numUnit: 3, isRequired: false },
+                    
                     { subjectId: 54, subjectName: 'สัมนาหัวข้อร่วมสมัยทางการจัดการ', studyDate: 3, studyTime: 2, isRequired: false },
-                    { subjectId: 23, subjectName: 'วิเคราะห์การลงทุน', studyDate: 4, studyTime: 2, isRequired: false },
-                    { subjectId: 12, subjectName: 'วิเคราะห์พฤติกรรมผู้บริโภค', studyDate: 2, studyTime: 2, isRequired: true },
-                    { subjectId: 8, subjectName: 'ตลาดเงินและตลาดทุน', studyDate: 5, studyTime: 2, isRequired: false }
+                    { subjectId: 23, subjectName: 'วิเคราะห์การลงทุน', studyDate: 3, studyTime: 2, isRequired: false },
+                    { subjectId: 8, subjectName: 'ตลาดเงินและตลาดทุน', studyDate: 5, studyTime: 2, isRequired: false },
+                    
+                    
+                    { subjectId: 12, subjectName: 'การเป็นผู้ประกอบการณ์และการสร้างธุรกิจ', studyDate: 2, studyTime: 2, isRequired: true },
+                    { subjectId: 12, subjectName: 'วิเคราะห์พฤติกรรมผู้บริโภค', studyDate: 4, studyTime: 2, isRequired: true }
                 ]
             };
-            
+            //
             //SEPARATE 'REQUIRED' AND 'ELECTIVE' SUBJECT
             var requiredSubject = [];
             var electiveSubject = [];
             for( var index=0; index < mocData.subjects.length; index++){
                 if( mocData.subjects[ index ].isRequired === true ){
                     requiredSubject.push( mocData.subjects[ index ] );
+                    //ADD NUMBER PRORITY FOR DRAG
+                    var tmpLiElement = document.createElement('li');
+                    tmpLiElement.innerHTML = requiredSubject.length ;
+                    $('#sortableRequired').append( tmpLiElement );
                 }else{
                     electiveSubject.push( mocData.subjects[ index ] );
+                    //ADD NUMBER PRORITY FOR DRAG
+                    var tmpLiElement = document.createElement('li');
+                    tmpLiElement.innerHTML = electiveSubject.length ;
+                    $('#sortableElective').append( tmpLiElement );
                 }
             }
-            //CALCULATE NUBER SUBJECT IN A DAY
-            var numberOfSubjectInDay = 0;
-            var counts = {};
-            for( var index = 0; index < electiveSubject.length; index++ ){
-                var value = electiveSubject[ index ].studyDate;
-                counts[ value ] = (counts[ value ] || 0)+1;
-                if( numberOfSubjectInDay < counts[ value ] ){
-                    numberOfSubjectInDay = counts[value];
+            //
+            //'ELECTIVE'
+            //SEPARATE EACH SUBJECT INTO  'STUDY-TIME' 0=MORNING, 1=NOON, 2=EVENING
+            var elecetiveSubjectMorning = [];
+            var elecetiveSubjectNoon = [];
+            var elecetiveSubjectEvening = [];
+            for( var index=0; index < electiveSubject.length; index++ ){
+                if( electiveSubject[ index ].studyTime === 0 ){
+                    elecetiveSubjectMorning.push( electiveSubject[ index ] );
                 }
-                
-                //ADD NUMBER PRORITY FOR DRAG
-                var tmpLiElement = document.createElement('li');
-                tmpLiElement.innerHTML = (index + 1) ;
-                $('#sortableElective').append( tmpLiElement );
-            };
-            
-            //CALCULATE NUMBER SUBJECT IN A DAY FOR 'REQUIRED' SUBJECT
-            var numberOfSubjectInDayRequired = 0;
-            var nSR_Count = {};
-            for( var index = 0; index < requiredSubject.length; index++ ){
-                var value = requiredSubject[ index ].studyDate;
-                nSR_Count[ value ] = (nSR_Count[ value ] || 0)+1;
-                if( numberOfSubjectInDayRequired < nSR_Count[ value ] ){
-                    numberOfSubjectInDayRequired = nSR_Count[value];
+                else if( electiveSubject[ index ].studyTime === 1 ){
+                    elecetiveSubjectNoon.push( electiveSubject[ index ] );
                 }
-
-                //ADD NUMBER PRORITY FOR DRAG
-                var tmpLiElement = document.createElement('li');
-                tmpLiElement.innerHTML = (index + 1) ;
-                $('#sortableRequired').append( tmpLiElement );
-            };
-            
-            //GENERATE ROW OF DIV
-            for(var i=0; i< numberOfSubjectInDay + 1; i++){
-                var tmpTRElement = document.createElement('tr');
-                registerControlElement.appendChild( tmpTRElement );
-                for(var day=0; day < dayArry.length; day++){
-                    var tmpTDElement = document.createElement('td');
-                    tmpTRElement.appendChild( tmpTDElement );
-                    var tmpDivElement = document.createElement('div');
-                    tmpTDElement.appendChild( tmpDivElement );
-                    tmpDivElement.id = 'cell' + day + '-' +  i    //(day, nomberOfSubjectInDay)
-                    //
-                    if( day === 0 ){
-                    
-                    
-                    }
-                    //ADD SUBJECT TO DIV
-                    var subjectInformation = getInformationFromData( electiveSubject, day);
-                    if( subjectInformation !== null ){
-                        tmpDivElement.innerHTML = subjectInformation;
-                        tmpDivElement.style.background = '#9d9d9d';
-                        
-                        var ulElement = document.createElement('ul');
-                        ulElement.id = 'sortable' + day + '-' + i;
-                        ulElement.className = 'connectedSortable';
-                        tmpTDElement.appendChild( ulElement );
-
-                    }else{
-                        tmpDivElement.className = 'emptyClass';
-                    }
-                    //DATES ROW
-                    if( i === numberOfSubjectInDay ){
-                        tmpDivElement.className = 'registerMile';
-                        tmpDivElement.innerHTML = dayArry[ day ];
-                        tmpDivElement.id = 'mileStone' + day;
-                    }
+                else if( electiveSubject[ index ].studyTime === 2 ){
+                    elecetiveSubjectEvening.push( electiveSubject[ index ] );
                 }
             }
-            
-            //GENERATE ROW OF DIV FOR 'REQUIRED' SUBJECT
-            for(var i=0; i< numberOfSubjectInDayRequired; i++){
-                var tmpTRElement = document.createElement('tr');
-                registerControlElement.appendChild( tmpTRElement );
-                for(var day=0; day < dayArry.length; day++){
-                    var tmpTDElement = document.createElement('td');
-                    tmpTRElement.appendChild( tmpTDElement );
-                    var tmpDivElement = document.createElement('div');
-                    tmpTDElement.appendChild( tmpDivElement );
-                    tmpDivElement.id = 'cell' + day + '-' +  i + 'required';   //day, numberOfSubjectInDayRequired
-                    //ADD SUBJECT TO DIV
-                    var subjectInformation = getInformationFromData( requiredSubject, day);
-                    if( subjectInformation !== null ){
-                        tmpDivElement.innerHTML = subjectInformation;
-                        tmpDivElement.style.background = '#9d9d9d';
-                        
-                        var ulElement = document.createElement('ul');
-                        ulElement.id = 'sortable' + day + '-' + i;
-                        ulElement.className = 'connectedSortable';
-                        tmpTDElement.appendChild( ulElement );
-
-                    }else{
-                        if( i === 0 && day === 0 ){
-                            tmpDivElement.style.height = '30px';
-                            tmpDivElement.style.lineHeight = '30px';
-                            tmpDivElement.style.color = '#fff';
-                            tmpDivElement.style.background = '#a94442';
-                            tmpDivElement.style.padding = '0px';
-                            tmpDivElement.style.textAlign = 'center';
-                            tmpDivElement.innerHTML = 'วิชาบังคับ';
-                            
-                        }else if( day === 0 ){
-                            tmpDivElement.style.background = 'transparent';
-                        }else{
-                            tmpDivElement.className = 'emptyClass';
+            var electiveSubjectArray = [];
+            electiveSubjectArray.push( elecetiveSubjectMorning );
+            electiveSubjectArray.push( elecetiveSubjectNoon );
+            electiveSubjectArray.push( elecetiveSubjectEvening );
+            for( var k=0; k < electiveSubjectArray.length; k++ ){
+                //CALCULATE NUBER SUBJECT IN A DAY
+                var numberOfSubjectInDay = 0;
+                var counts = {};
+                for( var index = 0; index < electiveSubjectArray[k].length; index++ ){
+                    var value = electiveSubjectArray[k][ index ].studyDate;
+                    counts[ value ] = (counts[ value ] || 0)+1;
+                    if( numberOfSubjectInDay < counts[ value ] ){
+                        numberOfSubjectInDay = counts[value];
+                    }
+                };
+                //GENERATE ROW OF DIV
+                for(var i=0; i< numberOfSubjectInDay; i++){
+                    var tmpTRElement = document.createElement('tr');
+                    registerControlElement.appendChild( tmpTRElement );
+                    for(var day=0; day < dayArry.length; day++){
+                        var tmpTDElement = document.createElement('td');
+                        tmpTRElement.appendChild( tmpTDElement );
+                        var tmpDivElement = document.createElement('div');
+                        tmpTDElement.appendChild( tmpDivElement );
+                        tmpDivElement.id = 'cell' + day + '-' +  i    //(day, nomberOfSubjectInDay)
+                        //ADD SUBJECT TO DIV
+                        var subjectInformation = getInformationFromData( electiveSubjectArray[k], day); //MORNING, NOON, EVENING
+                        if( subjectInformation !== null ){
+                            tmpDivElement.innerHTML = subjectInformation;
+                            tmpDivElement.style.background = '#9d9d9d';
+                            var ulElement = document.createElement('ul');
+                            ulElement.id = 'sortableE' + day + '-' + i;
+                            ulElement.className = 'connectedSortable';
+                            tmpTDElement.appendChild( ulElement );
+                        }
+                        else{
+                            if( i === 0 && day === 0 ){
+                                tmpDivElement.style.height = '30px';
+                                tmpDivElement.style.lineHeight = '30px';
+                                tmpDivElement.style.color = '#fff';
+                                tmpDivElement.style.background = '#d58512';
+                                tmpDivElement.style.padding = '0px';
+                                tmpDivElement.style.textAlign = 'center';
+                                tmpDivElement.innerHTML = 'วิชาเลือก(' + timeArry[ k ]+ ')';
+                                tmpDivElement.className = 'emptyHover';
+                            }else if( day === 0 ){
+                                tmpDivElement.style.background = 'transparent';
+                                tmpDivElement.className = 'emptyHover';
+                            }else{
+                                tmpDivElement.className = 'emptyClass';
+                            }
                         }
                     }
                 }
             }
-            
+            //
+            //ADD MILE STONE DATES ROW
+            var tmpTRElement = document.createElement('tr');
+            registerControlElement.appendChild( tmpTRElement );
+            for(var day=0; day < dayArry.length; day++){
+                var tmpTDElement = document.createElement('td');
+                tmpTRElement.appendChild( tmpTDElement );
+                var tmpDivElement = document.createElement('div');
+                tmpTDElement.appendChild( tmpDivElement );
+                tmpDivElement.className = 'registerMile';
+                tmpDivElement.innerHTML = dayArry[ day ];
+                tmpDivElement.id = 'mileStone' + day;
+            }
+            //
+            //'REQUIRED'
+            //SEPARATE EACH SUBJECT INTO  'STUDY-TIME' 0=MORNING, 1=NOON, 2=EVENING
+            var requiredSubjectMorning = [];
+            var requiredSubjectNoon = [];
+            var requiredSubjectEvening = [];
+            for( var index=0; index < requiredSubject.length; index++ ){
+                if( requiredSubject[ index ].studyTime === 0 ){
+                    requiredSubjectMorning.push( requiredSubject[ index ] );
+                }
+                else if( requiredSubject[ index ].studyTime === 1 ){
+                    requiredSubjectNoon.push( requiredSubject[ index ] );
+                }
+                else if( requiredSubject[ index ].studyTime === 2 ){
+                    requiredSubjectEvening.push( requiredSubject[ index ] );
+                }
+            }
+            var requiredSubjectArray = [];
+            requiredSubjectArray.push( requiredSubjectMorning );
+            requiredSubjectArray.push( requiredSubjectNoon );
+            requiredSubjectArray.push( requiredSubjectEvening );
+            for( var k=0; k < requiredSubjectArray.length; k++ ){
+                //CALCULATE NUBER SUBJECT IN A DAY
+                var numberOfSubjectInDayRequired = 0;
+                var nSR_Count = {};
+                for( var index = 0; index < requiredSubjectArray[k].length; index++ ){
+                    var value = requiredSubjectArray[k][ index ].studyDate;
+                    nSR_Count[ value ] = (nSR_Count[ value ] || 0)+1;
+                    if( numberOfSubjectInDayRequired < nSR_Count[ value ] ){
+                        numberOfSubjectInDayRequired = nSR_Count[value];
+                    }
+                };
+                //GENERATE ROW OF DIV FOR 'REQUIRED' SUBJECT
+                for(var i=0; i< numberOfSubjectInDayRequired; i++){
+                    var tmpTRElement = document.createElement('tr');
+                    registerControlElement.appendChild( tmpTRElement );
+                    for(var day=0; day < dayArry.length; day++){
+                        var tmpTDElement = document.createElement('td');
+                        tmpTRElement.appendChild( tmpTDElement );
+                        var tmpDivElement = document.createElement('div');
+                        tmpTDElement.appendChild( tmpDivElement );
+                        tmpDivElement.id = 'cell' + day + '-' +  i + 'required';   //day, numberOfSubjectInDayRequired
+                        //ADD SUBJECT TO DIV
+                        var subjectInformation = getInformationFromData( requiredSubjectArray[k], day); //MORNING, NOON, EVENING
+                        if( subjectInformation !== null ){
+                            tmpDivElement.innerHTML = subjectInformation;
+                            tmpDivElement.style.background = '#9d9d9d';
+                            var ulElement = document.createElement('ul');
+                            ulElement.id = 'sortableR' + day + '-' + i;
+                            ulElement.className = 'connectedSortable';
+                            tmpTDElement.appendChild( ulElement );
+                        }
+                        else{
+                            if( i === 0 && day === 0 ){
+                                tmpDivElement.style.height = '30px';
+                                tmpDivElement.style.lineHeight = '30px';
+                                tmpDivElement.style.color = '#fff';
+                                tmpDivElement.style.background = '#a94442';
+                                tmpDivElement.style.padding = '0px';
+                                tmpDivElement.style.textAlign = 'center';
+                                tmpDivElement.innerHTML = 'วิชาบังคับ(' + timeArry[ k ]+ ')';
+                                tmpDivElement.className = 'emptyHover';
+                            }else if( day === 0 ){
+                                tmpDivElement.style.background = 'transparent';
+                                tmpDivElement.className = 'emptyHover';
+                            }else{
+                                tmpDivElement.className = 'emptyClass';
+                            }
+                        }
+                    }
+                }
+            }
+            //
            //BIND DRAG/SORABLE EVENT
             $( '.connectedSortable' ).sortable({
                 connectWith: ".connectedSortable",
