@@ -38,7 +38,7 @@
         
         ul[id*='sortable']:not(#sortableMain) {
             width: 200px;
-            min-height: 35px;
+            min-height: 40px;
             list-style-type: none;
             margin-top: 2px;
             background: #ddd;
@@ -53,7 +53,7 @@
             border: 1px solid #d6e9c6;
             color: #000;
             width: 200px;
-            margin-left: 3px;
+            margin-left: 1px;
             padding: 5px;
             color: green;
             word-wrap: break-word;
@@ -72,12 +72,16 @@
             background: #f6f6f6; 
             width: 100%; 
             border: 1px solid #c8c8c8;
-            min-width: 900px;
+            min-width: 1000px;
             margin-bottom: 5px;
         }
         
         #step2Area div.btn-group.bootstrap-select{
-            width: 133px;
+            width: 100px;
+        }
+        
+        #pickerAread div.btn-group.bootstrap-select{
+            width: auto;
         }
         
     </style>
@@ -195,6 +199,21 @@
             <div></div>
             <div style='display: inline-block; background: #efefef; color: #666; margin-top: 20px;'>
                         - หากเราใส่ค่าในช่อง '#สูงสุด' หรือ '#ขั้นต่ำ' จะถูกนำมาใช้เป็นเงื่อนไขในการเปิดสอนรายวิชา
+            </div>
+            <div class="alert alert-info" role="alert" style='padding:10px; margin-top: 10px;' id='pickerAread'>
+                <div style='display: inline-block; color: #31708f; font-weight: bold; margin-right: 5px;'>เงื่อนไขของเทอม:</div>
+                <div style='display:inline-block'>
+                    <input type='text' class='form-control' style='width: 110px' placeHolder='หน่วยกิจขั้นต่ำ' id='minUnitTerm'/>
+                </div>
+                <div style='display:inline-block'>
+                    <input type='text' class='form-control' style='width: 110px' placeHolder='หน่วยกิจสูงสุด' id='maxUnitTerm' />
+                </div>
+                <select class='selectpicker' id='methodPicker'>
+                    <option value='N/A' selected disabled>วิธีที่ใช้ตัดสินกรณีไม่ลงตัว</option>
+                    <option value='0'>First Come First Serve</option>
+                    <option value='1'>Sorting by GPA</option>
+                    <option value='2'>Random out by rank</option>
+                </select>
             </div>
             <div style='margin-top: 20px;'>
                 <input  type='button' class="btn btn-primary" onClick='toggleToSteps(1)' value='Back' />
@@ -336,6 +355,7 @@
                         //DDL DATE
                         var itemDivSubject = document.createElement('div');
                         itemDivSubject.style.display = 'inline-block';
+                        itemDivSubject.style.marginRight = '15px';
                         itemDiv.appendChild( itemDivSubject );
                         var itemDivSubjectSelect = document.createElement('select');
                         itemDivSubjectSelect.className = 'selectpicker';
@@ -355,11 +375,47 @@
                             tmpOption.innerHTML = days[i];
                             itemDivSubjectSelect.appendChild( tmpOption );
                         }
+                        //DDL TIMEs
+                        var itemDivSubject = document.createElement('div');
+                        itemDivSubject.style.display = 'inline-block';
+                        itemDiv.appendChild( itemDivSubject );
+                        var itemDivSubjectSelect = document.createElement('select');
+                        itemDivSubjectSelect.className = 'selectpicker';
+                        itemDivSubjectSelect.id = 'item' + index + '_time';
+                        itemDivSubject.appendChild( itemDivSubjectSelect );
+                        //
+                        var times = ['เช้า', 'บ่าย', 'เย็น'];
+                        var tmpPlaceHolder = document.createElement('option');
+                        tmpPlaceHolder.setAttribute('value', 'N/A');
+                        tmpPlaceHolder.setAttribute('selected','true');
+                        tmpPlaceHolder.setAttribute('disabled','true');
+                        tmpPlaceHolder.innerHTML = 'เวลาที่สอน';
+                        itemDivSubjectSelect.appendChild( tmpPlaceHolder );
+                        for(var i=0; i < times.length; i++){
+                            var tmpOption = document.createElement('option');
+                            tmpOption.setAttribute('value', i );
+                            tmpOption.innerHTML = times[i];
+                            itemDivSubjectSelect.appendChild( tmpOption );
+                        }
+                        //TEXT UNIT OF SUBJECT
+                        var itemDivUnitSubject = document.createElement('div');
+                        itemDivUnitSubject.style.display = 'inline-block';
+                        itemDivUnitSubject.style.marginRight = '10px';
+                        itemDivUnitSubject.style.marginLeft = '15px';
+                        itemDiv.appendChild( itemDivUnitSubject );
+                        //
+                        var itemDivUnitnput = document.createElement('input');
+                        itemDivUnitnput.className = 'form-control';
+                        itemDivUnitnput.id = 'item' + index + '_unitNumber';
+                        itemDivUnitnput.style.paddingTop = '4px';
+                        itemDivUnitnput.setAttribute('type', 'text');
+                        itemDivUnitnput.style.width = '80px';
+                        itemDivUnitnput.setAttribute('placeholder', 'หน่วยกิจ');
+                        itemDivUnitSubject.appendChild( itemDivUnitnput );
                         //TEXT TEACHER
                         var itemDivTeacher = document.createElement('div');
                         itemDivTeacher.style.display = 'inline-block';
                         itemDivTeacher.style.marginRight = '10px';
-                        itemDivTeacher.style.marginLeft = '20px';
                         itemDiv.appendChild( itemDivTeacher );
                         //
                         var itemDivTeacherInput = document.createElement('input');
@@ -367,13 +423,20 @@
                         itemDivTeacherInput.id = 'item' + index + '_teacher';
                         itemDivTeacherInput.style.paddingTop = '4px';
                         itemDivTeacherInput.setAttribute('type', 'text');
+                        itemDivTeacherInput.style.width = '140px';
                         itemDivTeacherInput.setAttribute('placeholder', 'ชื่ออาจารย์ผู้สอน');
                         itemDivTeacher.appendChild( itemDivTeacherInput );
+                        //TEXT MINIMUM NUMBER TO OPEN
+                        var itemDivMinNumber = document.createElement('div');
+                        itemDivMinNumber.style.display = 'inline-block';
+                        itemDivMinNumber.style.margin = '5px 10px 5px 0px';
+                        itemDivMinNumber.style.width = '65px';
+                        itemDiv.appendChild( itemDivMinNumber );
                         //TEXT NUMBER SUPPORT
                         var itemDivNumberSupport = document.createElement('div');
                         itemDivNumberSupport.style.display = 'inline-block';
                         itemDivNumberSupport.style.marginRight = '10px';
-                        itemDivNumberSupport.style.width = '70px';
+                        itemDivNumberSupport.style.width = '65px';
                         itemDiv.appendChild( itemDivNumberSupport );
                         //
                         var itemDivNumberSupportInput = document.createElement('input');
@@ -383,12 +446,6 @@
                         itemDivNumberSupportInput.setAttribute('type', 'text');
                         itemDivNumberSupportInput.setAttribute('placeholder', '#สูงสุด');
                         itemDivNumberSupport.appendChild( itemDivNumberSupportInput );
-                        //TEXT MINIMUM NUMBER TO OPEN
-                        var itemDivMinNumber = document.createElement('div');
-                        itemDivMinNumber.style.display = 'inline-block';
-                        itemDivMinNumber.style.margin = '5px 10px 5px 0px';
-                        itemDivMinNumber.style.width = '70px';
-                        itemDiv.appendChild( itemDivMinNumber );
                         //
                         var itemDivMinNumberInput = document.createElement('input');
                         itemDivMinNumberInput.className = 'form-control';
@@ -397,28 +454,30 @@
                         itemDivMinNumberInput.setAttribute('type', 'text');
                         itemDivMinNumberInput.setAttribute('placeholder', '#ขั้นต่ำ');
                         itemDivMinNumber.appendChild( itemDivMinNumberInput );
-                        //DDL METHOD
-                        var itemDivMethod = document.createElement('div');
-                        itemDivMethod.style.display = 'inline-block';
-                        itemDiv.appendChild( itemDivMethod );
-                        var itemDivMethodSelect = document.createElement('select');
-                        itemDivMethodSelect.className = 'selectpicker';
-                        itemDivMethodSelect.id = 'item' + index + '_method';
-                        itemDivMethod.appendChild( itemDivMethodSelect );
+                        //CHECKBOX 'REQUIRED' SUBJECT?
+                        var itemDivIsRequired = document.createElement('div');
+                        itemDivIsRequired.style.display = 'inline-block';
+                        itemDivIsRequired.style.marginTop = '2px';
+                        itemDivIsRequired.style.width = '100px';
+                        itemDivIsRequired.style.verticalAlign = 'top';
+                        itemDivIsRequired.style.textAlign ='left';
+                        itemDiv.appendChild( itemDivIsRequired );
                         //
-                        var methods = ['First Come First Serve', 'Sorting by GPA', 'Random out by rank'];
-                        var tmpPlaceHolderMethod = document.createElement('option');
-                        tmpPlaceHolderMethod.setAttribute('value', 'N/A');
-                        tmpPlaceHolderMethod.setAttribute('selected','true');
-                        tmpPlaceHolderMethod.setAttribute('disabled','true');
-                        tmpPlaceHolderMethod.innerHTML = 'วิธีที่ใช้ตัดสินกรณีไม่ลงตัว';
-                        itemDivMethodSelect.appendChild( tmpPlaceHolderMethod );
-                        for(var i=0; i < methods.length; i++){
-                            var tmpOptionMethod = document.createElement('option');
-                            tmpOptionMethod.setAttribute('value', i );
-                            tmpOptionMethod.innerHTML = methods[i];
-                            itemDivMethodSelect.appendChild( tmpOptionMethod );
-                        }
+                        var itemDivIsRequiredInput = document.createElement('input');
+                        itemDivIsRequiredInput.className = 'form-control';
+                        itemDivIsRequiredInput.id = 'item' + index + '_isRequired';
+                        itemDivIsRequiredInput.setAttribute('type', 'checkbox');
+                        itemDivIsRequiredInput.style.width = '15px';
+                        itemDivIsRequiredInput.style.display = 'inline-block';
+                        itemDivIsRequired.appendChild( itemDivIsRequiredInput );
+                        //
+                        var itemDivIsRequiredLabel = document.createElement('div');
+                        itemDivIsRequiredLabel.style.display = 'inline-block';
+                        itemDivIsRequiredLabel.innerHTML = 'วิชาบังคับ?';
+                        itemDivIsRequiredLabel.style.marginTop = '9px';
+                        itemDivIsRequiredLabel.style.marginLeft = '4px';
+                        itemDivIsRequiredLabel.style.verticalAlign = 'top';
+                        itemDivIsRequired.appendChild( itemDivIsRequiredLabel );
                         //
                         index++;
                     }
@@ -436,13 +495,19 @@
             $('#step2Area').children().first().children().each( function(index){
                 var idTextSubject = '#item' + index + '_subject';
                 var idDate = '#item' + index + '_date';
+                var idTime = '#item' + index + '_time';
+                var idUnitNumber = '#item' + index + '_unitNumber';
                 var idTeacher = '#item' + index + '_teacher';
                 var idNumSupport = '#item' + index + '_numberSupport';
                 var idNumMin = '#item' + index + '_minNumber';
-                var idMethod = '#item' + index + '_method';
-                
-                result += $(idTextSubject).text() + ',' + $(idDate).val() + ',' + $(idTeacher).val() + ',' + $(idNumSupport).val() + ',' + $(idNumMin).val() + ',' + $(idMethod).val() + '\n';
+                var idIsRequired = '#item' + index + '_isRequired';
+                result += $(idTextSubject).text() + ',' + $(idDate).val() + ',' + $(idTime).val() + ',' + $(idUnitNumber).val() + ',' + $(idTeacher).val() + ',' + $(idNumMin).val() + ',' + $(idNumSupport).val() + ',' + $(idIsRequired).is(':checked') + '\n';
             });
+            
+            var idMethod = '#methodPicker';
+            var idMinUnitTerm = '#minUnitTerm';
+            var idMaxUnitTerm = '#maxUnitTerm';
+            result += +'\n' + 'Min unit is: ' + $(idMinUnitTerm).val() + '\n' + 'Max unit is: ' + $(idMaxUnitTerm).val() + '\n' + 'Method picker is: ' +   $(idMethod).val();
             alert( result);
         }
         

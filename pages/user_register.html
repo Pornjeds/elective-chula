@@ -35,6 +35,7 @@
         .registerControl tr td{
             width: 100px;
             vertical-align: top;
+            position: relative;
         }
         .registerControl tr td div{
             background: #efefef;
@@ -64,7 +65,8 @@
             background: #ddd;
             padding: 0px;
             position: relative;
-            min-height: 26px;
+            min-height: 100px;
+            min-width: 125px;
             vertical-align: top;
             display: inline-block;
             margin-bottom: 5px;
@@ -90,7 +92,7 @@
             background-color: #f0ad4e;
             border: 1px solid #eea236;
             width: 125px;
-            margin-left: 3px;
+            margin-left: 1px;
             padding: 2px;           
             color: #fff;
             word-wrap: break-word;
@@ -101,7 +103,7 @@
             background-color: #d9534f;
             border: 1px solid #d43f3a;
             width: 125px;
-            margin-left: 3px;
+            margin-left: 1px;
             padding: 2px;           
             color: #fff;
             word-wrap: break-word;
@@ -114,6 +116,24 @@
             margin-bottom: 2px; 
         }
         
+        .registerControl ul[id*='sortableR']:hover {
+            background: #d9534f !important;
+        }
+        
+        .registerControl ul[id*='sortableE']:hover {
+            background: #f0ad4e !important;
+        }
+        
+        .spanUnitOfSubject{
+            position: absolute;
+            right: 3px;
+            top: 62px;
+            background: #5d5b5b;
+            color: #efefef;
+            padding: 4px;
+            line-height: 10px;
+            border-radius: 8px;
+        }
         
     </style>
   </head>
@@ -150,8 +170,8 @@
     </div>
         
     <div style='line-height: 26px; width: 900px; margin-top: 30px;'>
-        <ul id="sortableRequired" class="connectedSortable" style='display: inline-block; padding-left: 0px; margin-right: 10px;'></ul>
-        <ul id="sortableElective" class="connectedSortable" style='display: inline-block; margin-right: 10px;'></ul>
+        <ul id="sortableRequired" class="connectedSortableR" style='display: inline-block; padding-left: 0px; margin-right: 10px;'></ul>
+        <ul id="sortableElective" class="connectedSortableE" style='display: inline-block; margin-right: 10px;'></ul>
         <div style='display: inline-block; background: #efefef; display: inline-block; color: #666;'>
             - Drag your number priority to subject that you wish.<br>
             - Drag back to here first if you want to change between each subject.
@@ -184,20 +204,26 @@
     <script>
         $(document).ready(function () {
             var registerControlElement = document.getElementById('registerControlElement');
-            var dayArry = ['', 'SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']; //start sun at 1 to 7
+            var dayArry = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
+            var dayArryShipped = [];
+            dayArryShipped.push( '' );
+            for(var i=0; i< dayArry.length; i++){
+                dayArryShipped.push( dayArry[ i ] );
+            }
+            
             var timeArry = ['เช้า', 'บ่าย', 'เย็น'];
             var mocData  = {
                 subjects : [ 
                     { subjectId: 28, subjectName: 'การเงินธุรกิจระหว่างประเทศ', studyDate: 1, studyTime: 0, numUnit: 3, isRequired: false },
                     { subjectId: 43, subjectName: 'กลยุทธ์การตลาดเพื่อการแข่งขัน', studyDate: 1, studyTime: 0, numUnit: 3, isRequired: false },
                     
-                    { subjectId: 54, subjectName: 'สัมนาหัวข้อร่วมสมัยทางการจัดการ', studyDate: 3, studyTime: 2, isRequired: false },
-                    { subjectId: 23, subjectName: 'วิเคราะห์การลงทุน', studyDate: 3, studyTime: 2, isRequired: false },
-                    { subjectId: 8, subjectName: 'ตลาดเงินและตลาดทุน', studyDate: 5, studyTime: 2, isRequired: false },
+                    { subjectId: 54, subjectName: 'สัมนาหัวข้อร่วมสมัยทางการจัดการ', studyDate: 3, studyTime: 2, numUnit: 2, isRequired: false },
+                    { subjectId: 23, subjectName: 'วิเคราะห์การลงทุน', studyDate: 3, studyTime: 2, numUnit: 3, isRequired: false },
+                    { subjectId: 8, subjectName: 'ตลาดเงินและตลาดทุน', studyDate: 5, studyTime: 2, numUnit: 2, isRequired: false },
                     
                     
-                    { subjectId: 12, subjectName: 'การเป็นผู้ประกอบการณ์และการสร้างธุรกิจ', studyDate: 2, studyTime: 2, isRequired: true },
-                    { subjectId: 12, subjectName: 'วิเคราะห์พฤติกรรมผู้บริโภค', studyDate: 4, studyTime: 2, isRequired: true }
+                    { subjectId: 12, subjectName: 'การเป็นผู้ประกอบการณ์และการสร้างธุรกิจ', studyDate: 2, studyTime: 2, numUnit: 3, isRequired: true },
+                    { subjectId: 12, subjectName: 'วิเคราะห์พฤติกรรมผู้บริโภค', studyDate: 4, studyTime: 2, numUnit: 3, isRequired: true }
                 ]
             };
             //
@@ -255,7 +281,7 @@
                 for(var i=0; i< numberOfSubjectInDay; i++){
                     var tmpTRElement = document.createElement('tr');
                     registerControlElement.appendChild( tmpTRElement );
-                    for(var day=0; day < dayArry.length; day++){
+                    for(var day=0; day < dayArryShipped.length; day++){
                         var tmpTDElement = document.createElement('td');
                         tmpTRElement.appendChild( tmpTDElement );
                         var tmpDivElement = document.createElement('div');
@@ -264,11 +290,16 @@
                         //ADD SUBJECT TO DIV
                         var subjectInformation = getInformationFromData( electiveSubjectArray[k], day); //MORNING, NOON, EVENING
                         if( subjectInformation !== null ){
-                            tmpDivElement.innerHTML = subjectInformation;
+                            tmpDivElement.innerHTML = subjectInformation[0];
                             tmpDivElement.style.background = '#9d9d9d';
+                            //ADD UNIT OF SUBJECT
+                            var spanElement = document.createElement('span');
+                            spanElement.className = 'spanUnitOfSubject';
+                            spanElement.innerHTML = subjectInformation[1];
+                            tmpTDElement.appendChild( spanElement );
                             var ulElement = document.createElement('ul');
                             ulElement.id = 'sortableE' + day + '-' + i;
-                            ulElement.className = 'connectedSortable';
+                            ulElement.className = 'connectedSortableE';
                             tmpTDElement.appendChild( ulElement );
                         }
                         else{
@@ -292,16 +323,30 @@
                 }
             }
             //
+            //BIND DRAG/SORABLE EVENT   FOR ELECTIVE 'ELECTIVE'
+            $( '.connectedSortableE' ).sortable({
+                connectWith: ".connectedSortableE",
+                stop: function( event, ui) {
+                    var sortableElements = $('.connectedSortableE');
+                    for(var i=0; i< sortableElements.length; i++){
+                        if( sortableElements[ i ].id !== 'sortableElective' && sortableElements[ i ].children.length > 1 ){
+                            $(this).sortable( 'cancel');
+                        }
+                    }
+                    checkConfirmButtonReady();
+                }
+            }).disableSelection();
+            //
             //ADD MILE STONE DATES ROW
             var tmpTRElement = document.createElement('tr');
             registerControlElement.appendChild( tmpTRElement );
-            for(var day=0; day < dayArry.length; day++){
+            for(var day=0; day < dayArryShipped.length; day++){
                 var tmpTDElement = document.createElement('td');
                 tmpTRElement.appendChild( tmpTDElement );
                 var tmpDivElement = document.createElement('div');
                 tmpTDElement.appendChild( tmpDivElement );
                 tmpDivElement.className = 'registerMile';
-                tmpDivElement.innerHTML = dayArry[ day ];
+                tmpDivElement.innerHTML = dayArryShipped[ day ];
                 tmpDivElement.id = 'mileStone' + day;
             }
             //
@@ -340,7 +385,7 @@
                 for(var i=0; i< numberOfSubjectInDayRequired; i++){
                     var tmpTRElement = document.createElement('tr');
                     registerControlElement.appendChild( tmpTRElement );
-                    for(var day=0; day < dayArry.length; day++){
+                    for(var day=0; day < dayArryShipped.length; day++){
                         var tmpTDElement = document.createElement('td');
                         tmpTRElement.appendChild( tmpTDElement );
                         var tmpDivElement = document.createElement('div');
@@ -349,11 +394,16 @@
                         //ADD SUBJECT TO DIV
                         var subjectInformation = getInformationFromData( requiredSubjectArray[k], day); //MORNING, NOON, EVENING
                         if( subjectInformation !== null ){
-                            tmpDivElement.innerHTML = subjectInformation;
+                            tmpDivElement.innerHTML = subjectInformation[0];
                             tmpDivElement.style.background = '#9d9d9d';
+                            //ADD UNIT OF SUBJECT
+                            var spanElement = document.createElement('span');
+                            spanElement.className = 'spanUnitOfSubject';
+                            spanElement.innerHTML = subjectInformation[1];
+                            tmpTDElement.appendChild( spanElement );
                             var ulElement = document.createElement('ul');
                             ulElement.id = 'sortableR' + day + '-' + i;
-                            ulElement.className = 'connectedSortable';
+                            ulElement.className = 'connectedSortableR';
                             tmpTDElement.appendChild( ulElement );
                         }
                         else{
@@ -376,37 +426,39 @@
                     }
                 }
             }
-            //
-           //BIND DRAG/SORABLE EVENT
-            $( '.connectedSortable' ).sortable({
-                connectWith: ".connectedSortable",
+            //BIND DRAG/SORABLE EVENT   FOR ELECTIVE 'ELECTIVE'
+            $( '.connectedSortableR' ).sortable({
+                connectWith: ".connectedSortableR",
                 stop: function( event, ui) {
-                    var sortableElements = $('.connectedSortable');
+                    var sortableElements = $('.connectedSortableR');
                     for(var i=0; i< sortableElements.length; i++){
-                        if( sortableElements[ i ].id !== 'sortableElective' && sortableElements[ i ].children.length > 1 ){
+                        if( sortableElements[ i ].id !== 'sortableRequired' && sortableElements[ i ].children.length > 1 ){
                             $(this).sortable( 'cancel');
                         }
                     }
-                    //
-                    if( $('#sortableElective').children().length === 0){
-                        $('#bt_confirm').removeClass('btn-disable');
-                        $('#bt_confirm').addClass('btn-success');
-                    }else{
-                        $('#bt_confirm').removeClass('btn-success');
-                        $('#bt_confirm').addClass('btn-disable');
-                    }
+                    checkConfirmButtonReady();
                 }
             }).disableSelection();
-            
+            //
             //GET/CHANGE INFORMATION FROM DATA
             function getInformationFromData( objectDataArray, targetDate ){
                 for( var i=0; i< objectDataArray.length; i++ ){
                     if( objectDataArray[i].studyDate === targetDate ){
                         objectDataArray[i].studyDate = -1;
-                        return objectDataArray[i].subjectName;
+                        return [ objectDataArray[i].subjectName, objectDataArray[i].numUnit ];
                     }
                 }
                 return null;
+            }
+            //CHECK CONFIRM BUTTON IS READY OR NOT
+            function checkConfirmButtonReady(){
+                if( $('#sortableRequired').children().length === 0 && $('#sortableElective').children().length === 0 ){
+                    $('#bt_confirm').removeClass('btn-disable');
+                    $('#bt_confirm').addClass('btn-success');
+                }else{
+                    $('#bt_confirm').removeClass('btn-success');
+                    $('#bt_confirm').addClass('btn-disable');
+                }
             }
         });
         
@@ -416,10 +468,16 @@
                 return
             }else{
                 var result = '';
-                var sortableElements = $('.connectedSortable');
-                for(var i=0; i< sortableElements.length; i++){
-                    if( sortableElements[ i ].id !== 'sortableElective' && sortableElements[ i ].children.length === 1 ){
-                        result = result + sortableElements[ i ].parentElement.firstChild.innerHTML + ' ->'  + sortableElements[ i ].children[0].innerHTML + '\n';
+                var sortableElementsE = $('.connectedSortableE');
+                var sortableElementsR = $('.connectedSortableR');
+                for(var i=0; i< sortableElementsE.length; i++){
+                    if( sortableElementsE[ i ].id !== 'sortableElective' && sortableElementsE[ i ].children.length === 1 ){
+                        result = result + sortableElementsE[ i ].parentElement.firstChild.innerHTML + ' ->'  + sortableElementsE[ i ].children[0].innerHTML + '\n';
+                    }
+                }
+                for(var i=0; i< sortableElementsR.length; i++){
+                    if( sortableElementsR[ i ].id !== 'sortableElective' && sortableElementsR[ i ].children.length === 1 ){
+                        result = result + sortableElementsR[ i ].parentElement.firstChild.innerHTML + ' ->'  + sortableElementsR[ i ].children[0].innerHTML + '\n';
                     }
                 }
                 alert( result );
