@@ -1,4 +1,4 @@
-<?
+<?php
 include("DBManager_sqlserver.php");
 
 $DBManager = new DBManager();

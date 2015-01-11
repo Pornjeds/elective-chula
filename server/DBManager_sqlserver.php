@@ -1,4 +1,4 @@
-<?
+<?php
 include('sqlserverconfig.inc.php');
 Class DBManager
 {
@@ -8,8 +8,8 @@ Class DBManager
 
 	function DBManager()
 	{
-		global $host,$user,$passwd,$dbname;
-		$this->serverName = "localhost"; //serverName\instanceName
+		global $host,$user,$passwd,$dbname,$servernames;
+		$this->serverName = $servernames; //serverName\instanceName
 		$this->connectionInfo = array( "Database"=>$dbname, "UID"=>$user, "PWD"=>$passwd);
 		$this->conn = sqlsrv_connect( $this->serverName, $this->connectionInfo);
 		if ($this->conn === false)
