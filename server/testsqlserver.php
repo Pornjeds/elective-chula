@@ -1,10 +1,12 @@
 <?php
+
 include("DBManager_sqlserver.php");
 
 $DBManager = new DBManager();
 
 $sql = "SELECT * from testtable";
 $result = $DBManager->getData($sql);
+//print_r($result);
 while($row = sqlsrv_fetch_array($result))
 {
 	echo $row['test_id']." -> ".$row['test_name']."<br>";
