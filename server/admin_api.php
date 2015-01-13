@@ -56,20 +56,22 @@ function getStudentById($id){
 function addStudent(){
 	$request = \Slim\Slim::getInstance()->request();
     $student_detail = json_decode($request->getBody());
-    echo $student_detail;
-    /*
-    $sql = "INSERT INTO STUDENT (student_id, classof_id, name, lastname, email, password, profilepic, GPA, addeddate, student_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO STUDENT (student_id, classof_id, name, lastname, email, password, profilepic, GPA, addeddate, student_status) VALUES ('$student_detail->student_id', '$student_detail->classof_id', '$student_detail->name', '$student_detail->lastname', '$student_detail->email', '$student_detail->password', '$student_detail->profilepic', '$student_detail->GPA', GETDATE(), '$student_detail->student_status')";
     try {
         $db = new DBManager();
-        $params = array();
-        $db->setData($sql, $params);
-        $db->beginSet();
+        $db->setData($sql);
+        if($db->beginSet())
+        {
+        	$db->commitWork();	
+        }
+        else
+		{
+			$db->rollbackWork();			
+		}
         $db = null;
-        echo json_encode($wine);
     } catch(PDOException $e) {
         echo '{"error":{"text":'. $e->getMessage() .'}}';
     }
-    */
 }
 
 ?>
