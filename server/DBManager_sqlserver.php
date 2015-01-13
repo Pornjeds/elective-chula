@@ -21,12 +21,12 @@ Class DBManager
 	function getData($sql)
 	{
 		$result = sqlsrv_query($this->conn, $sql);
-		return $result;
+		return sqlsrv_fetch_array($result);
 	}
 
 	function setData($sql, $params=array())
 	{
-		$result = sqlsrv_query($this->conn, $sql, $params);
+		$result = sqlsrv_query($this->conn, $sql, $params) or die( print_r( sqlsrv_errors(), true));
 		return $result;
 	}
 
