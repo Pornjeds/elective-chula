@@ -54,7 +54,7 @@ function getStudentById($id){
 }
 
 function addStudent(){
-	$request = Slim::getInstance()->request();
+	$request = \Slim\Slim::getInstance()->request();
     $student_detail = json_decode($request->getBody());
     echo $student_detail;
     /*
