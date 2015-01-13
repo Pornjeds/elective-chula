@@ -28,12 +28,18 @@ $app->configureMode('development', function () use ($app) {
 
 $app->group('/api/v1', function() use ($app){
 	$app->group('/student', function() use ($app){
+		$app->get('/test/:name', 'test');
 		$app->get('/:id', 'getStudentById');
 		$app->post('/add' , 'addStudent');
 	});
 });
 
 $app->run();
+
+function test($name)
+{
+	echo "hello ".$name;
+}
 
 function getStudentById($id){
 	$sql = "SELECT * FROM STUDENT where student_id = '$id'";
