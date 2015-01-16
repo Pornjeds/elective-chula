@@ -26,7 +26,7 @@ Class DBManager
 
 	function setData($sql, $params=array())
 	{
-		$result = sqlsrv_query($this->conn, $sql, $params) or die( print_r( sqlsrv_errors(), true));
+		$result = sqlsrv_query($this->conn, $sql, $params);
 		return $result;
 	}
 
@@ -48,6 +48,11 @@ Class DBManager
 	function close()
 	{
 		sqlsrv_close($this->conn);
+	}
+
+	function errmsg()
+	{
+		return sqlsrv_errors();
 	}
 
 }
