@@ -2,6 +2,7 @@
 require_once 'Slim/Slim.php';
 require_once 'DBManager_sqlserver.php';
 require_once 'admin_api_student.php';
+require_once 'admin_api_import.php';
 
 \Slim\Slim::registerAutoloader();
 
@@ -38,6 +39,12 @@ $app->group('/api/v1', function() use ($app){
         $app->post('/update', 'updateStudent');
         $app->post('/delete' , 'deleteStudent');
 	});
+
+    $app->group('/import', function() use ($app){
+        $app->get('/test/:name', 'test');
+        $app->post('/students', 'importStudents');
+        $app->post('/subjects', 'importSubjects');
+    });
 });
 
 $app->run();
