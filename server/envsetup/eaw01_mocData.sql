@@ -1,4 +1,18 @@
-﻿/* [eaw01].[dbo].[[CLASSOF]]  */
+﻿/* Empty table */
+truncate table dbo.ADMIN_AUDITLOG
+truncate table dbo.STUDENT_CONFIRMED_ENROLLMENT
+truncate table dbo.STUDENT_ENROLLMENT
+truncate table dbo.SUBJECT_CLASSOF
+truncate table dbo.TMP_SELECTION
+
+
+Delete from dbo.CLASSOF
+Delete from dbo.SUBJECT
+Delete from dbo.STUDENT
+Delete from dbo.ADMIN_MEMBER
+Delete from dbo.USER_ROLE
+
+/* [eaw01].[dbo].[[CLASSOF]]  */
 INSERT INTO [eaw01].[dbo].[CLASSOF] ([classof_id] ,[classof_description]) VALUES ( 1,'19/1' )
 INSERT INTO [eaw01].[dbo].[CLASSOF] ([classof_id] ,[classof_description]) VALUES ( 2,'19/2' )
 INSERT INTO [eaw01].[dbo].[CLASSOF] ([classof_id] ,[classof_description]) VALUES ( 3,'20/1' )
