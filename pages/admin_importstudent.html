@@ -112,7 +112,7 @@
             <input type="text" class="form-control" placeholder="รุ่น">
           </div>
           <div style='padding: 5px 5px 5px 5px; display:none;' id='import-input-button'>
-            <input id='bt_query' type='button' class="btn btn-success" value='เลือก' />
+            <input id='bt_query' type='button' class="btn btn-success" value='เพิ่ม'  />
           </div>
           <div style='clear:both'></div>
         </div>
@@ -121,14 +121,10 @@
       <div style='background:#ffffff; width: 100%; border: 1px solid #c8c8c8; text-align: center;'>
         <div style='padding:10px;'>
           <div class="alert alert-warning" role="alert" id="import-warning" style="display:none"><b>WARNING</b> มีข้อมูลนิสิตของรุ่น 20/1 อยู่แล้ว การ Import นี้จะทำการลบข้อมูลเดิมออกทั้งหมดแล้วแทนที่ด้วยข้อมูลใหม่</div>
-          
-            <div id="yourBtn" onclick="getFile()">Click to upload!</div>
-            <!-- this is your file input tag, so i hide it!-->
-            <div style='height: 0px;width:0px; overflow:hidden;'><input id="upfile" type="file" value="upload"/></div>
-            <!-- here you can have file submit button or you can write a simple script to upload the file automatically-->
-            <br>
-            <input type="submit" value='Import' onClick='importBtClicked();' class="btn btn-default">
-          
+          <div>
+              <input type="file" id="files" class="btn btn-default" style='display:inline-block'>
+              <input type="submit" value='Import' onClick='importBtClicked();' class="btn btn-primary" style='display:inline-block'>
+          </div>
         </div>
       </div>
       <hr>
@@ -149,11 +145,11 @@
     <script src="../scripts/js/bootstrap-select.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="../scripts/js/ie10-viewport-bug-workaround.js"></script>
+    <script src="../scripts/js/papaparse.min.js"></script>
 
     <script>
         $(document).ready(function () {
             $('.selectpicker').selectpicker();
-
         });
 
         function getFile(){
@@ -161,10 +157,88 @@
         };
 
         function importBtClicked(){
-          document.getElementById('import-success').style.display = 'block';
-          document.getElementById('import-warning').style.display = 'none';
+             //CONVERT *.CSV FILE TO BE IN JSON OBJECT
+            var files = $('#files')[0].files;
+            if( files.length > 0 ){
+                var config = buildConfig();                
+                if (files.length > 0){
+                    for (var i = 0; i < files.length; i++){
+                        if (files[i].size > 1024 * 1024 * 10){
+                            alert("A file you've selected is larger than 10 MB; please let admin know.");
+                            return;
+                        }
+                    }
+                    start = performance.now();
+                    $('#files').parse({
+                        config: config,
+                        before: function(file, inputElem)
+                        {
+                            console.log("Parsing file:", file);
+                        },
+                        complete: function()
+                        {
+                            document.getElementById('import-success').style.display = 'block';
+                            document.getElementById('import-warning').style.display = 'none';
+                        }
+                    });
+                
+                }
+            }else{
+                alert("Please choose File to import first.");
+            }
         };
-
+        //
+        function buildConfig(){
+            return {
+                newline: getLineEnding(),
+                complete: completeFn,
+                error: errorFn
+            };
+            function getLineEnding()
+            {
+                if ($('#newline-n').is(':checked'))
+                    return "\n";
+                else if ($('#newline-r').is(':checked'))
+                    return "\r";
+                else if ($('#newline-rn').is(':checked'))
+                    return "\r\n";
+                else
+                    return "";
+            }
+        };
+        function errorFn(error, file)
+        {
+            console.log("ERROR:", error, file);
+        }
+        function completeFn()
+        {
+            end = performance.now();
+            if (!$('#stream').prop('checked')
+                    && !$('#chunk').prop('checked')
+                    && arguments[0]
+                    && arguments[0].data)
+                rows = arguments[0].data.length;
+            //console.log("Finished input (async). Time:", end-start, arguments);
+            
+            //TRANSFORM TO JSON OBJ
+            var jsonObj = { data: [] };
+            for(var i=1; i< arguments[0].data.length; i++){ //SKIP HEADER COL ROW
+                if( arguments[0].data[i][0] == '' ){
+                    continue;
+                }
+                var tmpObj = {
+                        'student_id': arguments[0].data[i][0],
+                        'classofid': $('select[id="studentClass"').val(),
+                        'name': arguments[0].data[i][1],
+                        'lastname': arguments[0].data[i][2],
+                        'password': 'welcome1',
+                        'email': arguments[0].data[i][3]
+                }
+                jsonObj.data.push(tmpObj);                
+            }
+            console.log( JSON.stringify( jsonObj ) );            
+            //THEN SEND THIS DATA TO WEB SERVICE
+        }
         function studentClassOnChange(sel){
           if (sel.value === 'เพิ่มรุ่นนิสิต'){
             document.getElementById('import-input').style.display = 'inline-block';
