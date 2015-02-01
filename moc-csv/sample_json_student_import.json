@@ -5,10 +5,9 @@
 		"name":"name1",
 		"lastname":"lastname1",
 		"email":"email1@gmail.com",
-		"password":"Welcome1", //default is Welcome1
-		"profilepic":"default.jpg", //default is default.jpg
-		"GPA":"3.42",
-		"status":"1" //default is 1
+		"password":"Welcome1",
+		"profilepic":"default.jpg",
+		"GPA":"3.42","status":"1"
 	},
 	{
 		"student_id":47010677,
