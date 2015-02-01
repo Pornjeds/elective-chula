@@ -94,7 +94,7 @@
 
       <hr>
 
-      <div class="alert alert-success" role="alert" id="import-success" style="display:none;"><b>SUCCESS</b> ทำการ Import ข้อมูลนิสิตรุ่น 20/1 เรียบร้อยแล้ว</div>
+      <div class="alert alert-success" role="alert" id="import-success" style="display:none;"><b>SUCCESS</b> ทำการ Import ข้อมูลนิสิตรุ่น <span id='successClassName'></span> เรียบร้อยแล้ว</div>
 
       <div style='background:#f6f6f6; width: 100%; border: 1px solid #c8c8c8; text-align: center; margin-bottom:5px'>
         <div style='padding:10px;'>
@@ -177,8 +177,8 @@
                         },
                         complete: function()
                         {
-                            document.getElementById('import-success').style.display = 'block';
-                            document.getElementById('import-warning').style.display = 'none';
+                            //document.getElementById('import-success').style.display = 'block';
+                            //document.getElementById('import-warning').style.display = 'none';
                         }
                     });
                 
@@ -226,18 +226,23 @@
                 if( arguments[0].data[i][0] == '' ){
                     continue;
                 }
+                //'classofid': $('select[id="studentClass"').val(),
                 var tmpObj = {
                         'student_id': arguments[0].data[i][0],
-                        'classofid': $('select[id="studentClass"').val(),
+                        'classofid': 1,
                         'name': arguments[0].data[i][1],
                         'lastname': arguments[0].data[i][2],
+                        'email': arguments[0].data[i][3],
                         'password': 'welcome1',
-                        'email': arguments[0].data[i][3]
+                        'profilepic': 'default.jpg',
+                        'GPA': arguments[0].data[i][4],
+                        'status': 1
                 }
                 jsonObj.data.push(tmpObj);                
             }
             console.log( JSON.stringify( jsonObj ) );            
             //THEN SEND THIS DATA TO WEB SERVICE
+            importStudentToDatabase( jsonObj );
         }
         function studentClassOnChange(sel){
           if (sel.value === 'เพิ่มรุ่นนิสิต'){
@@ -252,6 +257,26 @@
             document.getElementById('import-success').style.display = 'none';
           }
         };
+        //
+        function importStudentToDatabase(jsonObj){
+            var jsonString = JSON.stringify( jsonObj );
+            var urlStr = window.location.origin + '/server/admin_api.php/api/v1/import/students';
+            $.ajax({
+                type: 'POST',
+                contentType: 'application/json',
+                url: urlStr,
+                dataType: 'json',
+                data: jsonString,
+                success: function(data, textStatus, jqXHR){
+                    document.getElementById('import-success').style.display = 'block';
+                    document.getElementById('import-warning').style.display = 'none';
+                    document.getElementById("successClassName").innerHTML = $('select[id="studentClass"').val();
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    alert('import Student error: ' + textStatus);
+                }
+            });
+        }
 
     </script>
   

@@ -1,6 +1,6 @@
-id,name,lastname,email
-5682221826,Fernando,Torress,torress@hotmail.com
-5682221827,Steven,Gerrard,gerd@hotmail.com
-5682221828,Rahim,Stering,rahim@hotmail.com
-5682221829,Frank,Rampard,frank@hotmail.com
-5682221830,Lucus,Leva,lucas@hotmail.com
+id,name,lastname,email,GPA
+5682221826,Fernando,Torress,torress@hotmail.com,3.44
+5682221827,Steven,Gerrard,gerd@hotmail.com,3.55
+5682221828,Rahim,Stering,rahim@hotmail.com,3.66
+5682221829,Frank,Rampard,frank@hotmail.com,3.77
+5682221830,Lucus,Leva,lucas@hotmail.com,3.88
