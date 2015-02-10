@@ -59,7 +59,54 @@ function importStudents(){
 }
 
 function importSubjects(){
-	
+	//sameple data 
+	$jsonData = '{"data":[{"id": 2601512,"name": "FINANCE XYZ","description": "FINANCE XYZ description","credit": 3},{"id": 2601513,"name": "FINANCE XYZ2","description": "FINANCE XYZ2 description","credit": 2}]}';
+
+	$app = \Slim\Slim::getInstance();
+	$request = $app->request();
+	$subject_arr = json_decode($request->getBody());
+	//$subject_arr = json_decode($jsonData);
+	$importstatus = true;
+	$db = new DBManager();
+	$db->beginSet();
+
+	foreach($subject_arr->data as $subject){
+		$sql = "merge SUBJECT as target
+			using (values ('$subject->id', '$subject->name', '$subject->description', '$subject->credit'))
+			    as source (subject_id, name, description, credit)
+			    on target.subject_id = '$subject->id'
+			when matched then
+			    update
+			    set name = source.name,
+			        description = source.description,
+			        defaultpoint = source.credit,
+			        updatedate = GETDATE()
+			when not matched then
+			    insert ( subject_id, name, description, defaultpoint, addeddate)
+			    values ( subject_id,  source.name, source.description, source.credit, GETDATE());";
+
+		if($db->setData($sql))
+		{
+			$importstatus = true;
+		}
+		else
+		{
+			$importstatus = false;
+			break;
+		}
+	}
+	if ($importstatus)
+	{
+		$db->commitWork();
+        $app->response->setBody(json_encode(array("status"=>"success")));
+    }
+    else
+	{
+		$db->rollbackWork();
+        $app->response->setBody(json_encode(array("status"=>"fail")));
+        $app->response->write(json_encode($db->errmsg()));    	
+	}
+    $db = null;
 }
 
 
