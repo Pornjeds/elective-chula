@@ -9,11 +9,11 @@ function importStudents(){
 	$request = $app->request();
 	$student_arr = json_decode($request->getBody());
 	//$student_arr = json_decode($jsonData);
-	$importstatus = true;
+	$importstatus = false;
 	$db = new DBManager();
 	$db->beginSet();
-	foreach($student_arr as $students){
-		foreach($students as $student){
+	try {
+		foreach($student_arr->data as $student){
 			$sql = "merge STUDENT as target
 				using (values ('$student->name', '$student->lastname', '$student->classofid', '$student->email', '$student->password', '$student->profilepic', '$student->GPA', '$student->status'))
 				    as source (name, lastname, classofid, email, password, profilepic, GPA, student_status)
@@ -43,6 +43,9 @@ function importStudents(){
 		    	break;
 		    }
 		}
+	} catch(Exception $e) {
+		echo '{"error":{"source":"input","reason":'. $e->getMessage() .'}}';
+		return;
 	}
 	if ($importstatus)
 	{
@@ -66,34 +69,38 @@ function importSubjects(){
 	$request = $app->request();
 	$subject_arr = json_decode($request->getBody());
 	//$subject_arr = json_decode($jsonData);
-	$importstatus = true;
+	$importstatus = false;
 	$db = new DBManager();
 	$db->beginSet();
+	try {
+		foreach($subject_arr->data as $subject){
+			$sql = "merge SUBJECT as target
+				using (values ('$subject->id', '$subject->name', '$subject->description', '$subject->credit'))
+				    as source (subject_id, name, description, credit)
+				    on target.subject_id = '$subject->id'
+				when matched then
+				    update
+				    set name = source.name,
+				        description = source.description,
+				        defaultpoint = source.credit,
+				        updatedate = GETDATE()
+				when not matched then
+				    insert ( subject_id, name, description, defaultpoint, addeddate)
+				    values ( subject_id,  source.name, source.description, source.credit, GETDATE());";
 
-	foreach($subject_arr->data as $subject){
-		$sql = "merge SUBJECT as target
-			using (values ('$subject->id', '$subject->name', '$subject->description', '$subject->credit'))
-			    as source (subject_id, name, description, credit)
-			    on target.subject_id = '$subject->id'
-			when matched then
-			    update
-			    set name = source.name,
-			        description = source.description,
-			        defaultpoint = source.credit,
-			        updatedate = GETDATE()
-			when not matched then
-			    insert ( subject_id, name, description, defaultpoint, addeddate)
-			    values ( subject_id,  source.name, source.description, source.credit, GETDATE());";
-
-		if($db->setData($sql))
-		{
-			$importstatus = true;
+			if($db->setData($sql))
+			{
+				$importstatus = true;
+			}
+			else
+			{
+				$importstatus = false;
+				break;
+			}
 		}
-		else
-		{
-			$importstatus = false;
-			break;
-		}
+	} catch(Exception $e) {
+		echo '{"error":{"source":"input","reason":'. $e->getMessage() .'}}';
+		return;
 	}
 	if ($importstatus)
 	{
