@@ -1,8 +1,12 @@
-﻿/* Empty table */
+﻿USE [eaw01]
+GO
+
+/* Empty table */
 truncate table dbo.ADMIN_AUDITLOG
 truncate table dbo.STUDENT_CONFIRMED_ENROLLMENT
 truncate table dbo.STUDENT_ENROLLMENT
 truncate table dbo.SUBJECT_CLASSOF
+truncate table dbo.CLASSOF_SEMESTER
 truncate table dbo.TMP_SELECTION
 
 
@@ -49,75 +53,30 @@ INSERT INTO [eaw01].[dbo].[SUBJECT] ([subject_id],[name] ,[description] ,[defaul
 ( 6, 'ENTREPRENUR', 'description ENTRE' , 3, GETDATE(), GETDATE() )
 
 /* [eaw01].[dbo].[[SUBJECT_CLASSOF]]  */
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[point], [addeddate], [updatedate]) VALUES
-( 1, 1, '4' , 10, 40, 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[point], [addeddate], [updatedate]) VALUES
-( 1, 2, '4' , 10, 40, 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[point], [addeddate], [updatedate]) VALUES
-( 1, 3, '4' , 10, 40, 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[point], [addeddate], [updatedate]) VALUES
-( 2, 4, '4' , 10, 40, 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[point], [addeddate], [updatedate]) VALUES
-( 2, 5, '4' , 10, 40, 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[point], [addeddate], [updatedate]) VALUES
-( 2, 6, '4' , 10, 40, 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[point], [addeddate], [updatedate]) VALUES
-( 3, 1, '4' , 10, 40, 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[point], [addeddate], [updatedate]) VALUES
-( 3, 2, '4' , 10, 40, 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[point], [addeddate], [updatedate]) VALUES
-( 3, 3, '4' , 10, 40, 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[point], [addeddate], [updatedate]) VALUES
-( 3, 4, '4' , 10, 40, 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[point], [addeddate], [updatedate]) VALUES
-( 3, 5, '4' , 10, 40, 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[point], [addeddate], [updatedate]) VALUES
-( 3, 6, '4' , 10, 40, 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[point], [addeddate], [updatedate]) VALUES
-( 5, 1, '5' , 10, 40, 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[point], [addeddate], [updatedate]) VALUES
-( 5, 2, '5' , 10, 40, 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[point], [addeddate], [updatedate]) VALUES
-( 5, 3, '5' , 10, 40, 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[point], [addeddate], [updatedate]) VALUES
-( 2, 4, '5' , 10, 40, 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[point], [addeddate], [updatedate]) VALUES
-( 2, 5, '5' , 10, 40, 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[point], [addeddate], [updatedate]) VALUES
-( 2, 6, '5' , 10, 40, 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[point], [addeddate], [updatedate]) VALUES
-( 3, 1, '5' , 10, 40, 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[point], [addeddate], [updatedate]) VALUES
-( 3, 2, '5' , 10, 40, 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[point], [addeddate], [updatedate]) VALUES
-( 3, 3, '5' , 10, 40, 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[point], [addeddate], [updatedate]) VALUES
-( 6, 4, '5' , 10, 40, 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[point], [addeddate], [updatedate]) VALUES
-( 6, 5, '5' , 10, 40, 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[point], [addeddate], [updatedate]) VALUES
-( 6, 6, '5' , 10, 40, 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[point], [addeddate], [updatedate]) VALUES
-( 1, 1, '6' , 10, 40, 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[point], [addeddate], [updatedate]) VALUES
-( 1, 2, '6' , 10, 40, 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[point], [addeddate], [updatedate]) VALUES
-( 1, 3, '6' , 10, 40, 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[point], [addeddate], [updatedate]) VALUES
-( 1, 4, '6' , 10, 40, 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[point], [addeddate], [updatedate]) VALUES
-( 1, 5, '6' , 10, 40, 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[point], [addeddate], [updatedate]) VALUES
-( 1, 6, '6' , 10, 40, 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[point], [addeddate], [updatedate]) VALUES
-( 3, 1, '6' , 20, 30, 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[point], [addeddate], [updatedate]) VALUES
-( 3, 2, '6' , 20, 30, 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[point], [addeddate], [updatedate]) VALUES
-( 3, 3, '6' , 5, 30, 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[point], [addeddate], [updatedate]) VALUES
-( 4, 4, '6' , 5, 30, 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[point], [addeddate], [updatedate]) VALUES
-( 4, 5, '6' , 5, 30, 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[point], [addeddate], [updatedate]) VALUES
-( 5, 6, '6' , 5, 30, 3, GETDATE(), GETDATE() )
+INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[credit], [dayofweek], [timeofday], [instructor], [isRequired], [addeddate], [updatedate]) VALUES
+( 1, 1, '4' , 10, 40, 3, 1, 2, 'Dr. A BCD', 0, GETDATE(), GETDATE() )
+INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[credit], [dayofweek], [timeofday], [instructor], [isRequired], [addeddate], [updatedate]) VALUES
+( 2, 1, '4' , 10, 40, 3, 1, 2, 'Dr. A BCD', 0, GETDATE(), GETDATE() )
+INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[credit], [dayofweek], [timeofday], [instructor], [isRequired], [addeddate], [updatedate]) VALUES
+( 3, 1, '4' , 10, 40, 3, 1, 2, 'Dr. A BCD', 0, GETDATE(), GETDATE() )
+INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[credit], [dayofweek], [timeofday], [instructor], [isRequired], [addeddate], [updatedate]) VALUES
+( 4, 1, '4' , 10, 40, 3, 1, 2, 'Dr. A BCD', 0, GETDATE(), GETDATE() )
+INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[credit], [dayofweek], [timeofday], [instructor], [isRequired], [addeddate], [updatedate]) VALUES
+( 5, 1, '4' , 10, 40, 3, 1, 2, 'Dr. A BCD', 0, GETDATE(), GETDATE() )
+INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[credit], [dayofweek], [timeofday], [instructor], [isRequired], [addeddate], [updatedate]) VALUES
+( 6, 1, '4' , 10, 40, 3, 1, 2, 'Dr. A BCD', 0, GETDATE(), GETDATE() )
+
+/* [eaw01].[dbo].[[CLASSOF_SEMESTER]]  */
+INSERT INTO [eaw01].[dbo].[CLASSOF_SEMESTER] ([classof_id] ,[semester] ,[mincredit] ,[maxcredit] ,[pickmethod_id], [addeddate], [updatedate]) VALUES
+( 1, '4' , 6, 9, 0, GETDATE(), GETDATE() )
+
+/* [eaw01].[dbo].[[PICKMETHOD]]  */
+INSERT INTO [eaw01].[dbo].[PICKMETHOD] ([pickmethod_id] ,[name], [addeddate], [updatedate]) VALUES
+( 0, 'First Come First Serve' , GETDATE(), GETDATE() )
+INSERT INTO [eaw01].[dbo].[PICKMETHOD] ([pickmethod_id] ,[name], [addeddate], [updatedate]) VALUES
+( 1, 'Sorting By GPA' , GETDATE(), GETDATE() )
+INSERT INTO [eaw01].[dbo].[PICKMETHOD] ([pickmethod_id] ,[name], [addeddate], [updatedate]) VALUES
+( 2, 'Random out by rank' , GETDATE(), GETDATE() )
+
+
+

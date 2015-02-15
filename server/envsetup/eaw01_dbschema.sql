@@ -241,7 +241,7 @@ CREATE TABLE [dbo].[SUBJECT_CLASSOF](
 	[dayofweek] [int] NOT NULL,
 	[timeofday] [int] NOT NULL,
 	[instructor] [nvarchar](256) NOT NULL,
-	[required] [bit] NOT NULL,
+	[isRequired] [bit] NOT NULL,
 	[addeddate] [datetime] NOT NULL,
 	[updatedate] [datetime] NULL,
  CONSTRAINT [PK_SUBJECT_CLASSOF] PRIMARY KEY CLUSTERED 
@@ -249,6 +249,42 @@ CREATE TABLE [dbo].[SUBJECT_CLASSOF](
 	[subject_id] ASC,
 	[classof_id] ASC,
 	[semester] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[SEMESTER_CLASSOF]    Script Date: 01/12/2015 23:44:56 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[CLASSOF_SEMESTER](
+	[classof_id] [int] NOT NULL,
+	[semester] [nchar](10) NOT NULL,
+	[mincredit] [int] NOT NULL,
+	[maxcredit] [int] NOT NULL,
+	[pickmethod_id] [int] NOT NULL,
+	[addeddate] [datetime] NOT NULL,
+	[updatedate] [datetime] NULL,
+ CONSTRAINT [PK_CLASSOF_SEMESTER] PRIMARY KEY CLUSTERED 
+(
+	[classof_id] ASC,
+	[semester] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[PICKMETHOD]    Script Date: 01/12/2015 23:44:56 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[PICKMETHOD](
+	[pickmethod_id] [int] NOT NULL,
+	[name] [nvarchar](200) NOT NULL,
+	[addeddate] [datetime] NOT NULL,
+	[updatedate] [datetime] NULL,
+ CONSTRAINT [PK_PICKMETHOD] PRIMARY KEY CLUSTERED 
+(
+	[pickmethod_id] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -369,6 +405,13 @@ REFERENCES [dbo].[SUBJECT] ([subject_id])
 ON DELETE CASCADE
 GO
 ALTER TABLE [dbo].[SUBJECT_CLASSOF] CHECK CONSTRAINT [FK_SUBJECT_CLASSOF_SUBJECT]
+GO
+/****** Object:  ForeignKey [FK_SUBJECT_CLASSOF_CLASSOF]    Script Date: 01/12/2015 23:44:56 ******/
+ALTER TABLE [dbo].[CLASSOF_SEMESTER]  WITH CHECK ADD  CONSTRAINT [FK_CLASSOF_SEMESTER_CLASSOF] FOREIGN KEY([classof_id])
+REFERENCES [dbo].[CLASSOF] ([classof_id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[CLASSOF_SEMESTER] CHECK CONSTRAINT [FK_CLASSOF_SEMESTER_CLASSOF]
 GO
 /****** Object:  ForeignKey [FK_TMP_SELECTION_CLASSOF]    Script Date: 01/12/2015 23:44:56 ******/
 ALTER TABLE [dbo].[TMP_SELECTION]  WITH CHECK ADD  CONSTRAINT [FK_TMP_SELECTION_CLASSOF] FOREIGN KEY([classof_id])
