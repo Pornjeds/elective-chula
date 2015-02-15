@@ -153,7 +153,6 @@ function updateClassOf(){
         echo '{"error":{"text":'. $e->getMessage() .'}}';
     }
 }
-}
 
 function deleteClassOf(){
 	try {

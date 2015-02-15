@@ -60,6 +60,7 @@ $app->group('/api/v1', function() use ($app){
 
     $app->group('/classof', function() use ($app){
         $app->get('/test/:name', 'test');
+        $app->get('/', 'listClassOf');
         $app->get('/:id', 'getClassOfById');
         $app->post('/detail', 'getClassOfByIdPost');
         $app->post('/list', 'listClassOf');
