@@ -17,12 +17,12 @@ Delete from dbo.ADMIN_MEMBER
 Delete from dbo.USER_ROLE
 
 /* [eaw01].[dbo].[[CLASSOF]]  */
-INSERT INTO [eaw01].[dbo].[CLASSOF] ([classof_id] ,[classof_description]) VALUES ( 1,'19/1' )
-INSERT INTO [eaw01].[dbo].[CLASSOF] ([classof_id] ,[classof_description]) VALUES ( 2,'19/2' )
-INSERT INTO [eaw01].[dbo].[CLASSOF] ([classof_id] ,[classof_description]) VALUES ( 3,'20/1' )
-INSERT INTO [eaw01].[dbo].[CLASSOF] ([classof_id] ,[classof_description]) VALUES ( 4,'20/2' )
-INSERT INTO [eaw01].[dbo].[CLASSOF] ([classof_id] ,[classof_description]) VALUES ( 5,'21/1' )
-INSERT INTO [eaw01].[dbo].[CLASSOF] ([classof_id] ,[classof_description]) VALUES ( 6,'21/2' )
+INSERT INTO [eaw01].[dbo].[CLASSOF] ([classof_description]) VALUES ( '19/1' )
+INSERT INTO [eaw01].[dbo].[CLASSOF] ([classof_description]) VALUES ( '19/2' )
+INSERT INTO [eaw01].[dbo].[CLASSOF] ([classof_description]) VALUES ( '20/1' )
+INSERT INTO [eaw01].[dbo].[CLASSOF] ([classof_description]) VALUES ( '20/2' )
+INSERT INTO [eaw01].[dbo].[CLASSOF] ([classof_description]) VALUES ( '21/1' )
+INSERT INTO [eaw01].[dbo].[CLASSOF] ([classof_description]) VALUES ( '21/2' )
 
 /* [eaw01].[dbo].[STUDENT]  */
 INSERT INTO [eaw01].[dbo].[STUDENT] ([student_id],[classof_id],[name],[lastname],[email],[password],[profilepic],[GPA],[addeddate],[updatedate],[student_status]) VALUES 
@@ -71,12 +71,12 @@ INSERT INTO [eaw01].[dbo].[CLASSOF_SEMESTER] ([classof_id] ,[semester] ,[mincred
 ( 1, '4' , 6, 9, 0, GETDATE(), GETDATE() )
 
 /* [eaw01].[dbo].[[PICKMETHOD]]  */
-INSERT INTO [eaw01].[dbo].[PICKMETHOD] ([pickmethod_id] ,[name], [addeddate], [updatedate]) VALUES
-( 0, 'First Come First Serve' , GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[PICKMETHOD] ([pickmethod_id] ,[name], [addeddate], [updatedate]) VALUES
-( 1, 'Sorting By GPA' , GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[PICKMETHOD] ([pickmethod_id] ,[name], [addeddate], [updatedate]) VALUES
-( 2, 'Random out by rank' , GETDATE(), GETDATE() )
+INSERT INTO [eaw01].[dbo].[PICKMETHOD] ([name], [addeddate], [updatedate]) VALUES
+( 'First Come First Serve' , GETDATE(), GETDATE() )
+INSERT INTO [eaw01].[dbo].[PICKMETHOD] ([name], [addeddate], [updatedate]) VALUES
+( 'Sorting By GPA' , GETDATE(), GETDATE() )
+INSERT INTO [eaw01].[dbo].[PICKMETHOD] ([name], [addeddate], [updatedate]) VALUES
+( 'Random out by rank' , GETDATE(), GETDATE() )
 
 
 
