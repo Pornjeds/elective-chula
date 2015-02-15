@@ -506,7 +506,16 @@
     
         //WHEN SUBMIT
         function onSubmitSubject(){
-            var result = '';
+            var idMethod = '#methodPicker';
+            var idMinUnitTerm = '#minUnitTerm';
+            var idMaxUnitTerm = '#maxUnitTerm';
+            var jsonObj = { 
+                'subjectsdata' : [],
+                'mincredit' : $(idMinUnitTerm).val(),
+                'maxcredit' : $(idMaxUnitTerm).val(),
+                'pickermethod' : $(idMethod).val()
+            };
+            //
             $('#step2Area').children().first().children().each( function(index){
                 var idTextSubject = '#item' + index + '_subject';
                 var idDate = '#item' + index + '_date';
@@ -523,16 +532,47 @@
                         return 0;
                     }
                 };
-                result += $(idTextSubject).text() + ',' + $(idDate).val() + ',' + $(idTime).val() + ',' + $(idUnitNumber).val() + ',' + $(idTeacher).val() + ',' + $(idNumMin).val() + ',' + $(idNumSupport).val() + ',' + isRequiredValue() + '\n';
-            });
-            
-            var idMethod = '#methodPicker';
-            var idMinUnitTerm = '#minUnitTerm';
-            var idMaxUnitTerm = '#maxUnitTerm';
-            result += +'\n' + 'Min unit is: ' + $(idMinUnitTerm).val() + '\n' + 'Max unit is: ' + $(idMaxUnitTerm).val() + '\n' + 'Method picker is: ' +   $(idMethod).val();
-            alert( result);
+                //
+                var tmpObj = {
+                    "subject_id": $(idTextSubject).text(),
+                    "dayofweek": $(idDate).val(),
+                    "timeofday": $(idTime).val(),
+                    "credit": $(idUnitNumber).val(),
+                    "instructor": $(idTeacher).val(),
+                    "minstudent": $(idNumMin).val(),
+                    "maxstudent": $(idNumSupport).val(),
+                    "isRequired": isRequiredValue()
+                }
+                //
+                //[GIE] for subject_id I still use TEXT because I don't know the real id. We can change after I can get subject_id
+                jsonObj['subjectsdata'].push(tmpObj);
+            } );
+            console.log( JSON.stringify( jsonObj ) );  
+            //THEN SEND THIS DATA TO WEB SERVICE
+            enrollSubjectsToDatabase( jsonObj );
         }
-        
+        //
+        function enrollSubjectsToDatabase(jsonObj){
+            var jsonString = JSON.stringify( jsonObj );
+            //[GIE] we will change service location here
+            var urlStr = window.location.origin + '/server/admin_api.php/api/v1/import/students';
+            $.ajax({
+                type: 'POST',
+                contentType: 'application/json',
+                url: urlStr,
+                dataType: 'json',
+                data: jsonString,
+                success: function(data, textStatus, jqXHR){
+                    /*
+                    document.getElementById('import-success').style.display = 'block';
+                    document.getElementById('import-warning').style.display = 'none';
+                    document.getElementById("successClassName").innerHTML = $('select[id="studentClass"').val();
+                    */
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    alert('enroll subject error: ' + textStatus);
+                }
+            });
     </script>
   
     </body>
