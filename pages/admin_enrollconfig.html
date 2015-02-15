@@ -516,7 +516,14 @@
                 var idNumSupport = '#item' + index + '_numberSupport';
                 var idNumMin = '#item' + index + '_minNumber';
                 var idIsRequired = '#item' + index + '_isRequired';
-                result += $(idTextSubject).text() + ',' + $(idDate).val() + ',' + $(idTime).val() + ',' + $(idUnitNumber).val() + ',' + $(idTeacher).val() + ',' + $(idNumMin).val() + ',' + $(idNumSupport).val() + ',' + $(idIsRequired).is(':checked') + '\n';
+                var isRequiredValue = function(){
+                    if ($(idIsRequired).is(':checked')) {
+                        return 1;
+                    }else{
+                        return 0;
+                    }
+                };
+                result += $(idTextSubject).text() + ',' + $(idDate).val() + ',' + $(idTime).val() + ',' + $(idUnitNumber).val() + ',' + $(idTeacher).val() + ',' + $(idNumMin).val() + ',' + $(idNumSupport).val() + ',' + isRequiredValue() + '\n';
             });
             
             var idMethod = '#methodPicker';

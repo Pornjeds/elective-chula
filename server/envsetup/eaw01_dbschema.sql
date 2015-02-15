@@ -237,7 +237,11 @@ CREATE TABLE [dbo].[SUBJECT_CLASSOF](
 	[semester] [nchar](10) NOT NULL,
 	[minstudent] [int] NOT NULL,
 	[maxstudent] [int] NOT NULL,
-	[point] [float] NOT NULL,
+	[credit] [float] NOT NULL,
+	[dayofweek] [int] NOT NULL,
+	[timeofday] [int] NOT NULL,
+	[instructor] [nvarchar](256) NOT NULL,
+	[required] [bit] NOT NULL,
 	[addeddate] [datetime] NOT NULL,
 	[updatedate] [datetime] NULL,
  CONSTRAINT [PK_SUBJECT_CLASSOF] PRIMARY KEY CLUSTERED 
