@@ -55,7 +55,6 @@ $app->group('/api/v1', function() use ($app){
         $app->post('/detail', 'getSubjectInfoByIdPost');
         $app->post('/list', 'listSubjectByClassOfAndSemester');
         $app->post('/submit', 'submitSubjectRegistration');
-        $app->post('/update', 'updateSubjectRegistration');
     });
 
     $app->group('/classof', function() use ($app){

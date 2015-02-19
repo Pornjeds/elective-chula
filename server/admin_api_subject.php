@@ -217,9 +217,6 @@ input
         echo '{"error":{"source":"SQL","reason": SQL'. $e->getMessage() .'}}';
     }
 }
-        
-function updateSubjectRegistration(){
 
-}
 
 ?>
