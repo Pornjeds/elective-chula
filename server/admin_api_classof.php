@@ -106,11 +106,25 @@ function addClassOf(){
     
 	try {
 		$db = new DBManager();
+        $db->beginSet();
+        if($db->setData($sql))
+        {
+        	$db->commitWork();
+        }
+        else
+		{
+			$db->rollbackWork();
+            $app->response->setBody(json_encode(array("status"=>"fail")));
+            $app->response->write(json_encode($db->errmsg()));    	
+		}
+
+		//add class of completed. Prepare a list of all classof to return
+		$sql = "SELECT classof_id, classof_description FROM CLASSOF";
 		$result = $db->getData($sql);
 		$nrow = 0;
 		if ($result){
 			while($row = sqlsrv_fetch_array($result)){
-				$nrow = $row[0];
+				array_push($response_arr, $row);
 			}
 		}
 		$db = null;
