@@ -246,6 +246,8 @@
         $(document).ready(function () {
             //ACTIVATE DDL
             $('.selectpicker').selectpicker();
+            //GET STUDENTCLASS
+            getStudentClass();
         });
         //
         //WHEN SELECT CLASS FROM CRITERIA
@@ -573,6 +575,28 @@
                     alert('enroll subject error: ' + textStatus);
                 }
             });
+        }
+        //
+        function getStudentClass(){
+            var urlStr = window.location.origin + '/server/admin_api.php/api/v1/classof/list';
+            $.ajax({
+                type: 'POST',
+                contentType: 'application/json',
+                url: urlStr,
+                dataType: 'json',
+                success: function(data, textStatus, jqXHR){                   
+                    $('#studentYear').empty();
+                    $('#studentYear').append( "<option value='' selected disabled>รุ่นนิสิต</option>");
+                    for(var i=0; i< data.length; i++){
+                        $('#studentYear').append( "<option value=' " + data[i]['classof_id'] + "'>" + data[i]['classof_description'] +'</option>' );
+                    }
+                    $('.selectpicker').selectpicker('refresh');
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    alert('enroll subject error: ' + textStatus);
+                }
+            });
+        }
     </script>
   
     </body>
