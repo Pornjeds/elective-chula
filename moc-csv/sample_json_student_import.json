@@ -1,7 +1,6 @@
 {"data":
 	[{
 		"student_id":47010678,
-		"classofid":"1",
 		"name":"name1",
 		"lastname":"lastname1",
 		"email":"email1@gmail.com",
@@ -11,7 +10,6 @@
 	},
 	{
 		"student_id":47010677,
-		"classofid":"1",
 		"name":"name2",
 		"lastname":"lastname2",
 		"email":"email2@gmail.com",
@@ -19,5 +17,6 @@
 		"profilepic":"default.jpg",
 		"GPA":"2.59",
 		"status":"1"
-	}]
+	}],
+	"classof_id":"1"
 }
