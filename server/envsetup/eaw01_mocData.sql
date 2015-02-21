@@ -51,6 +51,10 @@ INSERT INTO [eaw01].[dbo].[SUBJECT] ([subject_id],[name] ,[description] ,[defaul
 ( 5, 'INTERFINANCIAL', 'description INTER FIN' , 3, GETDATE(), GETDATE() )
 INSERT INTO [eaw01].[dbo].[SUBJECT] ([subject_id],[name] ,[description] ,[defaultpoint] ,[addeddate] ,[updatedate]) VALUES
 ( 6, 'ENTREPRENUR', 'description ENTRE' , 3, GETDATE(), GETDATE() )
+INSERT INTO [eaw01].[dbo].[SUBJECT] ([subject_id],[name] ,[description] ,[defaultpoint] ,[addeddate] ,[updatedate]) VALUES
+( 7, 'INTERFINANCIAL2', 'description INTER FIN' , 3, GETDATE(), GETDATE() )
+INSERT INTO [eaw01].[dbo].[SUBJECT] ([subject_id],[name] ,[description] ,[defaultpoint] ,[addeddate] ,[updatedate]) VALUES
+( 8, 'ENTREPRENUR2', 'description ENTRE' , 3, GETDATE(), GETDATE() )
 
 /* [eaw01].[dbo].[[SUBJECT_CLASSOF]]  */
 INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[credit], [dayofweek], [timeofday], [instructor], [isRequired], [addeddate], [updatedate]) VALUES

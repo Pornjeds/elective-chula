@@ -64,7 +64,7 @@ function importStudents(){
 
 function importSubjects(){
 	//sameple data 
-	$jsonData = '{"data":[{"id": 2601512,"name": "FINANCE XYZ","description": "FINANCE XYZ description","credit": 3},{"id": 2601513,"name": "FINANCE XYZ2","description": "FINANCE XYZ2 description","credit": 2}]}';
+	//$jsonData = '{"data":[{"id": 2601512,"name": "FINANCE XYZ","description": "FINANCE XYZ description","credit": 3},{"id": 2601513,"name": "FINANCE XYZ2","description": "FINANCE XYZ2 description","credit": 2}]}';
 
 	$app = \Slim\Slim::getInstance();
 	$request = $app->request();
