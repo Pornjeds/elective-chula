@@ -3,6 +3,7 @@
 function getSubjectInfoById($id){
 	try {
 	    $app = \Slim\Slim::getInstance();
+	    $app->response->headers->set('Content-Type', 'application/json');
 		$sql = "SELECT subject_id, name, description, defaultpoint, addeddate, updatedate FROM SUBJECT where subject_id = '$id'";
 	} catch(Exception $e) {
 		echo '{"error":{"source":"input","reason":'. $e->getMessage() .'}}';
@@ -19,7 +20,6 @@ function getSubjectInfoById($id){
 			}
 		}
 		$db = null;
-		$app->response->headers->set('Content-Type', 'application/json');
         $app->response->setBody(json_encode($response_arr));
 	} catch(PDOException $e) {
         echo '{"error":{"source":"SQL","reason": SQL'. $e->getMessage() .'}}';
@@ -29,6 +29,7 @@ function getSubjectInfoById($id){
 function getSubjectInfoByIdPost(){
 	try {
 		$app = \Slim\Slim::getInstance();
+		$app->response->headers->set('Content-Type', 'application/json');
 	    $request = $app->request();
 	    $id = json_decode($request->getBody())->subject_id;
 		$sql = "SELECT subject_id, name, description, defaultpoint, addeddate, updatedate FROM SUBJECT where subject_id = '$id'";
@@ -47,7 +48,6 @@ function getSubjectInfoByIdPost(){
 			}
 		}
 		$db = null;
-		$app->response->headers->set('Content-Type', 'application/json');
         $app->response->setBody(json_encode($response_arr));
 	} catch(PDOException $e) {
         echo '{"error":{"source":"SQL","reason": SQL'. $e->getMessage() .'}}';
@@ -57,6 +57,7 @@ function getSubjectInfoByIdPost(){
 function listSubjectByClassOfAndSemester(){
 	try {
 		$app = \Slim\Slim::getInstance();
+		$app->response->headers->set('Content-Type', 'application/json');
 	    $request = $app->request();
 	    $classof_id = json_decode($request->getBody())->classof_id;
 	    $semester = json_decode($request->getBody())->semester;
@@ -76,7 +77,6 @@ function listSubjectByClassOfAndSemester(){
 			}
 		}
 		$db = null;
-		$app->response->headers->set('Content-Type', 'application/json');
         $app->response->setBody(json_encode($response_arr));
 	} catch(PDOException $e) {
         echo '{"error":{"source":"SQL","reason": SQL'. $e->getMessage() .'}}';
@@ -120,6 +120,7 @@ input
 
 	try {
 		$app = \Slim\Slim::getInstance();
+		$app->response->headers->set('Content-Type', 'application/json');
 	    $request = $app->request();
 	    $subjectarr = json_decode($request->getBody())->subjectsdata;
 	    $classof_id = json_decode($request->getBody())->classof_id;
