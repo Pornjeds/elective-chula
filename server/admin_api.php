@@ -63,6 +63,7 @@ $app->group('/api/v1', function() use ($app){
         $app->get('/:id', 'getClassOfById');
         $app->post('/detail', 'getClassOfByIdPost');
         $app->post('/list', 'listClassOf');
+        $app->post('/listandcountstudent', 'listClassOfAndCountStatus');
         $app->post('/add', 'addClassOf');
         $app->post('/update', 'updateClassOf');
         $app->post('/delete', 'deleteClassOf');

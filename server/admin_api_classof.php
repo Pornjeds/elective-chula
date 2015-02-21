@@ -92,6 +92,38 @@ function listClassOf(){
     }
 }
 
+function listClassOfAndCountStatus(){
+	try {
+		$app = \Slim\Slim::getInstance();
+		$app->response->headers->set('Content-Type', 'application/json');
+	    $request = $app->request();
+		$sql = "SELECT a.classof_id
+				      ,classof_description
+				      ,COUNT(b.classof_id) AS student_count
+				  FROM CLASSOF a
+				  LEFT JOIN STUDENT b ON a.classof_id = b.classof_id
+				  group by a.classof_id, a.classof_description";
+	} catch(Exception $e) {
+		echo '{"error":{"source":"input","reason":'. $e->getMessage() .'}}';
+		return;
+	}
+    
+	try {
+		$db = new DBManager();
+		$result = $db->getData($sql);
+		$response_arr = array();
+		if ($result){
+			while($row = sqlsrv_fetch_array($result)){
+				array_push($response_arr, $row);
+			}
+		}
+		$db = null;
+        $app->response->setBody(json_encode($response_arr));
+	} catch(PDOException $e) {
+        echo '{"error":{"source":"SQL","reason": SQL'. $e->getMessage() .'}}';
+    }
+}
+
 function addClassOf(){
 	try {
 		//check for duplicate first
