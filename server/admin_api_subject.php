@@ -61,7 +61,10 @@ function listSubjectByClassOfAndSemester(){
 	    $request = $app->request();
 	    $classof_id = json_decode($request->getBody())->classof_id;
 	    $semester = json_decode($request->getBody())->semester;
-		$sql = "SELECT subject_id, classof_id, semester, minstudent, maxstudent, credit, dayofweek, timeofday, instructor, isRequired, addeddate, updatedate FROM SUBJECT_CLASSOF where classof_id = '$classof_id' and semester = '$semester'";
+		$sql = "SELECT a.subject_id, b.name, classof_id, semester, minstudent, maxstudent, credit, dayofweek, timeofday, instructor, isRequired, a.addeddate, a.updatedate 
+			FROM SUBJECT_CLASSOF a 
+			LEFT JOIN SUBJECT b ON a.subject_id = b.subject_id
+			where classof_id = '$classof_id' and semester = '$semester'";
 	} catch(Exception $e) {
 		echo '{"error":{"source":"input","reason":'. $e->getMessage() .'}}';
 		return;
