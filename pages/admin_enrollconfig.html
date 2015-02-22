@@ -152,10 +152,6 @@
                 <div style='padding: 5px 5px 5px 5px; margin-right: 5px; display: inline-block;'>
                     <select id='studentYear' class="selectpicker">
                         <option value="" selected disabled>รุ่นนิสิต</option>
-                        <option>20/1</option>
-                        <option>20/2</option>
-                        <option>21/1</option>
-                        <option>21/2</option>
                     </select>
                 </div> 
                 <div style='padding: 5px 5px 5px 5px; margin-right: 5px; display: inline-block;'>
@@ -166,7 +162,7 @@
                         <option>6</option>
                     </select>
                 </div> 
-                <input style='margin-left: 8px;' type='button' class="btn btn-success" onClick='queryFromCriteria();' value='Update' />
+                <input style='margin-left: 8px;' type='button' class="btn btn-success" onClick='getSubjectList();' value='Update' />
             </div>
          </div>
       <hr>
@@ -215,9 +211,14 @@
                     <option value='2'>Random out by rank</option>
                 </select>
             </div>
-            <div style='margin-top: 20px;'>
+            <div style='margin-top: 20px;' id='buttonArea'>
                 <input  type='button' class="btn btn-primary" onClick='toggleToSteps(1)' value='Back' />
                 <input style='margin-left: 20px;' type='button' class="btn btn-success" onClick='onSubmitSubject();' value='Submit' />
+            </div>
+            <div class="alert alert-success" role="alert" id="import-success" style="display:none; margin-top: 20px;"><b>SUCCESS</b> ทำการ Enrollment เรียบร้อยแล้ว</div>
+            <div class="alert alert-warning" role="alert" id="import-warning" style="display:none; margin-top: 20px;"><b>WARNING</b> Enrollment Error</div>
+            <div style='display: none; margin-top: 20px;' id='reloadAgain'>
+                <input  type='button' class="btn btn-primary" value='Enrollment Again?' onClick='location.reload();'/>
             </div>
       </div>
       
@@ -243,87 +244,109 @@
     <script src="../scripts/js/ie10-viewport-bug-workaround.js"></script>
 
     <script>
+        var subjectList = [];
+        var subjectListId = [];
+        var subjectListObj = {};
         $(document).ready(function () {
             //ACTIVATE DDL
             $('.selectpicker').selectpicker();
             //GET STUDENTCLASS
-            getStudentClass();
+            getStudentClassList();
         });
-        //
+        
         //WHEN SELECT CLASS FROM CRITERIA
         function queryFromCriteria(){
-            if( $('#studentYear').val() === null || $('#studentSemester').val() === null ){
-                alert('Please select criteria first');
+            $('#sortableMain').empty();
+            $('#selectedZone').empty();
+
+            for(var i =0; i < subjectList.length; i++){
+                var tmpLiElement = document.createElement('li');
+                tmpLiElement.innerHTML = subjectList[ i ];
+                tmpLiElement.setAttribute('tmpSelected', subjectListObj[ i ].selected);
+                tmpLiElement.setAttribute('subjectId', $.trim(subjectListObj[i].subject_id));
+                $('#sortableMain').append( tmpLiElement );
             }
-            else{
-                $('#sortableMain').empty();
-                $('#selectedZone').empty();
-                var mocTotalSubject = ['INTER FINANCIAL', 'ENTREPRENEUR', 'ORGANIZATION BEHAVIOUR', 'OPERATION MANAGEMENT', 'MARKETING MANAGEMENT', 'FINANCIAL MANAGEMENT', 'FOUNDAMENTAL ACCOUNTING', 'DECISION MAKING', 'ECON BUS MANAGEMENT', 'MANAGEMENT ACCOUNT', 'STAT BUS ADMIN' ]
-                for(var i =0; i < mocTotalSubject.length; i++){
-                    var tmpLiElement = document.createElement('li');
-                    tmpLiElement.innerHTML = mocTotalSubject[ i ];
-                    $('#sortableMain').append( tmpLiElement );
-                }
-                //
-                //ADD <UL> LANDING ITEMS
-                var selectedZoneElement = document.getElementById('selectedZone');
-                var initialNum = 5;
-                for( var i=0; i< initialNum; i++){
-                    var tmpUIElement =  document.createElement('ul');
-                    tmpUIElement.id = 'sortable' + i;
-                    tmpUIElement.className = 'connectedSortable';
-                    tmpUIElement.style.padding = '0px';
-                    tmpUIElement.style.marginBottom = '0px';
-                    selectedZoneElement.appendChild( tmpUIElement );
-                }
-                
-                //BIND DRAG/SORABLE EVENT
-                $( '.connectedSortable' ).sortable({
-                    connectWith: ".connectedSortable",
-                    stop: function( event, ui) {
-                        //SUPPORT SWAP
-                        var parentElement = event.toElement.parentElement;
-                        if( parentElement.childElementCount > 1 && parentElement.id !== 'sortableMain' ){
-                            for( var i=0; i< parentElement.childElementCount; i++ ){
-                                if( event.toElement.innerHTML !== parentElement.children[ i ].innerHTML ){
-                                    event.target.appendChild( parentElement.children[i] );
-                                    break;
-                                }
+            //
+            //ADD <UL> LANDING ITEMS
+            var selectedZoneElement = document.getElementById('selectedZone');
+            var initialNum = 5;
+            for( var i=0; i< initialNum; i++){
+                var tmpUIElement =  document.createElement('ul');
+                tmpUIElement.id = 'sortable' + i;
+                tmpUIElement.className = 'connectedSortable';
+                tmpUIElement.style.padding = '0px';
+                tmpUIElement.style.marginBottom = '0px';
+                selectedZoneElement.appendChild( tmpUIElement );
+            }
+            
+            //BIND DRAG/SORABLE EVENT
+            $( '.connectedSortable' ).sortable({
+                connectWith: ".connectedSortable",
+                stop: function( event, ui) {
+                    //SUPPORT SWAP
+                    var parentElement = event.toElement.parentElement;
+                    if( parentElement.childElementCount > 1 && parentElement.id !== 'sortableMain' ){
+                        for( var i=0; i< parentElement.childElementCount; i++ ){
+                            if( event.toElement.innerHTML !== parentElement.children[ i ].innerHTML ){
+                                event.target.appendChild( parentElement.children[i] );
+                                break;
                             }
                         }
-                        
-                        
-                        /*
-                        var sortableElements = $('.connectedSortable');
-                        for(var i=0; i< sortableElements.length; i++){
-                            if( sortableElements[ i ].id !== 'sortableMain' && sortableElements[ i ].children.length > 1 ){
-                                $(this).sortable( 'cancel');
-                            }
-                        }
-                        */
-                        
-                        var countSelectedItem = countSelectedItemText();
-                        if( $('#selectedZone').children().length <= countSelectedItem ){
-                            var tmpUIElement =  document.createElement('ul');
-                            tmpUIElement.id = 'sortable' + (countSelectedItem+1) ;
-                            tmpUIElement.className = 'connectedSortable';
-                            tmpUIElement.style.padding = '0px';
-                            tmpUIElement.style.marginBottom = '0px';
-                            $('#selectedZone').append( tmpUIElement );
-                            //ACTIVATE FOR NEW ITEM ADDED
-                            $( '.connectedSortable' ).sortable({
-                                connectWith: ".connectedSortable"
-                            }).disableSelection();
-                        }
-                    },
-                    receive: function(){
-                        countSelectedItemText();
                     }
-                }).disableSelection();
-                //
-                $('#step1Area').fadeIn(300);
+                    
+                    var countSelectedItem = countSelectedItemText();
+                    if( $('#selectedZone').children().length <= countSelectedItem ){
+                        var tmpUIElement =  document.createElement('ul');
+                        tmpUIElement.id = 'sortable' + (countSelectedItem+1) ;
+                        tmpUIElement.className = 'connectedSortable';
+                        tmpUIElement.style.padding = '0px';
+                        tmpUIElement.style.marginBottom = '0px';
+                        $('#selectedZone').append( tmpUIElement );
+                        //ACTIVATE FOR NEW ITEM ADDED
+                        $( '.connectedSortable' ).sortable({
+                            connectWith: ".connectedSortable"
+                        }).disableSelection();
+                    }
+                },
+                receive: function(){
+                    countSelectedItemText();
+                }
+            }).disableSelection();
+            //
+            $('#step1Area').fadeIn(300);
+            //
+            //MOVE SELECTED TO RIGHT PANEL           
+            var indexMove = 0;
+            while( indexMove < $('#sortableMain').children().length){
+                if( $('#sortableMain').children()[ indexMove ].getAttribute('tmpselected') === "1" ){                    
+                    //
+                    var countSelectedItem = countSelectedItemText();
+                    if( $('#selectedZone').children().length <= countSelectedItem ){
+                        var tmpUIElement =  document.createElement('ul');
+                        tmpUIElement.id = 'sortable' + (countSelectedItem+1) ;
+                        tmpUIElement.className = 'connectedSortable';
+                        tmpUIElement.style.padding = '0px';
+                        tmpUIElement.style.marginBottom = '0px';
+                        $('#selectedZone').append( tmpUIElement );
+                        //ACTIVATE FOR NEW ITEM ADDED
+                        $( '.connectedSortable' ).sortable({
+                            connectWith: ".connectedSortable"
+                        }).disableSelection();
+                    }
+                    //
+                    for( var i=0; i < $('#selectedZone').children().length; i++ ){
+                        if( ! $('#selectedZone').children()[i].hasChildNodes() ){
+                            $('#selectedZone').children()[i].appendChild( $('#sortableMain').children()[ indexMove ] );
+                            break;
+                        }
+                    }//for
+                    indexMove  = 0;
+                }else{
+                    indexMove++;
+                }
             }
         }
+        
         //COUNT <LI> FOR MANAGE ADDTIONAL <UL> LANDING ITEMS
         function countSelectedItemText(){
             var countSelectedItem = 0;
@@ -355,6 +378,13 @@
                 //GENERATE ITEMS FOLLOW STEP-1
                 $('#selectedZone').children().each(function(){
                     if( $(this).children().length > 0 ){
+                        var tmpPersistObj = {};
+                        for(var i=0; i< subjectListObj.length; i++){
+                            if( $.trim(subjectListObj[ i ].subject_id) === $(this).children()[0].getAttribute('subjectId') ){
+                                tmpPersistObj = subjectListObj[ i ];
+                            }
+                        }
+                        //
                         var itemDiv = document.createElement('div');
                         itemDiv.id = 'item' + index;
                         itemDiv.className = 'step2div';
@@ -369,6 +399,7 @@
                         itemDivTextSubject.style.verticalAlign = 'middle';
                         itemDivTextSubject.innerHTML = $(this).children().text();
                         itemDiv.appendChild( itemDivTextSubject )
+                        itemDiv.setAttribute('subjectId', $(this).children()[0].getAttribute('subjectId'));
                         //DDL DATE
                         var itemDivSubject = document.createElement('div');
                         itemDivSubject.style.display = 'inline-block';
@@ -390,6 +421,9 @@
                             var tmpOption = document.createElement('option');
                             tmpOption.setAttribute('value', i );
                             tmpOption.innerHTML = days[i];
+                            if( tmpPersistObj.dayofweek === i ){
+                                tmpOption.setAttribute('selected', true);
+                            }
                             itemDivSubjectSelect.appendChild( tmpOption );
                         }
                         //DDL TIMEs
@@ -412,6 +446,9 @@
                             var tmpOption = document.createElement('option');
                             tmpOption.setAttribute('value', i );
                             tmpOption.innerHTML = times[i];
+                            if( tmpPersistObj.timeofday === i ){
+                                tmpOption.setAttribute('selected', true);
+                            }
                             itemDivSubjectSelect.appendChild( tmpOption );
                         }
                         //TEXT UNIT OF SUBJECT
@@ -428,6 +465,7 @@
                         itemDivUnitnput.setAttribute('type', 'text');
                         itemDivUnitnput.style.width = '80px';
                         itemDivUnitnput.setAttribute('placeholder', 'หน่วยกิจ');
+                        itemDivUnitnput.setAttribute('value', tmpPersistObj.credit);
                         itemDivUnitSubject.appendChild( itemDivUnitnput );
                         //TEXT TEACHER
                         var itemDivTeacher = document.createElement('div');
@@ -442,6 +480,7 @@
                         itemDivTeacherInput.setAttribute('type', 'text');
                         itemDivTeacherInput.style.width = '140px';
                         itemDivTeacherInput.setAttribute('placeholder', 'ชื่ออาจารย์ผู้สอน');
+                        itemDivTeacherInput.setAttribute('value', tmpPersistObj.instructor);
                         itemDivTeacher.appendChild( itemDivTeacherInput );
                         //TEXT MINIMUM NUMBER TO OPEN
                         var itemDivMinNumber = document.createElement('div');
@@ -462,6 +501,7 @@
                         itemDivNumberSupportInput.style.paddingTop = '4px';
                         itemDivNumberSupportInput.setAttribute('type', 'text');
                         itemDivNumberSupportInput.setAttribute('placeholder', '#สูงสุด');
+                        itemDivNumberSupportInput.setAttribute('value', tmpPersistObj.maxstudent)
                         itemDivNumberSupport.appendChild( itemDivNumberSupportInput );
                         //
                         var itemDivMinNumberInput = document.createElement('input');
@@ -470,6 +510,7 @@
                         itemDivMinNumberInput.style.paddingTop = '4px';
                         itemDivMinNumberInput.setAttribute('type', 'text');
                         itemDivMinNumberInput.setAttribute('placeholder', '#ขั้นต่ำ');
+                        itemDivMinNumberInput.setAttribute('value', tmpPersistObj.minstudent);
                         itemDivMinNumber.appendChild( itemDivMinNumberInput );
                         //CHECKBOX 'REQUIRED' SUBJECT?
                         var itemDivIsRequired = document.createElement('div');
@@ -486,6 +527,9 @@
                         itemDivIsRequiredInput.setAttribute('type', 'checkbox');
                         itemDivIsRequiredInput.style.width = '15px';
                         itemDivIsRequiredInput.style.display = 'inline-block';
+                        if( tmpPersistObj.isRequired === 1 ){
+                            itemDivIsRequiredInput.setAttribute('checked', true);
+                        }
                         itemDivIsRequired.appendChild( itemDivIsRequiredInput );
                         //
                         var itemDivIsRequiredLabel = document.createElement('div');
@@ -513,6 +557,8 @@
             var idMaxUnitTerm = '#maxUnitTerm';
             var jsonObj = { 
                 'subjectsdata' : [],
+                'classof_id' :  $('#studentYear').val(),
+                'semester' :  $('#studentSemester').val(),
                 'mincredit' : $(idMinUnitTerm).val(),
                 'maxcredit' : $(idMaxUnitTerm).val(),
                 'pickermethod' : $(idMethod).val()
@@ -536,7 +582,7 @@
                 };
                 //
                 var tmpObj = {
-                    "subject_id": $(idTextSubject).text(),
+                    "subject_id": $(idTextSubject).parent().attr('subjectId'),
                     "dayofweek": $(idDate).val(),
                     "timeofday": $(idTime).val(),
                     "credit": $(idUnitNumber).val(),
@@ -553,11 +599,12 @@
             //THEN SEND THIS DATA TO WEB SERVICE
             enrollSubjectsToDatabase( jsonObj );
         }
+        
         //
         function enrollSubjectsToDatabase(jsonObj){
             var jsonString = JSON.stringify( jsonObj );
             //[GIE] we will change service location here
-            var urlStr = window.location.origin + '/server/admin_api.php/api/v1/import/students';
+            var urlStr = window.location.origin + '/server/admin_api.php/api/v1/subject/submit';
             $.ajax({
                 type: 'POST',
                 contentType: 'application/json',
@@ -565,19 +612,23 @@
                 dataType: 'json',
                 data: jsonString,
                 success: function(data, textStatus, jqXHR){
-                    /*
                     document.getElementById('import-success').style.display = 'block';
                     document.getElementById('import-warning').style.display = 'none';
-                    document.getElementById("successClassName").innerHTML = $('select[id="studentClass"').val();
-                    */
+                    document.getElementById('reloadAgain').style.display = 'block';
+                    document.getElementById('buttonArea').style.display = 'none';
                 },
                 error: function(jqXHR, textStatus, errorThrown){
-                    alert('enroll subject error: ' + textStatus);
+                    window.console.log('enroll subject error: ' + textStatus);
+                    document.getElementById('import-success').style.display = 'none';
+                    document.getElementById('import-warning').style.display = 'block';
+                    document.getElementById('reloadAgain').style.display = 'none';
+                    document.getElementById('buttonArea').style.display = 'block';
                 }
             });
         }
+        
         //
-        function getStudentClass(){
+        function getStudentClassList(){
             var urlStr = window.location.origin + '/server/admin_api.php/api/v1/classof/list';
             $.ajax({
                 type: 'POST',
@@ -588,7 +639,7 @@
                     $('#studentYear').empty();
                     $('#studentYear').append( "<option value='' selected disabled>รุ่นนิสิต</option>");
                     for(var i=0; i< data.length; i++){
-                        $('#studentYear').append( "<option value=' " + data[i]['classof_id'] + "'>" + data[i]['classof_description'] +'</option>' );
+                        $('#studentYear').append( "<option value='" + data[i]['classof_id'] + "'>" + data[i]['classof_description'] +'</option>' );
                     }
                     $('.selectpicker').selectpicker('refresh');
                 },
@@ -596,6 +647,41 @@
                     alert('enroll subject error: ' + textStatus);
                 }
             });
+        }
+        
+        //
+        function getSubjectList(){
+            if( $('#studentYear').val() === null || $('#studentSemester').val() === null ){
+                alert('Please select criteria first');
+            }
+            else{
+                var urlStr = window.location.origin + '/server/admin_api.php/api/v1/subject/list';
+                var jsonObj = {
+                    'classof_id': $('#studentYear').val(),                  //1
+                    'semester': $('#studentSemester').val()             //4
+                };
+                $.ajax({
+                    type: 'POST',
+                    contentType: 'application/json',
+                    url: urlStr,
+                    data: JSON.stringify( jsonObj ),
+                    dataType: 'json',
+                    success: function(data, textStatus, jqXHR){
+                        subjectList = [];
+                        subjectListId = [];
+                        subjectListObj = data;
+                        for(var i=0; i<data.length; i++){
+                            subjectList.push( data[i].name );
+                            subjectListId.push( data[i].id );
+                        }
+                        //GENERATE SUBJECT ITEMS
+                        queryFromCriteria();
+                    },
+                    error: function(jqXHR, textStatus, errorThrown){
+                        alert('enroll subject error: ' + textStatus);
+                    }
+                });
+            }
         }
     </script>
   
