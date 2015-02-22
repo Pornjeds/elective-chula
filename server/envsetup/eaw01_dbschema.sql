@@ -515,7 +515,7 @@ BEGIN
 			, dayofweek, timeofday, instructor, isRequired, a.addeddate, a.updatedate 
 				FROM SUBJECT_CLASSOF a 
 				RIGHT JOIN SUBJECT b ON a.subject_id = b.subject_id
-				where (classof_id = '2' and semester = '5') OR (classof_id is NULL and semester is NULL)
+				where (classof_id = @classof_id and semester = @semester) OR (classof_id is NULL and semester is NULL)
 			
 	INSERT INTO #TMP_SUBJECTCLASSOF (subject_id, name, credit, selected) (
 	SELECT subject_id, name, defaultpoint, 0 FROM [SUBJECT] WHERE subject_id not in 
