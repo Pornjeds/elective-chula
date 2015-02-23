@@ -143,23 +143,9 @@ input
 	    	$maxstudent = $subject->maxstudent;
 	    	$isRequired = $subject->isRequired;
 
-	    	$sqlarr[$i] = "merge SUBJECT_CLASSOF as target
-				using (values ('$subject_id', '$classof_id', '$semester', '$minstudent', '$maxstudent', '$credit', '$dayofweek', '$timeofday', '$instructor', '$isRequired'))
-				    as source (subject_id, classof_id, semester, minstudent, maxstudent, credit, dayofweek, timeofday, instructor, isRequired)
-				    on target.classof_id = '$classof_id' AND target.semester = '$semester' AND target.subject_id = '$subject_id'
-				when matched then
-				    update
-				    set minstudent = source.minstudent,
-				        maxstudent = source.maxstudent,
-				        credit = source.credit,
-				        dayofweek = source.dayofweek,
-				        timeofday = source.timeofday,
-				        instructor = source.instructor,
-				        isRequired = source.isRequired,
-				        updatedate = GETDATE()
-				when not matched then
-				    insert (subject_id, classof_id, semester, minstudent, maxstudent, credit, dayofweek, timeofday, instructor, isRequired, addeddate)
-				    values (source.subject_id, source.classof_id, source.semester, source.minstudent, source.maxstudent, source.credit, source.dayofweek, source.timeofday, source.instructor, source.isRequired, GETDATE());";
+	    	$sqlarr[$i] = "INSERT INTO 
+	    				SUBJECT_CLASSOF (subject_id, classof_id, semester, minstudent, maxstudent, credit, dayofweek, timeofday, instructor, isRequired, addeddate, updatedate)
+	    				VALUES ('$subject_id', '$classof_id', '$semester', '$minstudent', '$maxstudent', '$credit', '$dayofweek', '$timeofday', '$instructor', '$isRequired', GETDATE(), GETDATE())";
 	    	$i++;
 	    }
 
@@ -177,6 +163,9 @@ input
 				when not matched then
 				    insert ( classof_id, semester, mincredit, maxcredit, pickmethod_id, addeddate)
 				    values ( source.classof_id, source.semester, source.semester_mincredit, source.semester_maxcredit, source.semester_pickermethod, GETDATE());";
+
+		//sql to remove the current SUBJECT_CLASSOF of the specified classof_id and semester
+		$sqlRemove = "DELETE FROM SUBJECT_CLASSOF where classof_id = '$classof_id' AND semester = '$semester'";
 		
 	} catch(Exception $e) {
 		echo '{"error":{"source":"input","reason":'. $e->getMessage() .'}}';
@@ -184,9 +173,15 @@ input
 	}
 
 	try {
+		$submitStatus = true;
 		$db = new DBManager();
 		$db->beginSet();
-		$submitStatus = true;
+		if(!$db->setData($sqlRemove))
+		{
+			//echo $sqlRemove;
+			$submitStatus = false;
+			break;
+		}
 		foreach ($sqlarr as $sql){
 			if(!$db->setData($sql))
         	{
