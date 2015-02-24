@@ -206,9 +206,6 @@
                 </div>
                 <select class='selectpicker' id='methodPicker'>
                     <option value='N/A' selected disabled>วิธีที่ใช้ตัดสินกรณีไม่ลงตัว</option>
-                    <option value='0'>First Come First Serve</option>
-                    <option value='1'>Sorting by GPA</option>
-                    <option value='2'>Random out by rank</option>
                 </select>
             </div>
             <div style='margin-top: 20px;' id='buttonArea'>
@@ -252,6 +249,8 @@
             $('.selectpicker').selectpicker();
             //GET STUDENTCLASS
             getStudentClassList();
+            //GET PICKMETHOD
+            getPickMethodList();
         });
         
         //WHEN SELECT CLASS FROM CRITERIA
@@ -363,11 +362,14 @@
         //SWITCHER BETWEEN 1/2
         function toggleToSteps( value ){
             if( value === 1 ){
-                //REMOVE CURRENT EXISTING ITEMS
-                $('#step2Area').children().first().empty();
-                //
-                $('#step1Area').fadeIn(300);
-                $('#step2Area').fadeOut(10);
+                var resultConfirm = confirm("Please note that if you press 'OK' the data that you changing will be revert to data from database because you still not submit.");
+                if( resultConfirm === true ){            
+                    //REMOVE CURRENT EXISTING ITEMS
+                    $('#step2Area').children().first().empty();
+                    //
+                    $('#step1Area').fadeIn(300);
+                    $('#step2Area').fadeOut(10);
+                }
             }
             else if( value === 2 ){
                 if( countSelectedItemText() === 0 ){
@@ -644,7 +646,7 @@
                     $('.selectpicker').selectpicker('refresh');
                 },
                 error: function(jqXHR, textStatus, errorThrown){
-                    alert('enroll subject error: ' + textStatus);
+                    alert('get Student Class error: ' + textStatus);
                 }
             });
         }
@@ -678,10 +680,32 @@
                         queryFromCriteria();
                     },
                     error: function(jqXHR, textStatus, errorThrown){
-                        alert('enroll subject error: ' + textStatus);
+                        alert('get Subject error: ' + textStatus);
                     }
                 });
             }
+        }
+        
+        //
+        function getPickMethodList(){
+            var urlStr = window.location.origin + '/server/admin_api.php/api/v1/enrollmentadmin/listpickmethod';
+            $.ajax({
+                type: 'POST',
+                contentType: 'application/json',
+                url: urlStr,
+                dataType: 'json',
+                success: function(data, textStatus, jqXHR){
+                    $('#methodPicker').empty();
+                    $('#methodPicker').append( "<option value='' selected disabled>วิธีที่ใช้ตัดสินกรณีไม่ลงตัว</option>");
+                    for(var i=0; i< data.length; i++){
+                        $('#methodPicker').append( "<option value='" + data[i]['pickmethod_id'] + "'>" + data[i]['name'] +'</option>' );
+                    }
+                    $('.selectpicker').selectpicker('refresh');
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    alert('get Pick Method error: ' + textStatus);
+                }
+            });
         }
     </script>
   
