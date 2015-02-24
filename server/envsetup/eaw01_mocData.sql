@@ -82,5 +82,24 @@ INSERT INTO [eaw01].[dbo].[PICKMETHOD] ([name], [addeddate], [updatedate]) VALUE
 INSERT INTO [eaw01].[dbo].[PICKMETHOD] ([name], [addeddate], [updatedate]) VALUES
 ( 'Random out by rank' , GETDATE(), GETDATE() )
 
+/* [eaw01].[dbo].[[ADMIN_MEMBER]]  */
+INSERT INTO [eaw01].[dbo].[ADMIN_MEMBER] ([name], [lastname], [email], [password], [addeddate]) VALUES
+('Admin A', 'a', 'admina@admin.com', '123456', GETDATE())
+INSERT INTO [eaw01].[dbo].[ADMIN_MEMBER] ([name], [lastname], [email], [password], [addeddate]) VALUES
+('Admin B', 'b', 'adminb@admin.com', '123456', GETDATE())
+INSERT INTO [eaw01].[dbo].[ADMIN_MEMBER] ([name], [lastname], [email], [password], [addeddate]) VALUES
+('Admin C', 'c', 'adminc@admin.com', '123456', GETDATE())
+INSERT INTO [eaw01].[dbo].[ADMIN_MEMBER] ([name], [lastname], [email], [password], [addeddate]) VALUES
+('Admin d', 'd', 'admind@admin.com', '123456', GETDATE())
+
+/* [eaw01].[dbo].[[USER_ROLE]] */
+INSERT INTO [eaw01].[dbo].[USER_ROLE] ([user_id], [role], [updatedate]) VALUES
+('1', 'Admin', GETDATE())
+INSERT INTO [eaw01].[dbo].[USER_ROLE] ([user_id], [role], [updatedate]) VALUES
+('2', 'Admin', GETDATE())
+INSERT INTO [eaw01].[dbo].[USER_ROLE] ([user_id], [role], [updatedate]) VALUES
+('5682221822', 'Admin', GETDATE())
+INSERT INTO [eaw01].[dbo].[USER_ROLE] ([user_id], [role], [updatedate]) VALUES
+('5682221824', 'Admin', GETDATE())
 
 

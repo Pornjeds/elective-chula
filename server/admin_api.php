@@ -1,6 +1,7 @@
 <?php
 require_once 'Slim/Slim.php';
 require_once 'DBManager_sqlserver.php';
+require_once 'admin_api_account.php';
 require_once 'admin_api_student.php';
 require_once 'admin_api_import.php';
 require_once 'admin_api_subject.php';
@@ -33,6 +34,13 @@ $app->configureMode('development', function () use ($app) {
 
 //Rounting
 $app->group('/api/v1', function() use ($app){
+    $app->group('/account', function() use ($app){
+        $app->post('/listusers', 'listAccountUsers');
+        $app->post('/listadmin', 'listAccountAdmin');
+        $app->post('/update', 'updateListOfAdmin');
+
+    });
+
 	$app->group('/student', function() use ($app){
 		$app->get('/test/:name', 'test');
 		$app->get('/:id', 'getStudentById');
