@@ -170,7 +170,12 @@ function addClassOf(){
         if($db->setData($sql))
         {
         	$db->commitWork();
-        	$sql = "SELECT classof_id, classof_description FROM CLASSOF";
+        	$sql = "SELECT a.classof_id
+				      ,classof_description
+				      ,COUNT(b.classof_id) AS student_count
+				  FROM CLASSOF a
+				  LEFT JOIN STUDENT b ON a.classof_id = b.classof_id
+				  group by a.classof_id, a.classof_description";
 			$result = $db->getData($sql);
 			$response_arr = array();
 			if ($result){
