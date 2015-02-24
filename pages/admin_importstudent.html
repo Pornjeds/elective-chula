@@ -101,18 +101,14 @@
           <div style='padding: 5px 5px 5px 5px; margin-right: 5px; display:inline-block;'>
             <select id='studentClass' class="selectpicker" onchange='studentClassOnChange(this);'>
               <option value="" selected disabled>รุ่นนิสิต</option>
-              <option>20/1</option>
-              <option>20/2</option>
-              <option>21/1</option>
-              <option>21/2</option>
-              <option>เพิ่มรุ่นนิสิต</option>
+              <option value="add">เพิ่มรุ่นนิสิต</option>
             </select>
           </div> 
-          <div style='padding: 5px 5px 5px 5px; margin-right: 5px; display:none;' id='import-input'>
-            <input type="text" class="form-control" placeholder="รุ่น">
+          <div style='padding: 5px 5px 5px 5px; margin-right: 5px; display:none;' >
+            <input type="text" class="form-control" placeholder="รุ่น" id='import-input' />
           </div>
           <div style='padding: 5px 5px 5px 5px; display:none;' id='import-input-button'>
-            <input id='bt_query' type='button' class="btn btn-success" value='เพิ่ม'  />
+            <input id='bt_query' type='button' class="btn btn-success" value='เพิ่ม' onclick='addStudentClass();' />
           </div>
           <div style='clear:both'></div>
         </div>
@@ -150,6 +146,8 @@
     <script>
         $(document).ready(function () {
             $('.selectpicker').selectpicker();
+            //GET STUDENTCLASS
+            getStudentClassList();
         });
 
         function getFile(){
@@ -206,10 +204,9 @@
                     return "";
             }
         };
-        function errorFn(error, file)
-        {
+        function errorFn(error, file){
             console.log("ERROR:", error, file);
-        }
+        };
         function completeFn()
         {
             end = performance.now();
@@ -243,16 +240,19 @@
             console.log( JSON.stringify( jsonObj ) );            
             //THEN SEND THIS DATA TO WEB SERVICE
             importStudentToDatabase( jsonObj );
-        }
+        };
+        //
         function studentClassOnChange(sel){
-          if (sel.value === 'เพิ่มรุ่นนิสิต'){
-            document.getElementById('import-input').style.display = 'inline-block';
+          if (sel.value === 'add'){
+            document.getElementById('import-input').parentElement.style.display = 'inline-block';
             document.getElementById('import-input-button').style.display = 'inline-block';
             document.getElementById('import-warning').style.display = 'none';
             document.getElementById('import-success').style.display = 'none';
           }
           else
           {
+            document.getElementById('import-input').parentElement.style.display = 'none';
+            document.getElementById('import-input-button').style.display = 'none';
             document.getElementById('import-warning').style.display = 'block';
             document.getElementById('import-success').style.display = 'none';
           }
@@ -276,8 +276,71 @@
                     alert('import Student error: ' + textStatus);
                 }
             });
-        }
-
+        };
+        //
+        function getStudentClassList(){
+            var urlStr = window.location.origin + '/server/admin_api.php/api/v1/classof/list';
+            $.ajax({
+                type: 'POST',
+                contentType: 'application/json',
+                url: urlStr,
+                dataType: 'json',
+                success: function(data, textStatus, jqXHR){                   
+                    $('#studentClass').empty();
+                    $('#studentClass').append( "<option value='' selected disabled>รุ่นนิสิต</option>");
+                    for(var i=0; i< data.length; i++){
+                        $('#studentClass').append( "<option value='" + data[i]['classof_id'] + "'>" + data[i]['classof_description'] +'</option>' );
+                    }
+                    $('#studentClass').append( "<option value='add' >เพิ่มรุ่นนิสิต</option>");
+                    $('.selectpicker').selectpicker('refresh');
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    alert('get Student Class error: ' + textStatus);
+                }
+            });
+        };
+        //
+        function addStudentClass(){
+            var addClassValue = $.trim( $('#import-input').val() );
+            if( addClassValue === '' ){
+                alert('Please input student class that you want to add.');
+            }
+            else{
+                var urlStr = window.location.origin + '/server/admin_api.php/api/v1/classof/add';
+                var jsonObj = {
+                    "classof_description": addClassValue
+                };
+                $.ajax({
+                    type: 'POST',
+                    contentType: 'application/json',
+                    url: urlStr,
+                    data: JSON.stringify( jsonObj ),
+                    dataType: 'json',
+                    success: function(data, textStatus, jqXHR){                   
+                        $('#studentClass').empty();
+                        $('#studentClass').append( "<option value='' disabled>รุ่นนิสิต</option>");
+                        for(var i=0; i< data.length; i++){
+                            if( $.trim( data[i]['classof_description'] ) === addClassValue ){
+                                $('#studentClass').append( "<option selected value='" + data[i]['classof_id'] + "'>" + data[i]['classof_description'] +'</option>' );
+                            }
+                            else{
+                                $('#studentClass').append( "<option value='" + data[i]['classof_id'] + "'>" + data[i]['classof_description'] +'</option>' );
+                            }
+                        }
+                        $('#studentClass').append( "<option value='add' >เพิ่มรุ่นนิสิต</option>");
+                        $('.selectpicker').selectpicker('refresh');
+                        //
+                        document.getElementById('import-input').parentElement.style.display = 'none';
+                        document.getElementById('import-input-button').style.display = 'none';
+                        document.getElementById('import-warning').style.display = 'none';
+                        document.getElementById('import-success').style.display = 'none';
+                    },
+                    error: function(jqXHR, textStatus, errorThrown){
+                        alert('add Student Class error: ' + textStatus);
+                    }
+                });
+            }
+        };
     </script>
   
     </body>
