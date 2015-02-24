@@ -253,8 +253,14 @@
           {
             document.getElementById('import-input').parentElement.style.display = 'none';
             document.getElementById('import-input-button').style.display = 'none';
-            document.getElementById('import-warning').style.display = 'block';
             document.getElementById('import-success').style.display = 'none';
+            //
+            if( sel.selectedOptions[0].getAttribute('studentCount') > 0 ){
+                document.getElementById('import-warning').style.display = 'block';
+            }
+            else{
+                document.getElementById('import-warning').style.display = 'none';
+            }
           }
         };
         //
@@ -279,7 +285,7 @@
         };
         //
         function getStudentClassList(){
-            var urlStr = window.location.origin + '/server/admin_api.php/api/v1/classof/list';
+            var urlStr = window.location.origin + '/server/admin_api.php/api/v1/classof/listandcountstudent';
             $.ajax({
                 type: 'POST',
                 contentType: 'application/json',
@@ -289,7 +295,7 @@
                     $('#studentClass').empty();
                     $('#studentClass').append( "<option value='' selected disabled>รุ่นนิสิต</option>");
                     for(var i=0; i< data.length; i++){
-                        $('#studentClass').append( "<option value='" + data[i]['classof_id'] + "'>" + data[i]['classof_description'] +'</option>' );
+                        $('#studentClass').append( "<option studentCount='" + data[i]['student_count'] + "' value='" + data[i]['classof_id'] + "'>" + $.trim( data[i]['classof_description'] ) +'</option>' );
                     }
                     $('#studentClass').append( "<option value='add' >เพิ่มรุ่นนิสิต</option>");
                     $('.selectpicker').selectpicker('refresh');
