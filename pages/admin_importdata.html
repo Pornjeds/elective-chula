@@ -79,20 +79,18 @@
           ระบบนำข้อมูลจาก template (.csv) เข้าสู่ระบบ โดยข้อมูลนี้จะเป็นข้อมูลที่ใช้แสดงให้กับนิสิตในการลงทะเบียนของแต่ละเทอม/ปีการศึกษา
         </p>
       </div>
-
       <hr>
-
-      <div class="alert alert-success" role="alert" id="import-success" style="display:none;"><b>SUCCESS</b> ทำการ Import ข้อมูลวิชาเรียนของนิสิตรุ่น 20/1 เทอม 5 เรียบร้อยแล้ว</div>
-
+      
       <div style='background:#ffffff; width: 100%; border: 1px solid #c8c8c8; text-align: center;'>
         <div style='padding:10px;'>
-          <div class="alert alert-warning" role="alert" id="import-warning" style="display:none"><b>WARNING</b> นิสิตรุ่น 20/1 เทอม 4 มีข้อมูลวิชาเรียนอยู่แล้ว ท่านต้องการจะ Import ซ้ำใช่หรือไม่</div>
           <div>
             <input type="file" id="files" class="btn btn-default" style='display:inline-block'>
             <input type="submit" value='Import' onClick='importBtClicked();' class="btn btn-primary" style='display:inline-block'>
           </div>
         </div>
       </div>
+      <div class="alert alert-success" role="alert" id="import-success" style="display:none; margin-top: 10px; text-align: center;">Import ข้อมูลวิชาเรียน <b>SUCCESS</b></div>
+      
       <hr>
       <footer class="footer">
         <div style='margin-bottom: 60px'>
@@ -118,26 +116,6 @@
             $('.selectpicker').selectpicker();
 
         });
-        
-        function generateReport(){
-            var result1 = $('#studentClass').val();
-            var result2 = $('#studentSemester').val();
-            if( result1 === null || result2 === null ){
-                alert( 'Please select criteria first');
-            }else{        
-                alert( result1 + ' , ' + result2 );
-            }
-
-            if( result1 === '20/1' && result2 === '4')
-            {
-              document.getElementById('import-warning').style.display = 'block';
-            }
-            else
-            {
-              document.getElementById('import-warning').style.display = 'none';
-              document.getElementById('import-success').style.display = 'none';
-            }
-        };
 
         function importBtClicked(){
             //CONVERT *.CSV FILE TO BE IN JSON OBJECT
@@ -206,7 +184,7 @@
             var jsonObj = { data: [] };
             for(var i=1; i< arguments[0].data.length; i++){ //SKIP HEADER COL ROW
                 var tmpObj = {
-                        'subject_id': arguments[0].data[i][0],
+                        'id': arguments[0].data[i][0],
                         'name': arguments[0].data[i][1],
                         'description': arguments[0].data[i][2],
                         'credit': arguments[0].data[i][3]
@@ -216,8 +194,27 @@
             
             console.log( JSON.stringify( jsonObj ) );            
             //THEN SEND THIS DATA TO WEB SERVICE
+            document.getElementById('import-success').style.display = 'none';
+            importSubjectToDatabase( jsonObj );
         }
-
+        //
+        function importSubjectToDatabase(jsonObj){
+            var jsonString = JSON.stringify( jsonObj );
+            var urlStr = window.location.origin + '/server/admin_api.php/api/v1/import/subjects';
+            $.ajax({
+                type: 'POST',
+                contentType: 'application/json',
+                url: urlStr,
+                dataType: 'json',
+                data: jsonString,
+                success: function(data, textStatus, jqXHR){
+                    document.getElementById('import-success').style.display = 'block';
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    alert('import subject error: ' + textStatus);
+                }
+            });
+        };
     </script>
   
     </body>
