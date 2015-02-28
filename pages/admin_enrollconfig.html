@@ -4,6 +4,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -613,6 +614,7 @@
                 url: urlStr,
                 dataType: 'json',
                 data: jsonString,
+                contentType: "text/plain; charset=UTF-8",
                 success: function(data, textStatus, jqXHR){
                     document.getElementById('import-success').style.display = 'block';
                     document.getElementById('import-warning').style.display = 'none';
@@ -637,6 +639,7 @@
                 contentType: 'application/json',
                 url: urlStr,
                 dataType: 'json',
+                contentType: "text/plain; charset=UTF-8",
                 success: function(data, textStatus, jqXHR){                   
                     $('#studentYear').empty();
                     $('#studentYear').append( "<option value='' selected disabled>รุ่นนิสิต</option>");
@@ -668,6 +671,7 @@
                     url: urlStr,
                     data: JSON.stringify( jsonObj ),
                     dataType: 'json',
+                    contentType: "text/plain; charset=UTF-8",
                     success: function(data, textStatus, jqXHR){
                         subjectList = [];
                         subjectListId = [];
@@ -694,6 +698,7 @@
                 contentType: 'application/json',
                 url: urlStr,
                 dataType: 'json',
+                contentType: "text/plain; charset=UTF-8",
                 success: function(data, textStatus, jqXHR){
                     $('#methodPicker').empty();
                     $('#methodPicker').append( "<option value='' selected disabled>วิธีที่ใช้ตัดสินกรณีไม่ลงตัว</option>");
