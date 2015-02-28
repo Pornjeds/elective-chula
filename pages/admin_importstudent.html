@@ -220,23 +220,23 @@
                 'classof_id' : $('select[id="studentClass"').val()
             };
             
-            for(var i=1; i< arguments[0].data.length; i++){ //SKIP HEADER COL ROW
+            for(var i=0; i< arguments[0].data.length; i++){ //SKIP HEADER COL ROW
                 if( arguments[0].data[i][0] == '' ){
                     continue;
                 }
                 var tmpObj = {
                         'student_id': arguments[0].data[i][0],
-                        'name': arguments[0].data[i][1],
-                        'lastname': arguments[0].data[i][2],
-                        'email': arguments[0].data[i][3],
+                        'name': arguments[0].data[ i ][1].split("  ")[0],
+                        'lastname': arguments[0].data[ i ][1].split("  ")[1],
+                        'email': 'default@gmail.com',
                         'password': 'welcome1',
                         'profilepic': 'default.jpg',
-                        'GPA': arguments[0].data[i][4],
+                        'GPA': 0,
                         'status': 1
                 }
                 jsonObj.data.push(tmpObj);                
             }
-            console.log( JSON.stringify( jsonObj ) );            
+            //console.log( JSON.stringify( jsonObj ) );            
             //THEN SEND THIS DATA TO WEB SERVICE
             importStudentToDatabase( jsonObj );
         };
