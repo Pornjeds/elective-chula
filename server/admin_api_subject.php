@@ -62,6 +62,7 @@ function listSubjectByClassOfAndSemester(){
 	    $classof_id = json_decode($request->getBody())->classof_id;
 	    $semester = json_decode($request->getBody())->semester;
 		$sql = "exec listSubjectByClassOfAndSemester @classof_id = '$classof_id', @semester = '$semester'";
+		$sql2 = "SELECT * FROM CLASSOF_SEMESTER WHERE classof_id = '$classof_id' AND semester = '$semester'";
 		
 	} catch(Exception $e) {
 		echo '{"error":{"source":"input","reason":'. $e->getMessage() .'}}';
@@ -71,12 +72,27 @@ function listSubjectByClassOfAndSemester(){
 	try {
 		$db = new DBManager();
 		$result = $db->getData($sql);
+		$response_arr1 = array();
+		$response_arr2 = array();
 		$response_arr = array();
 		if ($result){
 			while($row = sqlsrv_fetch_array($result)){
-				array_push($response_arr, $row);
+				array_push($response_arr1, $row);
 			}
 		}
+		$result2 = $db->getData($sql2);
+		if ($result2){
+			while($row = sqlsrv_fetch_array($result2)){
+				array_push($response_arr2, $row);
+			}
+		}
+
+		$tmp_arr1 = array('subjectsdata' => $response_arr1);
+		$tmp_arr2 = array('classofsemester' => $response_arr2);
+
+		array_push($response_arr, $tmp_arr1);
+		array_push($response_arr, $tmp_arr2);
+
 		$db = null;
         $app->response->setBody(json_encode($response_arr));
 	} catch(PDOException $e) {

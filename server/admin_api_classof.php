@@ -70,7 +70,7 @@ function listClassOf(){
 		$app = \Slim\Slim::getInstance();
 		$app->response->headers->set('Content-Type', 'application/json');
 	    $request = $app->request();
-		$sql = "SELECT classof_id, classof_description FROM CLASSOF";
+		$sql = "SELECT classof_id, classof_description FROM CLASSOF order by classof_description DESC";
 	} catch(Exception $e) {
 		echo '{"error":{"source":"input","reason":'. $e->getMessage() .'}}';
 		return;
@@ -102,7 +102,8 @@ function listClassOfAndCountStatus(){
 				      ,COUNT(b.classof_id) AS student_count
 				  FROM CLASSOF a
 				  LEFT JOIN STUDENT b ON a.classof_id = b.classof_id
-				  group by a.classof_id, a.classof_description";
+				  group by a.classof_id, a.classof_description
+				  order by classof_description DESC";
 	} catch(Exception $e) {
 		echo '{"error":{"source":"input","reason":'. $e->getMessage() .'}}';
 		return;
@@ -175,7 +176,8 @@ function addClassOf(){
 				      ,COUNT(b.classof_id) AS student_count
 				  FROM CLASSOF a
 				  LEFT JOIN STUDENT b ON a.classof_id = b.classof_id
-				  group by a.classof_id, a.classof_description";
+				  group by a.classof_id, a.classof_description
+				  order by classof_description DESC";
 			$result = $db->getData($sql);
 			$response_arr = array();
 			if ($result){
