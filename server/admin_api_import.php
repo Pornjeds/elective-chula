@@ -16,7 +16,7 @@ function importStudents(){
 		$classof_id = $student_arr->classof_id;
 		foreach($student_arr->data as $student){
 			$sql = "merge STUDENT as target
-				using (values ('$student->name', '$student->lastname', '$classof_id', '$student->email', '$student->password', '$student->profilepic', '$student->GPA', '$student->status'))
+				using (values (N'$student->name', N'$student->lastname', '$classof_id', '$student->email', '$student->password', '$student->profilepic', '$student->GPA', '$student->status'))
 				    as source (name, lastname, classofid, email, password, profilepic, GPA, student_status)
 				    on target.student_id = '$student->student_id'
 				when matched then
@@ -33,7 +33,7 @@ function importStudents(){
 				when not matched then
 				    insert ( student_id, name, lastname, classof_id, email, password, profilepic, GPA, addeddate, student_status )
 				    values ( '$student->student_id',  source.name, source.lastname, source.classofid, source.email, source.password, source.profilepic, source.GPA, GETDATE(), source.student_status );";
-
+			
 			if($db->setData($sql))
 		    {
 		        $importstatus = true;
@@ -48,6 +48,7 @@ function importStudents(){
 		echo '{"error":{"source":"input","reason":'. $e->getMessage() .'}}';
 		return;
 	}
+
 	if ($importstatus)
 	{
 		$db->commitWork();
@@ -116,7 +117,5 @@ function importSubjects(){
 	}
     $db = null;
 }
-
-
 
 ?>
