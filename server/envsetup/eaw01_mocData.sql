@@ -93,13 +93,13 @@ INSERT INTO [eaw01].[dbo].[ADMIN_MEMBER] ([name], [lastname], [email], [password
 (N'Admin d', N'd', 'admind@admin.com', '123456', GETDATE())
 
 /* [eaw01].[dbo].[[USER_ROLE]] */
-INSERT INTO [eaw01].[dbo].[USER_ROLE] ([user_id], [role], [updatedate]) VALUES
-('1', 'Admin', GETDATE())
-INSERT INTO [eaw01].[dbo].[USER_ROLE] ([user_id], [role], [updatedate]) VALUES
-('2', 'Admin', GETDATE())
-INSERT INTO [eaw01].[dbo].[USER_ROLE] ([user_id], [role], [updatedate]) VALUES
-('5682221822', 'Admin', GETDATE())
-INSERT INTO [eaw01].[dbo].[USER_ROLE] ([user_id], [role], [updatedate]) VALUES
-('5682221824', 'Admin', GETDATE())
+INSERT INTO [eaw01].[dbo].[USER_ROLE] ([user_id], [role], [user_type], [updatedate]) VALUES
+('1', 'Admin', 1, GETDATE())
+INSERT INTO [eaw01].[dbo].[USER_ROLE] ([user_id], [role], [user_type], [updatedate]) VALUES
+('2', 'Admin', 1, GETDATE())
+INSERT INTO [eaw01].[dbo].[USER_ROLE] ([user_id], [role], [user_type], [updatedate]) VALUES
+('5682221822', 'Admin', 0, GETDATE())
+INSERT INTO [eaw01].[dbo].[USER_ROLE] ([user_id], [role], [user_type], [updatedate]) VALUES
+('5682221824', 'Admin', 0, GETDATE())
 
 

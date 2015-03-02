@@ -198,6 +198,7 @@ GO
 CREATE TABLE [dbo].[USER_ROLE](
 	[user_id] [nchar](10) NOT NULL,
 	[role] [nvarchar](50) NOT NULL,
+	[user_type] [bit] NOT NULL,
 	[updatedate] [datetime] NOT NULL,
  CONSTRAINT [PK_USER_ROLE] PRIMARY KEY CLUSTERED 
 (
@@ -507,6 +508,49 @@ BEGIN
 	(select subject_id from #TMP_SUBJECTCLASSOF))
 			
 	select * from #TMP_SUBJECTCLASSOF
+END
+GO
+
+CREATE PROCEDURE listNonAdminMember 
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+    -- Insert statements for procedure here
+	IF OBJECT_ID('tempdb..#TMP_LISTNONADMIN') IS NOT NULL DROP TABLE #TMP_LISTNONADMIN
+
+	CREATE TABLE #TMP_LISTNONADMIN(
+	user_id nchar(10),
+	name nvarchar(256), 
+	lastname nvarchar(256),
+	user_type bit,
+	updatedate datetime
+	)
+
+	INSERT INTO #TMP_LISTNONADMIN 
+	SELECT DISTINCT
+			a.student_id,
+			a.name,
+			a.lastname,
+			0,
+			a.updatedate 
+				FROM STUDENT a 
+				LEFT JOIN USER_ROLE b ON a.student_id <> b.user_id
+
+	INSERT INTO #TMP_LISTNONADMIN 
+	SELECT DISTINCT
+			a.admin_id,
+			a.name,
+			a.lastname,
+			1,
+			a.updatedate 
+				FROM ADMIN_MEMBER a 
+				LEFT JOIN USER_ROLE b ON a.admin_id <> b.user_id
+			
+			
+	select * from #TMP_LISTNONADMIN
 END
 GO
 
