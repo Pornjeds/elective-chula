@@ -1,4 +1,12 @@
 <?php
+/*
+$app->group('/account', function() use ($app){
+        $app->post('/listusers', 'listAccountUsers');
+        $app->post('/listadmin', 'listAccountAdmin');
+        $app->post('/update', 'updateListOfAdmin');
+
+    });
+*/
 function listAccountUsers(){
 	try {
 		$app = \Slim\Slim::getInstance();

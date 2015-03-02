@@ -91,7 +91,7 @@ function addStudent(){
 
 	    $password = passwordEncryption($student_detail->password, $student_detail->student_id);
 
-	    $sql = "INSERT INTO STUDENT (student_id, classof_id, name, lastname, email, password, profilepic, GPA, addeddate, student_status) VALUES ('$student_detail->student_id', '$student_detail->classof_id', '$student_detail->name', '$student_detail->lastname', '$student_detail->email', '$student_detail->password', '$student_detail->profilepic', '$student_detail->GPA', GETDATE(), '$student_detail->student_status')";
+	    $sql = "INSERT INTO STUDENT (student_id, classof_id, name, lastname, email, password, profilepic, GPA, addeddate, student_status) VALUES ('$student_detail->student_id', '$student_detail->classof_id', N'$student_detail->name', N'$student_detail->lastname', '$student_detail->email', '$student_detail->password', '$student_detail->profilepic', '$student_detail->GPA', GETDATE(), '$student_detail->student_status')";
 	} catch(Exception $e) {
 		echo '{"error":{"source":"input","reason":'. $e->getMessage() .'}}';
 		return;
@@ -142,10 +142,10 @@ function updateStudent(){
 	    		$updateSql .= ", classof_id = '$classof_id'";
 	    	}
 	    	if($name != ""){
-	    		$updateSql .= ", name = '$name'";
+	    		$updateSql .= ", name = N'$name'";
 	    	}
 	    	if($lastname != ""){
-	    		$updateSql .= ", lastname = '$lastname'";
+	    		$updateSql .= ", lastname = N'$lastname'";
 	    	}
 	    	if($email != ""){
 	    		$updateSql .= ", email = '$email'";

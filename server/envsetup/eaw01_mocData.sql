@@ -40,21 +40,21 @@ INSERT INTO [eaw01].[dbo].[STUDENT] ([student_id],[classof_id],[name],[lastname]
 
 /* [eaw01].[dbo].[[SUBJECT]]  */
 INSERT INTO [eaw01].[dbo].[SUBJECT] ([subject_id],[name] ,[description] ,[defaultpoint] ,[addeddate] ,[updatedate]) VALUES
-( 1, N'OPERATION MANAGEMENT', 'description OM' , 3, GETDATE(), GETDATE() )
+( 1, N'OPERATION MANAGEMENT', N'description OM' , 3, GETDATE(), GETDATE() )
 INSERT INTO [eaw01].[dbo].[SUBJECT] ([subject_id],[name] ,[description] ,[defaultpoint] ,[addeddate] ,[updatedate]) VALUES
-( 2, 'FINANCIAL MANAGEMENT', 'description FM' , 3, GETDATE(), GETDATE() )
+( 2, N'FINANCIAL MANAGEMENT', N'description FM' , 3, GETDATE(), GETDATE() )
 INSERT INTO [eaw01].[dbo].[SUBJECT] ([subject_id],[name] ,[description] ,[defaultpoint] ,[addeddate] ,[updatedate]) VALUES
-( 3, 'MARKETING MANAGEMENT', 'description MM' , 3, GETDATE(), GETDATE() )
+( 3, N'MARKETING MANAGEMENT', N'description MM' , 3, GETDATE(), GETDATE() )
 INSERT INTO [eaw01].[dbo].[SUBJECT] ([subject_id],[name] ,[description] ,[defaultpoint] ,[addeddate] ,[updatedate]) VALUES
-( 4, 'ORGANICATION BEHAVIOUR', 'description OB' , 3, GETDATE(), GETDATE() )
+( 4, N'ORGANICATION BEHAVIOUR', N'description OB' , 3, GETDATE(), GETDATE() )
 INSERT INTO [eaw01].[dbo].[SUBJECT] ([subject_id],[name] ,[description] ,[defaultpoint] ,[addeddate] ,[updatedate]) VALUES
-( 5, 'INTERFINANCIAL', 'description INTER FIN' , 3, GETDATE(), GETDATE() )
+( 5, N'INTERFINANCIAL', N'description INTER FIN' , 3, GETDATE(), GETDATE() )
 INSERT INTO [eaw01].[dbo].[SUBJECT] ([subject_id],[name] ,[description] ,[defaultpoint] ,[addeddate] ,[updatedate]) VALUES
-( 6, 'ENTREPRENUR', 'description ENTRE' , 3, GETDATE(), GETDATE() )
+( 6, N'ENTREPRENUR', N'description ENTRE' , 3, GETDATE(), GETDATE() )
 INSERT INTO [eaw01].[dbo].[SUBJECT] ([subject_id],[name] ,[description] ,[defaultpoint] ,[addeddate] ,[updatedate]) VALUES
-( 7, 'INTERFINANCIAL2', 'description INTER FIN' , 3, GETDATE(), GETDATE() )
+( 7, N'INTERFINANCIAL2', N'description INTER FIN' , 3, GETDATE(), GETDATE() )
 INSERT INTO [eaw01].[dbo].[SUBJECT] ([subject_id],[name] ,[description] ,[defaultpoint] ,[addeddate] ,[updatedate]) VALUES
-( 8, 'ENTREPRENUR2', 'description ENTRE' , 3, GETDATE(), GETDATE() )
+( 8, N'ENTREPRENUR2', N'description ENTRE' , 3, GETDATE(), GETDATE() )
 
 /* [eaw01].[dbo].[[SUBJECT_CLASSOF]]  */
 INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[credit], [dayofweek], [timeofday], [instructor], [isRequired], [addeddate], [updatedate]) VALUES
@@ -84,13 +84,13 @@ INSERT INTO [eaw01].[dbo].[PICKMETHOD] ([name], [addeddate], [updatedate]) VALUE
 
 /* [eaw01].[dbo].[[ADMIN_MEMBER]]  */
 INSERT INTO [eaw01].[dbo].[ADMIN_MEMBER] ([name], [lastname], [email], [password], [addeddate]) VALUES
-('Admin A', 'a', 'admina@admin.com', '123456', GETDATE())
+(N'Admin A', N'a', 'admina@admin.com', '123456', GETDATE())
 INSERT INTO [eaw01].[dbo].[ADMIN_MEMBER] ([name], [lastname], [email], [password], [addeddate]) VALUES
-('Admin B', 'b', 'adminb@admin.com', '123456', GETDATE())
+(N'Admin B', N'b', 'adminb@admin.com', '123456', GETDATE())
 INSERT INTO [eaw01].[dbo].[ADMIN_MEMBER] ([name], [lastname], [email], [password], [addeddate]) VALUES
-('Admin C', 'c', 'adminc@admin.com', '123456', GETDATE())
+(N'Admin C', N'c', 'adminc@admin.com', '123456', GETDATE())
 INSERT INTO [eaw01].[dbo].[ADMIN_MEMBER] ([name], [lastname], [email], [password], [addeddate]) VALUES
-('Admin d', 'd', 'admind@admin.com', '123456', GETDATE())
+(N'Admin d', N'd', 'admind@admin.com', '123456', GETDATE())
 
 /* [eaw01].[dbo].[[USER_ROLE]] */
 INSERT INTO [eaw01].[dbo].[USER_ROLE] ([user_id], [role], [updatedate]) VALUES

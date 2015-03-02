@@ -77,7 +77,7 @@ function importSubjects(){
 	try {
 		foreach($subject_arr->data as $subject){
 			$sql = "merge SUBJECT as target
-				using (values ('$subject->id', '$subject->name', '$subject->description', '$subject->credit'))
+				using (values ('$subject->id', N'$subject->name', N'$subject->description', '$subject->credit'))
 				    as source (subject_id, name, description, credit)
 				    on target.subject_id = '$subject->id'
 				when matched then
