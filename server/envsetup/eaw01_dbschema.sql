@@ -300,6 +300,7 @@ CREATE TABLE [dbo].[STUDENT_ENROLLMENT](
 	[subject_id] [nchar](10) NOT NULL,
 	[classof_id] [int] NOT NULL,
 	[semester] [nchar](10) NOT NULL,
+	[priority] [int] NOT NULL,
 	[addeddate] [datetime] NOT NULL,
  CONSTRAINT [PK_STUDENT_ENROLLMENT] PRIMARY KEY CLUSTERED 
 (

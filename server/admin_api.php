@@ -79,7 +79,6 @@ $app->group('/api/v1', function() use ($app){
     });
 
     $app->group('/enrollmentadmin', function() use ($app){
-        $app->get('/:id', 'getSubjectEnrollmentInfoById');
         $app->post('/detail', 'getSubjectEnrollmentInfoByIdPost');
         $app->post('/list', 'listEnrollmentByClassOfAndSemester');
         $app->post('/liststudent', 'listEnrollmentResultBySubject');
