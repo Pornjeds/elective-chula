@@ -26,21 +26,21 @@ INSERT INTO [eaw01].[dbo].[CLASSOF] ([classof_description]) VALUES ( '21/2' )
 
 /* [eaw01].[dbo].[STUDENT]  */
 INSERT INTO [eaw01].[dbo].[STUDENT] ([student_id],[classof_id],[name],[lastname],[email],[password],[profilepic],[GPA],[addeddate],[updatedate],[student_status]) VALUES 
-( '5682221820', 1, 'เอี่ยว', 'นามสมมติ', 'eaw@gmail.com','passwd01','profilepic',3.00, GETDATE(), GETDATE(), 0 )
+( '5682221820', 1, N'เอี่ยว', N'นามสมมติ', 'eaw@gmail.com','passwd01','profilepic',3.00, GETDATE(), GETDATE(), 0 )
 INSERT INTO [eaw01].[dbo].[STUDENT] ([student_id],[classof_id],[name],[lastname],[email],[password],[profilepic],[GPA],[addeddate],[updatedate],[student_status]) VALUES 
-( '5682221821', 1, 'บอย', 'นามสมมติ', 'boy@gmail.com','passwd01','profilepic',3.10, GETDATE(), GETDATE(), 0 )
+( '5682221821', 1, N'บอย', N'นามสมมติ', 'boy@gmail.com','passwd01','profilepic',3.10, GETDATE(), GETDATE(), 0 )
 INSERT INTO [eaw01].[dbo].[STUDENT] ([student_id],[classof_id],[name],[lastname],[email],[password],[profilepic],[GPA],[addeddate],[updatedate],[student_status]) VALUES 
-( '5682221822', 1, 'กี้', 'นามสมมติ', 'gie@gmail.com','passwd01','profilepic',3.20, GETDATE(), GETDATE(), 0 )
+( '5682221822', 1, N'กี้', N'นามสมมติ', 'gie@gmail.com','passwd01','profilepic',3.20, GETDATE(), GETDATE(), 0 )
 INSERT INTO [eaw01].[dbo].[STUDENT] ([student_id],[classof_id],[name],[lastname],[email],[password],[profilepic],[GPA],[addeddate],[updatedate],[student_status]) VALUES 
-( '5682221823', 1, 'เบียร์', 'นามสมมติ', 'beer@gmail.com','passwd01','profilepic',3.30, GETDATE(), GETDATE(), 0 )
+( '5682221823', 1, N'เบียร์', N'นามสมมติ', 'beer@gmail.com','passwd01','profilepic',3.30, GETDATE(), GETDATE(), 0 )
 INSERT INTO [eaw01].[dbo].[STUDENT] ([student_id],[classof_id],[name],[lastname],[email],[password],[profilepic],[GPA],[addeddate],[updatedate],[student_status]) VALUES 
-( '5682221824', 1, 'ลิง', 'นามสมมติ', 'ling@gmail.com','passwd01','profilepic',3.40, GETDATE(), GETDATE(), 0 )
+( '5682221824', 1, N'ลิง', N'นามสมมติ', 'ling@gmail.com','passwd01','profilepic',3.40, GETDATE(), GETDATE(), 0 )
 INSERT INTO [eaw01].[dbo].[STUDENT] ([student_id],[classof_id],[name],[lastname],[email],[password],[profilepic],[GPA],[addeddate],[updatedate],[student_status]) VALUES 
-( '5682221825', 1, 'ยงค์', 'นามสมมติ', 'yong@gmail.com','passwd01','profilepic',3.50, GETDATE(), GETDATE(), 0 )
+( '5682221825', 1, N'ยงค์', N'นามสมมติ', 'yong@gmail.com','passwd01','profilepic',3.50, GETDATE(), GETDATE(), 0 )
 
 /* [eaw01].[dbo].[[SUBJECT]]  */
 INSERT INTO [eaw01].[dbo].[SUBJECT] ([subject_id],[name] ,[description] ,[defaultpoint] ,[addeddate] ,[updatedate]) VALUES
-( 1, 'OPERATION MANAGEMENT', 'description OM' , 3, GETDATE(), GETDATE() )
+( 1, N'OPERATION MANAGEMENT', 'description OM' , 3, GETDATE(), GETDATE() )
 INSERT INTO [eaw01].[dbo].[SUBJECT] ([subject_id],[name] ,[description] ,[defaultpoint] ,[addeddate] ,[updatedate]) VALUES
 ( 2, 'FINANCIAL MANAGEMENT', 'description FM' , 3, GETDATE(), GETDATE() )
 INSERT INTO [eaw01].[dbo].[SUBJECT] ([subject_id],[name] ,[description] ,[defaultpoint] ,[addeddate] ,[updatedate]) VALUES

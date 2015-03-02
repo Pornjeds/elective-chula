@@ -1,4 +1,5 @@
 <?php
+header("Content-Type: application/json; charset=utf-8");
 require_once 'Slim/Slim.php';
 require_once 'DBManager_sqlserver.php';
 require_once 'admin_api_account.php';
@@ -31,6 +32,8 @@ $app->configureMode('development', function () use ($app) {
         'debug' => true
     ));
 });
+
+$app->contentType('application/json;charset=utf-8');
 
 //Rounting
 $app->group('/api/v1', function() use ($app){
