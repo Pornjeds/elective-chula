@@ -83,17 +83,12 @@
                 <h3 class="panel-title">Administrators</h3>
             </div>        
             <div class="panel-body" style='text-align:center;'>
-                <select multiple="" name="e1" id="e1" style="width: 300px;" tabindex="-1">
-                    <option value='1'>นายบอย</option>
-                    <option value='2'>นายกี้</option>
-                    <option value='3'>นายเบียร์</option>
-                    <option value='4'>นายเอี่ยว</option>
-                    <option value='5'>นายลิง</option>
-                    <option value='6'>นายแก่</option>
+                <select multiple="" name="autosuggestAdmin" id="autosuggestAdmin" style="width: 300px;" tabindex="-1">
                 </select>
                 <input style='margin-left: 8px;' type='button' class="btn btn-success" onClick='submitAdminValue();' value='Confirm' />
             </div>
         </div>
+        <div class="alert alert-success" role="alert" id="import-success" style="display:none; margin-top: 10px; text-align: center;"><b>SUCCESS</b></div>
         
         <hr>
         <footer class="footer">
@@ -115,21 +110,81 @@
     <script src="../scripts/js/select2.min.js"></script>
     
     <script>
-        $(document).ready(function () {
-            
-            $("#e1").select2();
-            $("#e1").select2("data", [{id: "1", text: "นายบอย"},{id:"2", text: "นายกี้"}]);
-            
+        $(document).ready(function () {    
+            getListOfUser();
         });
+        
+        //
+        function getListOfUser(){
+            var urlStr = window.location.origin + '/server/admin_api.php/api/v1/account/listusers';
+            $.ajax({
+                type: 'POST',
+                contentType: 'application/json',
+                url: urlStr,
+                dataType: 'json',
+                contentType: "text/plain; charset=UTF-8",
+                success: function(data, textStatus, jqXHR){
+                        
+                        $("#autosuggestAdmin").empty();
+                        //
+                        var selectedObject = [];
+                        for(var i=0; i< data.length; i++){
+                            $('#autosuggestAdmin').append( "<option value='" + data[i]['user_id'] + "'>" + data[i]['name'] + ' ' +data[i]['lastname'] + '</option>' );
+                            
+                            if( data[i]['user_type'] === parseInt('1') ){
+                                selectedObject.push ( 
+                                {
+                                    id : data[i]['user_id'],
+                                    text : data[i]['name'] + ' ' +data[i]['lastname']
+                                 } );
+                            }
+                        }
+                        //
+                        $("#autosuggestAdmin").select2();
+                        $("#autosuggestAdmin").select2( "data", selectedObject );
+                        $("#autosuggestAdmin").select2().on("change", function() {
+                              $('#import-success').fadeOut(500);
+                        })
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    alert('get member list error: ' + textStatus);
+                }
+            });
+        };
+        
+        //
         function submitAdminValue(){
-            var data = $("#e1").select2("data"); 
-            //delete data.element; 
-            //alert("Selected data is: "+JSON.stringify(data));
-            var result = '';
-            for(var i=0; i < data.length; i++){
-                result += 'id:' + data[i].id + ', ' + 'text:' + data[i].text + '\n' ;
+            var data = $("#autosuggestAdmin").select2("data"); 
+            window.console.log( data );
+            
+            //TRANSFORM DATA
+            var jsonObj = {
+                'data' : []
+            };
+            for(var i=0; i< data.length; i++){
+                var tmpObj = {
+                    'user_id' : data[i].id,
+                     'role' : 'Admin',
+                     'user_type' : 1
+                }
+                jsonObj['data'].push( tmpObj );
             }
-            alert( 'Administrator as follows:\n' + result );
+            //
+            var urlStr = window.location.origin + '/server/admin_api.php/api/v1/account/update';
+            $.ajax({
+                type: 'POST',
+                contentType: 'application/json',
+                url: urlStr,
+                data: JSON.stringify( jsonObj ),
+                dataType: 'json',
+                contentType: "text/plain; charset=UTF-8",
+                success: function(data, textStatus, jqXHR){
+                        $('#import-success').fadeIn(500);
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    alert('update admin list error: ' + textStatus);
+                }
+            });
         }
     </script>
  
