@@ -200,14 +200,16 @@
             <div class="alert alert-info" role="alert" style='padding:10px; margin-top: 10px;' id='pickerAread'>
                 <div style='display: inline-block; color: #31708f; font-weight: bold; margin-right: 5px;'>เงื่อนไขของเทอม:</div>
                 <div style='display:inline-block'>
-                    <input type='text' class='form-control' style='width: 110px' placeHolder='หน่วยกิจขั้นต่ำ' id='minUnitTerm'/>
+                    <input type='text' class='form-control' style='width: 110px' placeHolder='หน่วยกิจขั้นต่ำ' id='minUnitTerm' onkeypress="return isNumber(event)"/>
                 </div>
                 <div style='display:inline-block'>
-                    <input type='text' class='form-control' style='width: 110px' placeHolder='หน่วยกิจสูงสุด' id='maxUnitTerm' />
+                    <input type='text' class='form-control' style='width: 110px' placeHolder='หน่วยกิจสูงสุด' id='maxUnitTerm' onkeypress="return isNumber(event)" />
                 </div>
                 <select class='selectpicker' id='methodPicker'>
                     <option value='N/A' selected disabled>วิธีที่ใช้ตัดสินกรณีไม่ลงตัว</option>
                 </select>
+                <div style="display: inline-block; margin-left: 15px; margin-top: 2px; vertical-align: middle;"><input type="checkbox" id='isActiveTerm'><span style="margin-left: 5px; font-weight: bold;">Active?</span>
+                </div>
             </div>
             <div style='margin-top: 20px;' id='buttonArea'>
                 <input  type='button' class="btn btn-primary" onClick='toggleToSteps(1)' value='Back' />
@@ -245,6 +247,8 @@
         var subjectList = [];
         var subjectListId = [];
         var subjectListObj = {};
+        var classOfSemesterObj = {};
+
         $(document).ready(function () {
             //ACTIVATE DDL
             $('.selectpicker').selectpicker();
@@ -253,6 +257,16 @@
             //GET PICKMETHOD
             getPickMethodList();
         });
+        
+        //VALIDATION
+        function isNumber(evt) {
+            evt = (evt) ? evt : window.event;
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                return false;
+            }
+            return true;
+        }
         
         //WHEN SELECT CLASS FROM CRITERIA
         function queryFromCriteria(){
@@ -469,6 +483,9 @@
                         itemDivUnitnput.style.width = '80px';
                         itemDivUnitnput.setAttribute('placeholder', 'หน่วยกิจ');
                         itemDivUnitnput.setAttribute('value', tmpPersistObj.credit);
+                        itemDivUnitnput.onkeypress = function(evt){
+                            return isNumber(evt);
+                        };
                         itemDivUnitSubject.appendChild( itemDivUnitnput );
                         //TEXT TEACHER
                         var itemDivTeacher = document.createElement('div');
@@ -504,7 +521,10 @@
                         itemDivNumberSupportInput.style.paddingTop = '4px';
                         itemDivNumberSupportInput.setAttribute('type', 'text');
                         itemDivNumberSupportInput.setAttribute('placeholder', '#สูงสุด');
-                        itemDivNumberSupportInput.setAttribute('value', tmpPersistObj.maxstudent)
+                        itemDivNumberSupportInput.setAttribute('value', tmpPersistObj.maxstudent);
+                        itemDivNumberSupportInput.onkeypress = function(evt){
+                            return isNumber(evt);
+                        };
                         itemDivNumberSupport.appendChild( itemDivNumberSupportInput );
                         //
                         var itemDivMinNumberInput = document.createElement('input');
@@ -515,6 +535,9 @@
                         itemDivMinNumberInput.setAttribute('placeholder', '#ขั้นต่ำ');
                         itemDivMinNumberInput.setAttribute('value', tmpPersistObj.minstudent);
                         itemDivMinNumber.appendChild( itemDivMinNumberInput );
+                        itemDivMinNumberInput.onkeypress = function(evt){
+                            return isNumber(evt);
+                        };
                         //CHECKBOX 'REQUIRED' SUBJECT?
                         var itemDivIsRequired = document.createElement('div');
                         itemDivIsRequired.style.display = 'inline-block';
@@ -547,6 +570,17 @@
                     }
                 });
                 $('.selectpicker').selectpicker();
+                //BLUE AREA
+                if( classOfSemesterObj && typeof( classOfSemesterObj['mincredit'] ) !== 'undefined' && typeof( classOfSemesterObj['maxcredit'] ) !== 'undefined' && typeof( classOfSemesterObj['pickmethod_id'] ) !== 'undefined'){
+                    $('#minUnitTerm').val( classOfSemesterObj['mincredit'] );
+                    $('#maxUnitTerm').val( classOfSemesterObj['maxcredit'] );
+                    $('#methodPicker').children().each(function(){
+                        if( parseInt($(this).val()) === classOfSemesterObj['pickmethod_id'] ){
+                            $(this).attr('selected', 'true');
+                        }
+                    });
+                    $('.selectpicker').selectpicker('refresh');
+                }
                 //
                 $('#step1Area').fadeOut(10);
                 $('#step2Area').fadeIn(300);
@@ -675,10 +709,11 @@
                     success: function(data, textStatus, jqXHR){
                         subjectList = [];
                         subjectListId = [];
-                        subjectListObj = data;
-                        for(var i=0; i<data.length; i++){
-                            subjectList.push( data[i].name );
-                            subjectListId.push( data[i].id );
+                        subjectListObj = data[0]['subjectsdata'];
+                        classOfSemesterObj = data[1]['classofsemester'][0];
+                        for(var i=0; i<subjectListObj.length; i++){
+                            subjectList.push( subjectListObj[i].name );
+                            subjectListId.push( subjectListObj[i].id );
                         }
                         //GENERATE SUBJECT ITEMS
                         queryFromCriteria();
@@ -712,6 +747,7 @@
                 }
             });
         }
+        
     </script>
   
     </body>
