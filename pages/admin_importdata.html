@@ -183,12 +183,12 @@
             
             //TRANSFORM TO JSON OBJ
             var jsonObj = { data: [] };
-            for(var i=1; i< arguments[0].data.length; i++){ //SKIP HEADER COL ROW
+            for(var i=0; i< arguments[0].data.length; i++){ //SKIP HEADER COL ROW
                 var tmpObj = {
-                        'id': arguments[0].data[i][0],
-                        'name': arguments[0].data[i][1],
-                        'description': arguments[0].data[i][2],
-                        'credit': arguments[0].data[i][3]
+                        'id': $.trim( arguments[0].data[i][0] ),
+                        'name': $.trim( arguments[0].data[i][1] ),
+                        'description': $.trim( arguments[0].data[i][2] ),
+                        'credit': $.trim( arguments[0].data[i][3] ) === '' ? '3' : $.trim( arguments[0].data[i][3] )
                 }
                 jsonObj.data.push(tmpObj);                
             }
