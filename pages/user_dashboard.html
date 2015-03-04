@@ -186,6 +186,29 @@
             </tr>
         </table>
         
+        <!-- TABLE NO DATA -->
+        <table id='tableNodata' style='width: 100%; display:none; min-width: 400px;'>
+            <tr>
+                <td style='width: 250px; vertical-align:top;'>
+                    <div style='font-family: Tahoma; margin-top: 5px; margin-left: 5px;'>
+                        <div class='profile_image' data-toggle="modal" data-target="#modalUploadImage">
+                            <image  src='../images/ozoraT.png' style='width:230px; height:230px;' />
+                            <div class='bannerChangeImage'>Change your image</div>
+                        </div>
+                        <span style='font-size: 30px; color: #333; line-height:40px; width: 100%; display: block;'>โอโซระ ซึบาซะ</span>
+                        <span style='font-size: 18px; color: #666; margin-left: 4px;'>5682221826</span>
+                    </div>
+                </td>
+                <td style='vertical-align: top; padding: 5px;'>
+                    <div style='border: 1px solid #efefef;'>
+                        <div style='color:#777; background-color: #e7e7e7; border-color: #e1e1e1;padding: 10px;'>
+                          <h3 class="panel-title">ยังไม่มีวิชาเลือกเปิดสำหรับรุ่นนี้</h3>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        
         <!-- MODAL UPLOAD IMAGE -->
         <div class="modal fade" id="modalUploadImage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
           <div class="modal-dialog">
@@ -218,8 +241,9 @@
         <div>
             We are the same <span style='color:#cb70d7; font-weight: bold;'>CHULA</span> so let talk together.
         </div>
-        <button onClick='toggleUserState();'>Toggle test</button>
-        <button id='randomRegister' onClick='randomProgress();'>Random test</button>
+        <button onClick='toggleUserState(1);'>[De-Active Semester] NoSubject test</button><br />
+        <button onClick='toggleUserState(2);'>[Active Semester] Done test</button><br />
+        <button id='randomRegister' onClick='randomProgress(); toggleUserState(3);'>[Active Semester] Random test</button>
       </footer>
     </div><!-- /.container -->
 
@@ -245,16 +269,21 @@
             );
         });
         
-        function toggleUserState(){
-            if( $('#tableResult').css('display') === 'none' ){
+        function toggleUserState( value ){
+            if( value === 2 ){
                 $('#tableResult').fadeIn(300);
                 $('#tableStatus').fadeOut(10);
-                $('#randomRegister').fadeOut();
+                $('#tableNodata').fadeOut(10);
             }
-            else{
+            else if( value === 1 ){
+                $('#tableNodata').fadeIn(300);
+                $('#tableStatus').fadeOut(10);
+                $('#tableResult').fadeOut(10);
+            }
+            else {
                 $('#tableStatus').fadeIn(300);
                 $('#tableResult').fadeOut(10);
-                $('#randomRegister').fadeIn();
+                $('#tableNodata').fadeOut(10);
             }
         }
         
