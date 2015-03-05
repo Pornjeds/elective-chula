@@ -264,7 +264,7 @@ CREATE TABLE [dbo].[CLASSOF_SEMESTER](
 	[mincredit] [int] NOT NULL,
 	[maxcredit] [int] NOT NULL,
 	[pickmethod_id] [int] NOT NULL,
-	[isActive] [bit] NOT NULL,
+	[semester_state] [bit] NOT NULL,
 	[addeddate] [datetime] NOT NULL,
 	[updatedate] [datetime] NULL,
  CONSTRAINT [PK_CLASSOF_SEMESTER] PRIMARY KEY CLUSTERED 

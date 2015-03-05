@@ -144,7 +144,7 @@ input
 	    $semester = json_decode($request->getBody())->semester;
 	    $semester_mincredit = json_decode($request->getBody())->mincredit;
 	    $semester_maxcredit = json_decode($request->getBody())->maxcredit;
-	    $semester_isActive = json_decode($request->getBody())->isActive;
+	    $semester_state = json_decode($request->getBody())->semester_state;
 	    $semester_pickermethod = json_decode($request->getBody())->pickermethod;
 
 	    //prepare sql for insert subject data
@@ -168,22 +168,25 @@ input
 
 	    //prepare classof_semester sql
 	    $sqlClassofSemester = "merge CLASSOF_SEMESTER as target
-				using (values ('$classof_id', '$semester', '$semester_mincredit', '$semester_maxcredit', '$semester_isActive', '$semester_pickermethod'))
-				    as source (classof_id, semester, semester_mincredit, semester_maxcredit, semester_isActive, semester_pickermethod)
+				using (values ('$classof_id', '$semester', '$semester_mincredit', '$semester_maxcredit', '$semester_state', '$semester_pickermethod'))
+				    as source (classof_id, semester, semester_mincredit, semester_maxcredit, semester_state, semester_pickermethod)
 				    on target.classof_id = '$classof_id' AND target.semester = '$semester'
 				when matched then
 				    update
 				    set mincredit = source.semester_mincredit,
 				        maxcredit = source.semester_maxcredit,
-				        isActive = source.semester_isActive,
+				        semester_state = source.semester_state,
 				        pickmethod_id = source.semester_pickermethod,
 				        updatedate = GETDATE()
 				when not matched then
-				    insert ( classof_id, semester, mincredit, maxcredit, isActive, pickmethod_id, addeddate)
-				    values ( source.classof_id, source.semester, source.semester_mincredit, source.semester_maxcredit, source.semester_isActive, source.semester_pickermethod, GETDATE());";
+				    insert ( classof_id, semester, mincredit, maxcredit, semester_state, pickmethod_id, addeddate)
+				    values ( source.classof_id, source.semester, source.semester_mincredit, source.semester_maxcredit, source.semester_state, source.semester_pickermethod, GETDATE());";
 
 		//sql to remove the current SUBJECT_CLASSOF of the specified classof_id and semester
 		$sqlRemove = "DELETE FROM SUBJECT_CLASSOF where classof_id = '$classof_id' AND semester = '$semester'";
+
+		//update semester_state of the other semesters of this classof_id to be 0
+		$sqlSemesterState = "UPDATE CLASSOF_SEMESTER set semester_state = 0 where classof_id = '$classof_id' AND semester <> '$semester'";
 		
 	} catch(Exception $e) {
 		echo '{"error":{"source":"input","reason":'. $e->getMessage() .'}}';
@@ -209,12 +212,19 @@ input
         	}
 		}
 
+		if(!$db->setData($sqlSemesterState))
+		{
+			//echo $sqlRemove;
+			$submitStatus = false;
+			break;
+		}
+
 		if(!$db->setData($sqlClassofSemester))
     	{
     		//echo $sqlClassofSemester;
     		$submitStatus = false;
     	}
-        
+
         if($submitStatus)
         {
         	$db->commitWork();

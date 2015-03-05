@@ -71,9 +71,9 @@ INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semeste
 ( 6, 1, '4' , 3, 5, 3, 5, 2, 'Dr. A BCD', 0, GETDATE(), GETDATE() )
 
 /* [eaw01].[dbo].[[CLASSOF_SEMESTER]]  */
-INSERT INTO [eaw01].[dbo].[CLASSOF_SEMESTER] ([classof_id] ,[semester] ,[mincredit] ,[maxcredit] ,[pickmethod_id], [isActive],[addeddate], [updatedate]) VALUES
+INSERT INTO [eaw01].[dbo].[CLASSOF_SEMESTER] ([classof_id] ,[semester] ,[mincredit] ,[maxcredit] ,[pickmethod_id], [semester_state],[addeddate], [updatedate]) VALUES
 ( 1, '4' , 6, 9, 3, 1, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[CLASSOF_SEMESTER] ([classof_id] ,[semester] ,[mincredit] ,[maxcredit] ,[pickmethod_id], [isActive],[addeddate], [updatedate]) VALUES
+INSERT INTO [eaw01].[dbo].[CLASSOF_SEMESTER] ([classof_id] ,[semester] ,[mincredit] ,[maxcredit] ,[pickmethod_id], [semester_state],[addeddate], [updatedate]) VALUES
 ( 1, '5' , 3, 7, 1, 0, GETDATE(), GETDATE() )
 
 /* [eaw01].[dbo].[[PICKMETHOD]]  */

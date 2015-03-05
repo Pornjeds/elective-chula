@@ -208,7 +208,7 @@
                 <select class='selectpicker' id='methodPicker'>
                     <option value='N/A' selected disabled>วิธีที่ใช้ตัดสินกรณีไม่ลงตัว</option>
                 </select>
-                <div style="display: inline-block; margin-left: 15px; margin-top: 2px; vertical-align: middle;"><input type="checkbox" id='isActiveTerm'><span style="margin-left: 5px; font-weight: bold;">Active?</span>
+                <div style="display: inline-block; margin-left: 15px; margin-top: 2px; vertical-align: middle;"><input type="checkbox" id='semesterState' value="1"><span style="margin-left: 5px; font-weight: bold;">Active?</span>
                 </div>
             </div>
             <div style='margin-top: 20px;' id='buttonArea'>
@@ -574,13 +574,13 @@
                 if( classOfSemesterObj && typeof( classOfSemesterObj['mincredit'] ) !== 'undefined' && typeof( classOfSemesterObj['maxcredit'] ) !== 'undefined' && typeof( classOfSemesterObj['pickmethod_id'] ) !== 'undefined'){
                     $('#minUnitTerm').val( classOfSemesterObj['mincredit'] );
                     $('#maxUnitTerm').val( classOfSemesterObj['maxcredit'] );
-                    var isActiveTermState = true;
-                    if (classOfSemesterObj['isActive'] === 1){
-                        isActiveTermState = true;
+                    var semesterCheckbox = true;
+                    if (classOfSemesterObj['semester_state'] === 1){
+                        semesterCheckbox = true;
                     }else{
-                        isActiveTermState = false;
+                        semesterCheckbox = false;
                     }
-                    $('#isActiveTerm').attr('checked', isActiveTermState);
+                    $('#semesterState').attr('checked', semesterCheckbox);
 
                     $('#methodPicker').children().each(function(){
                         if( parseInt($(this).val()) === classOfSemesterObj['pickmethod_id'] ){
@@ -600,14 +600,18 @@
             var idMethod = '#methodPicker';
             var idMinUnitTerm = '#minUnitTerm';
             var idMaxUnitTerm = '#maxUnitTerm';
-            var idIsActiveTerm = '#isActiveTerm';
+            var idSemesterState = '#semesterState:checked';
+            var semesterCheckbox = "0";
+            if (typeof $(idSemesterState).val() !== "undefined"){
+                semesterCheckbox = "1";
+            }
             var jsonObj = { 
                 'subjectsdata' : [],
                 'classof_id' :  $('#studentYear').val(),
                 'semester' :  $('#studentSemester').val(),
                 'mincredit' : $(idMinUnitTerm).val(),
                 'maxcredit' : $(idMaxUnitTerm).val(),
-                'isActive' : $().val(idIsActiveTerm),
+                'semester_state' : semesterCheckbox,
                 'pickermethod' : $(idMethod).val()
             };
             //
