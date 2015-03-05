@@ -21,7 +21,7 @@ function getSubjectEnrollmentInfoByIdPost(){
 				b.name,
 				a.dayofweek,
 				a.timeofday,
-				COUNT(c.student_id) AS CountStudent,
+				COUNT(c.student_id) AS studentcount,
 				a.maxstudent,
 				d.pickmethod_id,
 				e.name,
@@ -71,7 +71,7 @@ function listEnrollmentByClassOfAndSemester(){
 				b.name,
 				a.dayofweek,
 				a.timeofday,
-				COUNT(c.student_id) AS CountStudent,
+				COUNT(c.student_id) AS studentcount,
 				a.maxstudent,
 				d.pickmethod_id,
 				e.name,
@@ -155,7 +155,7 @@ function performEnrollment(){
 				b.name,
 				a.dayofweek,
 				a.timeofday,
-				COUNT(c.student_id) AS CountStudent,
+				COUNT(c.student_id) AS studentcount,
 				a.minstudent,
 				a.maxstudent,
 				d.pickmethod_id
@@ -165,7 +165,7 @@ function performEnrollment(){
 				LEFT JOIN CLASSOF_SEMESTER d ON a.classof_id = d.classof_id AND a.semester = d.semester
 				WHERE a.classof_id = '$classof_id' AND a.semester = '$semester'
 				GROUP BY a.subject_id, b.name, a.dayofweek, a.timeofday, a.minstudent,a.maxstudent, d.pickmethod_id
-				ORDER BY CountStudent DESC, dayofweek ASC";
+				ORDER BY studentcount DESC, dayofweek ASC";
 	} catch(Exception $e) {
 		echo '{"error":{"source":"input","reason":'. $e->getMessage() .'}}';
 		return;

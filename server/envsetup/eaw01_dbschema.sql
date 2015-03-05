@@ -180,7 +180,7 @@ GO
 CREATE TABLE [dbo].[SUBJECT](
 	[subject_id] [nchar](10) NOT NULL,
 	[name] [nvarchar](256) NOT NULL,
-	[description] [text] NOT NULL,
+	[description] [nvarchar](max) NOT NULL,
 	[defaultpoint] [float] NOT NULL,
 	[addeddate] [datetime] NOT NULL,
 	[updatedate] [datetime] NULL,
@@ -339,7 +339,7 @@ GO
 CREATE TABLE [dbo].[ADMIN_AUDITLOG](
 	[id] [int] NOT NULL IDENTITY(1,1),
 	[user_id] [nchar](10) NOT NULL,
-	[activity] [text] NOT NULL,
+	[activity] [nvarchar](max) NOT NULL,
 	[logdate] [datetime] NOT NULL,
  CONSTRAINT [PK_ADMIN_AUDITLOG] PRIMARY KEY CLUSTERED 
 (
