@@ -34,34 +34,6 @@ function listAccountUsers(){
     }
 }
 
-function listAccountAdmin(){
-	try {
-		$app = \Slim\Slim::getInstance();
-		$app->response->headers->set('Content-Type', 'application/json');
-	    $request = $app->request();
-		$sql = "SELECT DISTINCT b.user_id, b.role, b.user_type, b.updatedate FROM STUDENT a, USER_ROLE b, ADMIN_MEMBER c
-				WHERE a.student_id in (b.user_id) OR CAST(c.admin_id as NCHAR(10)) in (b.user_id)";
-	} catch(Exception $e) {
-		echo '{"error":{"source":"input","reason":'. $e->getMessage() .'}}';
-		return;
-	}
-    
-	try {
-		$db = new DBManager();
-		$result = $db->getData($sql);
-		$response_arr = array();
-		if ($result){
-			while($row = sqlsrv_fetch_array($result)){
-				array_push($response_arr, $row);
-			}
-		}
-		$db = null;
-        $app->response->setBody(json_encode($response_arr));
-	} catch(PDOException $e) {
-        echo '{"error":{"source":"SQL","reason": SQL'. $e->getMessage() .'}}';
-    }
-}
-
 function updateListOfAdmin(){
 	try {
 		$app = \Slim\Slim::getInstance();
@@ -72,21 +44,21 @@ function updateListOfAdmin(){
 	    $db = new DBManager();
 		$db->beginSet();
 		$adminUserIdList = "";
-	    foreach($admin_arr->data as $admin_date){
+		$adminRole = "Admin"; //hardcode, add more logic if you want roles more than Admin 
+	    foreach($admin_arr->data as $admin_data){
 			$mergeSql = "merge USER_ROLE as target
-					using (values ('$admin_date->role', '$admin_date->user_type'))
-					    as source (role, user_type)
-					    on target.user_id = '$admin_date->user_id'
+					using (values ('$adminRole'))
+					    as source (role)
+					    on target.user_id = '$admin_data->user_id'
 					when matched then
 					    update
 					    set role = source.role,
-					    	user_type = source.user_type,
 					        updatedate = GETDATE()
 					when not matched then
-					    insert ( user_id, role, user_type, updatedate)
-					    values ( '$admin_date->user_id',  source.role, source.user_type, GETDATE());";
+					    insert ( user_id, role, updatedate)
+					    values ( '$admin_data->user_id',  source.role, GETDATE());";
 
-			$adminUserIdList .= "'$admin_date->user_id',";
+			$adminUserIdList .= "'$admin_data->user_id',";
 
 			if($db->setData($mergeSql))
 			{
@@ -120,17 +92,7 @@ function updateListOfAdmin(){
 	if ($updateStatus)
 	{
 		$db->commitWork();
-		//response with list of the new admin user
-		$sql = "SELECT DISTINCT b.user_id, b.role, b.user_type, b.updatedate FROM STUDENT a, USER_ROLE b, ADMIN_MEMBER c
-				WHERE a.student_id in (b.user_id) OR CAST(c.admin_id as NCHAR(10)) in (b.user_id)";
-		$result = $db->getData($sql);
-		$response_arr = array();
-		if ($result){
-			while($row = sqlsrv_fetch_array($result)){
-				array_push($response_arr, $row);
-			}
-		}
-        $app->response->setBody(json_encode($response_arr));
+        $app->response->setBody(json_encode(array("status"=>"success")));
     }
     else
 	{

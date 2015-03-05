@@ -37,7 +37,6 @@ $app->configureMode('development', function () use ($app) {
 $app->group('/api/v1', function() use ($app){
     $app->group('/account', function() use ($app){
         $app->post('/listusers', 'listAccountUsers');
-        $app->post('/listadmin', 'listAccountAdmin');
         $app->post('/update', 'updateListOfAdmin');
 
     });

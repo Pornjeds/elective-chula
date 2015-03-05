@@ -198,7 +198,6 @@ GO
 CREATE TABLE [dbo].[USER_ROLE](
 	[user_id] [nchar](10) NOT NULL,
 	[role] [nvarchar](50) NOT NULL,
-	[user_type] [bit] NOT NULL,
 	[updatedate] [datetime] NOT NULL,
  CONSTRAINT [PK_USER_ROLE] PRIMARY KEY CLUSTERED 
 (
@@ -535,10 +534,10 @@ BEGIN
 			a.student_id,
 			a.name,
 			a.lastname,
-			0,
+			1,
 			a.updatedate 
 				FROM STUDENT a 
-				LEFT JOIN USER_ROLE b ON a.student_id <> b.user_id
+				WHERE a.student_id in (SELECT user_id FROM USER_ROLE)
 
 	INSERT INTO #TMP_LISTNONADMIN 
 	SELECT DISTINCT
@@ -548,10 +547,30 @@ BEGIN
 			1,
 			a.updatedate 
 				FROM ADMIN_MEMBER a 
-				LEFT JOIN USER_ROLE b ON a.admin_id <> b.user_id
+				WHERE CAST(a.admin_id AS NCHAR(10)) in (SELECT user_id FROM USER_ROLE)
+
+	INSERT INTO #TMP_LISTNONADMIN 
+	SELECT DISTINCT
+			a.student_id,
+			a.name,
+			a.lastname,
+			0,
+			a.updatedate 
+				FROM STUDENT a 
+				WHERE a.student_id not in (SELECT user_id FROM USER_ROLE)
+
+	INSERT INTO #TMP_LISTNONADMIN 
+	SELECT DISTINCT
+			a.admin_id,
+			a.name,
+			a.lastname,
+			0,
+			a.updatedate 
+				FROM ADMIN_MEMBER a 
+				WHERE CAST(a.admin_id AS NCHAR(10)) not in (SELECT user_id FROM USER_ROLE)
 			
 			
-	select * from #TMP_LISTNONADMIN
+	select * from #TMP_LISTNONADMIN order by user_type DESC, user_id ASC
 END
 GO
 
