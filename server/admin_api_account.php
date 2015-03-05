@@ -12,7 +12,7 @@ function listAccountUsers(){
 		$app = \Slim\Slim::getInstance();
 		$app->response->headers->set('Content-Type', 'application/json');
 	    $request = $app->request();
-		$sql = "exec listNonAdminMember";
+		$sql = "exec listAccountMember";
 	} catch(Exception $e) {
 		echo '{"error":{"source":"input","reason":'. $e->getMessage() .'}}';
 		return;

@@ -264,6 +264,7 @@ CREATE TABLE [dbo].[CLASSOF_SEMESTER](
 	[mincredit] [int] NOT NULL,
 	[maxcredit] [int] NOT NULL,
 	[pickmethod_id] [int] NOT NULL,
+	[isActive] [bit] NOT NULL,
 	[addeddate] [datetime] NOT NULL,
 	[updatedate] [datetime] NULL,
  CONSTRAINT [PK_CLASSOF_SEMESTER] PRIMARY KEY CLUSTERED 
@@ -493,12 +494,21 @@ BEGIN
 	updatedate datetime
 	)
 
-	INSERT INTO #TMP_SUBJECTCLASSOF SELECT b.subject_id, b.name,
+	INSERT INTO #TMP_SUBJECTCLASSOF 
+			SELECT b.subject_id, 
+			b.name,
 			CAST(CASE WHEN classof_id is not NULL THEN 1 ELSE 0 END AS bit) AS selected, 
 			classof_id, 
-			semester, minstudent, maxstudent, 
-			CAST(CASE WHEN credit is not NULL THEN credit ELSE b.defaultpoint END AS float) AS credit
-			, dayofweek, timeofday, instructor, isRequired, a.addeddate, a.updatedate 
+			semester, 
+			minstudent, 
+			maxstudent, 
+			CAST(CASE WHEN credit is not NULL THEN credit ELSE b.defaultpoint END AS float) AS credit, 
+			dayofweek, 
+			timeofday, 
+			instructor, 
+			isRequired, 
+			a.addeddate, 
+			a.updatedate 
 				FROM SUBJECT_CLASSOF a 
 				RIGHT JOIN SUBJECT b ON a.subject_id = b.subject_id
 				where (classof_id = @classof_id and semester = @semester) OR (classof_id is NULL and semester is NULL)
@@ -511,7 +521,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE listNonAdminMember 
+CREATE PROCEDURE listAccountMember 
 AS
 BEGIN
 	-- SET NOCOUNT ON added to prevent extra result sets from

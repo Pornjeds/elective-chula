@@ -574,6 +574,14 @@
                 if( classOfSemesterObj && typeof( classOfSemesterObj['mincredit'] ) !== 'undefined' && typeof( classOfSemesterObj['maxcredit'] ) !== 'undefined' && typeof( classOfSemesterObj['pickmethod_id'] ) !== 'undefined'){
                     $('#minUnitTerm').val( classOfSemesterObj['mincredit'] );
                     $('#maxUnitTerm').val( classOfSemesterObj['maxcredit'] );
+                    var isActiveTermState = true;
+                    if (classOfSemesterObj['isActive'] === 1){
+                        isActiveTermState = true;
+                    }else{
+                        isActiveTermState = false;
+                    }
+                    $('#isActiveTerm').attr('checked', isActiveTermState);
+
                     $('#methodPicker').children().each(function(){
                         if( parseInt($(this).val()) === classOfSemesterObj['pickmethod_id'] ){
                             $(this).attr('selected', 'true');
@@ -592,12 +600,14 @@
             var idMethod = '#methodPicker';
             var idMinUnitTerm = '#minUnitTerm';
             var idMaxUnitTerm = '#maxUnitTerm';
+            var idIsActiveTerm = '#isActiveTerm';
             var jsonObj = { 
                 'subjectsdata' : [],
                 'classof_id' :  $('#studentYear').val(),
                 'semester' :  $('#studentSemester').val(),
                 'mincredit' : $(idMinUnitTerm).val(),
                 'maxcredit' : $(idMaxUnitTerm).val(),
+                'isActive' : $().val(idIsActiveTerm),
                 'pickermethod' : $(idMethod).val()
             };
             //
