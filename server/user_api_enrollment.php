@@ -100,8 +100,8 @@ function getSubjectList(){
         return;
     }
 
-    $tmp_arr1 = array('opensubjects' => $opened_subject_arr);
-    $tmp_arr2 = array('selectedsubjects' => $selected_subject_arr);
+    $tmp_arr1 = array('subject_list' => $opened_subject_arr);
+    $tmp_arr2 = array('selected' => $selected_subject_arr);
 
     array_push($response_arr, $tmp_arr1);
     array_push($response_arr, $tmp_arr2);
