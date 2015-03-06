@@ -44,7 +44,7 @@
             <div class="form-group">
               <input type="password" placeholder="Password" class="form-control">
             </div>
-            <input type='button' class="btn btn-success" onClick='return bt_userNameClick();' value='Sign in' />
+            <input id='bt_signIn' type='button' class="btn btn-success" onClick='return bt_userNameClick();' value='Sign in' />
           </form>
         </div><!--/.navbar-collapse -->
       </div>
@@ -139,8 +139,7 @@
                 window.location.href ="pages/admin_dashboard.html";
             }
             else{
-                //window.location.href = 'http://www.apple.com';
-                window.location.href ="pages/user_dashboard.html";
+                window.location.href ="pages/user_dashboard.html" + '?id=' + txtUsername.value;
             }
         };
     </script>
