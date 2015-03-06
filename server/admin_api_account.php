@@ -65,8 +65,10 @@ function updateListOfAdmin(){
 			}
 			else
 			{
+				$db->rollbackWork();
+		        $app->response->setBody(json_encode(array("status"=>"fail")));
 				$updateStatus = false;
-				break;
+				return;
 			}
 		}
 
@@ -79,12 +81,14 @@ function updateListOfAdmin(){
 			}
 			else
 			{
+				$db->rollbackWork();
+		        $app->response->setBody(json_encode(array("status"=>"fail")));
 				$updateStatus = false;
-				break;
+				return;
 			}
 		}
 	} catch(Exception $e) {
-		echo '{"error":{"source":"input","reason":'. $e->getMessage() .'}}';
+		$app->response->setBody(json_encode(array("error"=>array("source"=>"SQL", "reason"=>$e->getMessage()))));
 		return;
 	}
     
