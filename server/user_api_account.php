@@ -12,23 +12,24 @@ function getUserDashboardInfo(){
 		$app->response->headers->set('Content-Type', 'application/json');
 	    $request = $app->request();
 	    $student_id = json_decode($request->getBody())->student_id;
-	    $response_arr = array();
-	    $userdata_arr = array();
-	    $subject_arr = array();
 
 	} catch(Exception $e) {
-		echo '{"error":{"source":"input","reason":'. $e->getMessage() .'}}';
+		$app->response->setBody(json_encode(array("error"=>array("source"=>"input", "reason"=>$e->getMessage()))));
 		return;
 	}
     
-    //get student detail
 	try {
+		$db = new DBManager();
+		$response_arr = array();
+	    $userdata_arr = array();
+	    $subject_arr = array();
+
+		//1. get student detail
 		$name = "";
 		$lastname = "";
 		$classof_id = "";
 
 		$sql_getUserInfo = "SELECT student_id, name, lastname, classof_id FROM STUDENT WHERE student_id = '$student_id'";
-		$db = new DBManager();
 		$result = $db->getData($sql_getUserInfo);
 		if ($result){
 			while($row = sqlsrv_fetch_array($result)){
@@ -38,21 +39,14 @@ function getUserDashboardInfo(){
 				array_push($userdata_arr, $row);
 			}
 		}
-		$db = null;
-	} catch(PDOException $e) {
-        echo '{"error":{"source":"SQL","reason": SQL'. $e->getMessage() .'}}';
-        return;
-    }
-
-    //get active/status CLASSOF_SEMESTER
-    try {
+	
+    	//2. get active/status CLASSOF_SEMESTER
     	$semester = "";
 		$semester_state = "";
 		$mincredit = "";
 		$maxcredit = "";
 
 		$sql_getSubjectState = "SELECT * FROM CLASSOF_SEMESTER WHERE classof_id = '$classof_id' AND semester_state <> 0";
-		$db = new DBManager();
 		$result = $db->getData($sql_getSubjectState);
 		if ($result){
 			while($row = sqlsrv_fetch_array($result)){
@@ -62,14 +56,8 @@ function getUserDashboardInfo(){
 				$maxcredit = $row["maxcredit"];
 			}
 		}
-		$db = null;
-	} catch(PDOException $e) {
-        echo '{"error":{"source":"SQL","reason": SQL'. $e->getMessage() .'}}';
-        return;
-    }
-
-	//get opened subject (of that specific classof and semester)
-	try {
+	
+		//3. get opened subject (of that specific classof and semester)
 		$sql_getSubjectList = "SELECT  
 									a.subject_id,
 									b.name,
@@ -83,7 +71,6 @@ function getUserDashboardInfo(){
 								WHERE a.classof_id = '$classof_id' AND a.semester = '$semester'
 								GROUP BY a.subject_id, b.name, b.description, a.minstudent, a.maxstudent
 								ORDER BY b.name ASC";
-		$db = new DBManager();
 		$result = $db->getData($sql_getSubjectList);
 		if ($result){
 			while($row = sqlsrv_fetch_array($result)){
@@ -91,11 +78,13 @@ function getUserDashboardInfo(){
 			}
 		}
 		$db = null;
+
 	} catch(PDOException $e) {
-        echo '{"error":{"source":"SQL","reason": SQL'. $e->getMessage() .'}}';
+        $app->response->setBody(json_encode(array("error"=>array("source"=>"SQL", "reason"=>$e->getMessage()))));
         return;
     }
 
+    //merge 1,2 and 3
     $tmp_arr1 = array('userdata' => $userdata_arr);
     $tmp_arr2 = array('semester_state' => $semester_state);
 	$tmp_arr3 = array('subjectlist' => $subject_arr);
@@ -104,7 +93,6 @@ function getUserDashboardInfo(){
 	array_push($response_arr, $tmp_arr2);
 	array_push($response_arr, $tmp_arr3);
 
-	$db = null;
     $app->response->setBody(json_encode($response_arr));
 }
 
