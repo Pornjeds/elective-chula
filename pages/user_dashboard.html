@@ -80,7 +80,7 @@
                         <div style='color:#777; background-color: #e7e7e7; border-color: #e1e1e1;padding: 10px;'>
                           <h3 class="panel-title">สถานะของวิชาเลือก</h3>
                         </div>        
-                        <div class="panel-body" id='appendSubject'>
+                        <div class="panel-body" id='appendSubjectStatus'>
                         
                         </div>
                     </div>
@@ -106,37 +106,8 @@
                         <div style='color:#777; background-color: #e7e7e7; border-color: #e1e1e1;padding: 10px;'>
                           <h3 class="panel-title">สรุปผลการเลือกวิชา</h3>
                         </div>        
-                        <div class="panel-body">
-                            <div id="accordion"  style='margin-bottom: 5px;'>    <!-- group #1 -->
-                                <a data-toggle="collapse" data-parent="#accordion" 
-                                  href="#collapseRegisteredOne" style='font-size:18px;'>
-                                  MARKETING MANAGEMENT
-                                </a>
-                                <div id="collapseRegisteredOne" class="panel-collapse collapse">
-                                  <div style='padding:5px; border: 1px solid #efefef'>สอนเกี่ยวกับการจัดการมาเก็ตติ้ง ที่เป็นส่วนหนึ่งที่สำคัญของบริษัท  สอนโดยอ.ผู้หญิง</div>
-                                </div>
-                            </div>
-                            
-                            <div id="accordion" style='margin-bottom: 5px;'>    <!-- group #2 -->
-                                <a data-toggle="collapse" data-parent="#accordion" 
-                                  href="#collapseRegisteredTwo" style='font-size:18px;'>
-                                  OPERATION MANAGEMENT
-                                </a>
-                                <div id="collapseRegisteredTwo" class="panel-collapse collapse">
-                                  <div style='padding:5px; border: 1px solid #efefef'>สอนเกี่ยวกับการจัดการกระบวนการดำเนินงาน ที่เป็นส่วนหนึ่งที่สำคัญของบริษัท  สอนโดยอ.ทานทัช</div>
-                                </div>
-                            </div>
-                            
-                            <div id="accordion" style='margin-bottom: 5px;'>    <!-- group #3 -->
-                                <a data-toggle="collapse" data-parent="#accordion" 
-                                  href="#collapseRegisteredThree" style='font-size:18px;'>
-                                  FINANCIAL MANAGEMENT
-                                </a>
-                                <div id="collapseRegisteredThree" class="panel-collapse collapse">
-                                  <div style='padding:5px; border: 1px solid #efefef'>สอนเกี่ยวกับการจัดการเงิน ที่เป็นส่วนหนึ่งที่สำคัญของบริษัท  สอนโดยอ.ผู้หญิง</div>
-                                </div>
-                            </div>
-
+                        <div class="panel-body" id="appendSubjectResult">
+                        
                         </div>
                     </div>
                 </td>
@@ -243,18 +214,18 @@
                 dataType: 'json',
                 contentType: "text/plain; charset=UTF-8",
                 success: function(data, textStatus, jqXHR){
-                        //bong
                         $('.studentName').each(function(){
                             $(this).text(data[0].userdata[0].name + ' ' + data[0].userdata[0].lastname);
                         });
                         $('.studentId').each(function(){
                             $(this).text(data[0].userdata[0].student_id);
                         });
+                        //
+                        toggleUserState( data[1].semester_state );
+                        //
                         if( data[1].semester_state === 1 ){
-                            //Activate Open for Register
-                            toggleUserState( 3 );
-                            var bodySubject = document.getElementById('appendSubject');
-                            
+                            //Activate Open for Register [STATUS]
+                            var bodySubject = document.getElementById('appendSubjectStatus');
                             for(var i=0; i< data[2].subjectlist.length; i++)
                             {
                                 var accordionElement = document.createElement('div');
@@ -287,7 +258,6 @@
                                 
                                 var progressSubElement = document.createElement('div');
                                 progressSubElement.id = 'progress' + i;
-                                //progressSubElement.className = 'progress-bar progress-bar-striped active progress-bar-success';
                                 progressSubElement.className = 'progress-bar progress-bar-striped active';
                                 progressSubElement.setAttribute('role', 'progressbar');
                                 progressSubElement.setAttribute( 'aria-valuenow', data[2].subjectlist[i].studentcount );
@@ -309,13 +279,42 @@
                                 }
                                 progressElement.appendChild( progressSubElement );
                                 bodySubject.appendChild( accordionElement );
-                            }
-                            
-                        }else{
-                            //No Data
-                            toggleUserState( 1 );
+                            }    
                         }
-                        
+                        else if( data[1].semester_state === 2 ){
+                            //Activate Open for Register [SUMMARY]
+                            var bodySubject = document.getElementById('appendSubjectResult');
+                            for(var i=0; i< data[2].subjectlist.length; i++)
+                            {
+                                var accordionElement = document.createElement('div');
+                                accordionElement.id = 'accordion';
+                                accordionElement.style.marginBottom = '5px';
+                                
+                                var aElement = document.createElement('a');
+                                aElement.setAttribute('data-toggle', 'collapse');
+                                aElement.setAttribute('data-parent', '#accordion');
+                                aElement.setAttribute('href', '#collapse' + i );
+                                aElement.style.fontSize = '18px';
+                                aElement.innerHTML = data[2].subjectlist[i].name ;
+                                accordionElement.appendChild( aElement );
+                                
+                                var collapseElement = document.createElement('div');
+                                collapseElement.id = 'collapse' + i ;
+                                collapseElement.className = 'panel-collapse collapse';
+                                accordionElement.appendChild( collapseElement );
+                                
+                                var descriptionElement = document.createElement('div');
+                                descriptionElement.style.padding = '5px';
+                                descriptionElement.style.border = '1px solid #efefef';
+                                descriptionElement.innerHTML = data[2].subjectlist[i].description;
+                                collapseElement.appendChild( descriptionElement );
+                                
+                                bodySubject.appendChild( accordionElement );
+                            }
+                        }
+                        else{
+                            //No Data
+                        }     
                 },
                 error: function(jqXHR, textStatus, errorThrown){
                     alert('get user information error: ' + textStatus);
@@ -324,21 +323,24 @@
         };
         //
         
-        function toggleUserState( value ){
-            if( value === 2 ){
+        function toggleUserState( value ){     
+            if( value === 1 ){
+                //STATUS
+                $('#tableStatus').fadeIn(300);
+                $('#tableResult').fadeOut(10);
+                $('#tableNodata').fadeOut(10);
+            }
+            else if( value === 2 ){
+                //RESULT
                 $('#tableResult').fadeIn(300);
                 $('#tableStatus').fadeOut(10);
                 $('#tableNodata').fadeOut(10);
             }
-            else if( value === 1 ){
+            else {
+                //NO DATA
                 $('#tableNodata').fadeIn(300);
                 $('#tableStatus').fadeOut(10);
                 $('#tableResult').fadeOut(10);
-            }
-            else {
-                $('#tableStatus').fadeIn(300);
-                $('#tableResult').fadeOut(10);
-                $('#tableNodata').fadeOut(10);
             }
         }
         
