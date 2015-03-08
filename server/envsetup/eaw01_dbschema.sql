@@ -211,11 +211,18 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[TMP_SELECTION](
+	[tmp_id] [int] NOT NULL IDENTITY(1,1),
 	[student_id] [nchar](10) NOT NULL,
 	[subject_id] [nchar](10) NOT NULL,
 	[classof_id] [int] NOT NULL,
 	[semester] [nchar](10) NOT NULL,
 	[status] [nvarchar](50) NOT NULL,
+	[credit] [float] NOT NULL,
+	[dayofweek] [int] NOT NULL,
+	[timeofday] [int] NOT NULL,
+	[isRequired] [bit] NOT NULL,
+	[priority] [int] NOT NULL,
+	[logical_priority] [int] NOT NULL,
 	[type] [nvarchar](50) NOT NULL,
 	[addeddate] [datetime] NOT NULL,
  CONSTRAINT [PK_TMP_SELECTION] PRIMARY KEY CLUSTERED 
@@ -301,6 +308,7 @@ CREATE TABLE [dbo].[STUDENT_ENROLLMENT](
 	[classof_id] [int] NOT NULL,
 	[semester] [nchar](10) NOT NULL,
 	[priority] [int] NOT NULL,
+	[logical_priority] [int] NOT NULL,
 	[addeddate] [datetime] NOT NULL,
  CONSTRAINT [PK_STUDENT_ENROLLMENT] PRIMARY KEY CLUSTERED 
 (

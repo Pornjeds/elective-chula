@@ -17,7 +17,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
--- Author:		<Author,,Name>
+-- Author:		Wasa Choksuwattanasakul
 -- Create date: <Create Date,,>
 -- Description:	<Description,,>
 -- =============================================
@@ -179,3 +179,464 @@ BEGIN
 END
 GO
 
+
+-- =======================================================
+-- It contains 3 random algorithm
+-- 1. enrollFirstComeFirstServe
+-- 2. enrollGPA
+-- 3. enrollRanking
+-- Each algorithm contains 3 parts
+-- 1. select students who got accepted and not get accepted
+-- 2. update ranking
+-- 3. put data into TMP_SELECTION
+
+-- =======================================================
+
+CREATE PROCEDURE enrollFirstComeFirstServe 
+	-- Add the parameters for the stored procedure here
+	@subject_id nchar(10) = NULL,
+	@classof_id int = NULL,
+	@semester nchar(10) = NULL
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	DECLARE @maxstudent int
+	DECLARE @maxpriority int
+	SET @maxstudent = (SELECT maxstudent FROM SUBJECT_CLASSOF WHERE subject_id = @subject_id AND classof_id = @classof_id AND semester = @semester)
+	SET @maxpriority = (SELECT max(priority) FROM STUDENT_ENROLLMENT WHERE subject_id = @subject_id AND classof_id = @classof_id AND semester = @semester)
+
+    -- Insert statements for procedure here
+	IF OBJECT_ID('tempdb..#TMP_STUDENTACCEPTED') IS NOT NULL DROP TABLE #TMP_STUDENTACCEPTED
+	IF OBJECT_ID('tempdb..#TMP_STUDENTNOTACCEPTED') IS NOT NULL DROP TABLE #TMP_STUDENTNOTACCEPTED
+
+	CREATE TABLE #TMP_STUDENTACCEPTED(
+	student_id nchar(10),
+	subject_id nchar(10),
+	classof_id int,
+	semester nchar(10),
+	status nvarchar(50),
+	credit float,
+	dayofweek int,
+	timeofday int,
+	isRequired bit,
+	priority int,
+	logical_priority int,
+	type nvarchar(50),
+	addeddate datetime
+	)
+
+	CREATE TABLE #TMP_STUDENTNOTACCEPTED(
+	student_id nchar(10),
+	subject_id nchar(10),
+	classof_id int,
+	semester nchar(10),
+	status nvarchar(50),
+	credit float,
+	dayofweek int,
+	timeofday int,
+	isRequired bit,
+	priority int,
+	logical_priority int,
+	type nvarchar(50),
+	addeddate datetime
+	)
+
+	-- GET accepted
+	INSERT INTO #TMP_STUDENTACCEPTED
+			SELECT top (@maxstudent)
+			a.student_id,
+			@subject_id,
+			@classof_id,
+			@semester,
+			'SELECTED',
+			b.credit,
+			b.dayofweek,
+			b.timeofday,
+			b.isRequired,
+			a.priority,
+			a.logical_priority,
+			type = CAST
+				(CASE 
+					WHEN a.logical_priority > (
+						SELECT min(logical_priority) 
+						FROM  STUDENT_ENROLLMENT 
+						WHERE student_id = a.student_id AND a.subject_id = @subject_id AND a.classof_id = @classof_id AND a.semester = @semester
+						) THEN 'STANDBY'
+					WHEN a.logical_priority = (
+						SELECT min(logical_priority) 
+						FROM  STUDENT_ENROLLMENT 
+						WHERE student_id = a.student_id AND a.subject_id = @subject_id AND a.classof_id = @classof_id AND a.semester = @semester
+						) THEN 'ACCEPTED'
+				END 
+			AS NVARCHAR(10)),
+			a.addeddate
+			FROM STUDENT_ENROLLMENT a
+			INNER JOIN SUBJECT_CLASSOF b ON a.subject_id = b.subject_id
+			WHERE a.subject_id = @subject_id AND a.classof_id = @classof_id AND a.semester = @semester
+			ORDER BY a.addeddate ASC, a.logical_priority ASC
+
+	-- NOT GET ACCEPTED
+	INSERT INTO #TMP_STUDENTNOTACCEPTED
+			SELECT
+			a.student_id,
+			@subject_id,
+			@classof_id,
+			@semester,
+			'NOTSELECTED',
+			b.credit,
+			b.dayofweek,
+			b.timeofday,
+			b.isRequired,
+			a.priority,
+			a.logical_priority,
+			'STANDBY',
+			a.addeddate
+			FROM STUDENT_ENROLLMENT a
+			INNER JOIN SUBJECT_CLASSOF b ON a.subject_id = b.subject_id
+			WHERE a.subject_id = @subject_id AND a.classof_id = @classof_id AND a.semester = @semester 
+			AND a.student_id NOT IN (SELECT DISTINCT student_id FROM #TMP_STUDENTACCEPTED)
+			ORDER BY a.addeddate ASC, a.logical_priority ASC
+
+	-- update logical priority who don't get acceoted 
+	UPDATE STUDENT_ENROLLMENT SET logical_priority = priority + @maxpriority
+	WHERE student_id in (
+		SELECT student_id FROM #TMP_STUDENTNOTACCEPTED 
+	) AND subject_id = @subject_id AND classof_id = @classof_id AND semester = @semester 
+
+	-- update logical priority who get acceoted and almost accepted (เพราะว่านี่คือวิชาที่ priority สูงสุดของคนคนนี้ ณ​เวลานี้แล้ว ดังนั้น priority number นี้ของคนคนนี้จะต้องถูกปรับให้สูงขึ้นเพื่อไม่ให้priority นี้มีผลต่อการ weight priority ของวิชาถัดๆไป)
+	UPDATE STUDENT_ENROLLMENT SET logical_priority = priority + (@maxpriority * 3)
+	WHERE student_id in (
+		SELECT student_id FROM #TMP_STUDENTACCEPTED 
+		WHERE type = 'ACCEPTED'
+	) AND subject_id = @subject_id AND classof_id = @classof_id AND semester = @semester
+
+	-- PUT Data into TMP_SELECTION
+	DELETE FROM TMP_SELECTION WHERE subject_id = @subject_id AND classof_id = @classof_id AND semester = @semester
+	INSERT INTO TMP_SELECTION
+		SELECT * FROM #TMP_STUDENTACCEPTED
+	INSERT INTO TMP_SELECTION
+		SELECT * FROM #TMP_STUDENTNOTACCEPTED
+
+	-- select * from #TMP_STUDENTACCEPTED
+	-- select * from #TMP_STUDENTNOTACCEPTED		
+
+END
+GO
+
+
+CREATE PROCEDURE enrollGPA
+	-- Add the parameters for the stored procedure here
+	@subject_id nchar(10) = NULL,
+	@classof_id int = NULL,
+	@semester nchar(10) = NULL
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	DECLARE @maxstudent int
+	DECLARE @maxpriority int
+	SET @maxstudent = (SELECT maxstudent FROM SUBJECT_CLASSOF WHERE subject_id = @subject_id AND classof_id = @classof_id AND semester = @semester)
+	SET @maxpriority = (SELECT max(priority) FROM STUDENT_ENROLLMENT WHERE subject_id = @subject_id AND classof_id = @classof_id AND semester = @semester)
+
+    -- Insert statements for procedure here
+	IF OBJECT_ID('tempdb..#TMP_STUDENTACCEPTED') IS NOT NULL DROP TABLE #TMP_STUDENTACCEPTED
+	IF OBJECT_ID('tempdb..#TMP_STUDENTNOTACCEPTED') IS NOT NULL DROP TABLE #TMP_STUDENTNOTACCEPTED
+
+	CREATE TABLE #TMP_STUDENTACCEPTED(
+	student_id nchar(10),
+	subject_id nchar(10),
+	classof_id int,
+	semester nchar(10),
+	status nvarchar(50),
+	credit float,
+	dayofweek int,
+	timeofday int,
+	isRequired bit,
+	priority int,
+	logical_priority int,
+	type nvarchar(50),
+	addeddate datetime
+	)
+
+	CREATE TABLE #TMP_STUDENTNOTACCEPTED(
+	student_id nchar(10),
+	subject_id nchar(10),
+	classof_id int,
+	semester nchar(10),
+	status nvarchar(50),
+	credit float,
+	dayofweek int,
+	timeofday int,
+	isRequired bit,
+	priority int,
+	logical_priority int,
+	type nvarchar(50),
+	addeddate datetime
+	)
+
+	-- GET accepted
+	INSERT INTO #TMP_STUDENTACCEPTED
+			SELECT top (@maxstudent)
+			a.student_id,
+			@subject_id,
+			@classof_id,
+			@semester,
+			'SELECTED',
+			b.credit,
+			b.dayofweek,
+			b.timeofday,
+			b.isRequired,
+			a.priority,
+			a.logical_priority,
+			type = CAST
+				(CASE 
+					WHEN a.logical_priority > (
+						SELECT min(logical_priority) 
+						FROM  STUDENT_ENROLLMENT 
+						WHERE student_id = a.student_id AND a.subject_id = @subject_id AND a.classof_id = @classof_id AND a.semester = @semester
+						) THEN 'STANDBY'
+					WHEN a.logical_priority = (
+						SELECT min(logical_priority) 
+						FROM  STUDENT_ENROLLMENT 
+						WHERE student_id = a.student_id AND a.subject_id = @subject_id AND a.classof_id = @classof_id AND a.semester = @semester
+						) THEN 'ACCEPTED'
+				END 
+			AS NVARCHAR(10)),
+			a.addeddate
+			FROM STUDENT_ENROLLMENT a
+			INNER JOIN SUBJECT_CLASSOF b ON a.subject_id = b.subject_id
+			INNER JOIN STUDENT c ON a.student_id = c.student_id
+			WHERE a.subject_id = @subject_id AND a.classof_id = @classof_id AND a.semester = @semester
+			ORDER BY c.GPA DESC, a.addeddate ASC, a.logical_priority ASC
+
+	-- NOT GET ACCEPTED
+	INSERT INTO #TMP_STUDENTNOTACCEPTED
+			SELECT
+			a.student_id,
+			@subject_id,
+			@classof_id,
+			@semester,
+			'NOTSELECTED',
+			b.credit,
+			b.dayofweek,
+			b.timeofday,
+			b.isRequired,
+			a.priority,
+			a.logical_priority,
+			'STANDBY',
+			a.addeddate
+			FROM STUDENT_ENROLLMENT a
+			INNER JOIN SUBJECT_CLASSOF b ON a.subject_id = b.subject_id
+			INNER JOIN STUDENT c ON a.student_id = c.student_id
+			WHERE a.subject_id = @subject_id AND a.classof_id = @classof_id AND a.semester = @semester 
+			AND a.student_id NOT IN (SELECT DISTINCT student_id FROM #TMP_STUDENTACCEPTED)
+			ORDER BY c.GPA DESC, a.addeddate ASC, a.logical_priority ASC
+
+	-- update logical priority who don't get acceoted 
+	UPDATE STUDENT_ENROLLMENT SET logical_priority = priority + @maxpriority
+	WHERE student_id in (
+		SELECT student_id FROM #TMP_STUDENTNOTACCEPTED 
+	) AND subject_id = @subject_id AND classof_id = @classof_id AND semester = @semester 
+
+	-- update logical priority who get acceoted and almost accepted (เพราะว่านี่คือวิชาที่ priority สูงสุดของคนคนนี้ ณ​เวลานี้แล้ว ดังนั้น priority number นี้ของคนคนนี้จะต้องถูกปรับให้สูงขึ้นเพื่อไม่ให้priority นี้มีผลต่อการ weight priority ของวิชาถัดๆไป)
+	UPDATE STUDENT_ENROLLMENT SET logical_priority = priority + (@maxpriority * 3)
+	WHERE student_id in (
+		SELECT student_id FROM #TMP_STUDENTACCEPTED 
+		WHERE type = 'ACCEPTED'
+	) AND subject_id = @subject_id AND classof_id = @classof_id AND semester = @semester
+
+	-- PUT Data into TMP_SELECTION
+	DELETE FROM TMP_SELECTION WHERE subject_id = @subject_id AND classof_id = @classof_id AND semester = @semester
+	INSERT INTO TMP_SELECTION
+		SELECT * FROM #TMP_STUDENTACCEPTED
+	INSERT INTO TMP_SELECTION
+		SELECT * FROM #TMP_STUDENTNOTACCEPTED
+
+	-- select * from #TMP_STUDENTACCEPTED
+	-- select * from #TMP_STUDENTNOTACCEPTED		
+
+END
+GO
+
+
+CREATE PROCEDURE enrollRanking
+	-- Add the parameters for the stored procedure here
+	@subject_id nchar(10) = NULL,
+	@classof_id int = NULL,
+	@semester nchar(10) = NULL
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	DECLARE @maxstudent int
+	DECLARE @maxpriority int
+	SET @maxstudent = (SELECT maxstudent FROM SUBJECT_CLASSOF WHERE subject_id = @subject_id AND classof_id = @classof_id AND semester = @semester)
+	SET @maxpriority = (SELECT max(priority) FROM STUDENT_ENROLLMENT WHERE subject_id = @subject_id AND classof_id = @classof_id AND semester = @semester)
+
+    -- Insert statements for procedure here
+	IF OBJECT_ID('tempdb..#TMP_STUDENTACCEPTED') IS NOT NULL DROP TABLE #TMP_STUDENTACCEPTED
+	IF OBJECT_ID('tempdb..#TMP_STUDENTNOTACCEPTED') IS NOT NULL DROP TABLE #TMP_STUDENTNOTACCEPTED
+
+	CREATE TABLE #TMP_STUDENTACCEPTED(
+	student_id nchar(10),
+	subject_id nchar(10),
+	classof_id int,
+	semester nchar(10),
+	status nvarchar(50),
+	credit float,
+	dayofweek int,
+	timeofday int,
+	isRequired bit,
+	priority int,
+	logical_priority int,
+	type nvarchar(50),
+	addeddate datetime
+	)
+
+	CREATE TABLE #TMP_STUDENTNOTACCEPTED(
+	student_id nchar(10),
+	subject_id nchar(10),
+	classof_id int,
+	semester nchar(10),
+	status nvarchar(50),
+	credit float,
+	dayofweek int,
+	timeofday int,
+	isRequired bit,
+	priority int,
+	logical_priority int,
+	type nvarchar(50),
+	addeddate datetime
+	)
+
+	-- GET accepted
+	INSERT INTO #TMP_STUDENTACCEPTED
+			SELECT top (@maxstudent)
+			a.student_id,
+			@subject_id,
+			@classof_id,
+			@semester,
+			'SELECTED',
+			b.credit,
+			b.dayofweek,
+			b.timeofday,
+			b.isRequired,
+			a.priority,
+			a.logical_priority,
+			type = CAST
+				(CASE 
+					WHEN a.logical_priority > (
+						SELECT min(logical_priority) 
+						FROM  STUDENT_ENROLLMENT 
+						WHERE student_id = a.student_id AND a.subject_id = @subject_id AND a.classof_id = @classof_id AND a.semester = @semester
+						) THEN 'STANDBY'
+					WHEN a.logical_priority = (
+						SELECT min(logical_priority) 
+						FROM  STUDENT_ENROLLMENT 
+						WHERE student_id = a.student_id AND a.subject_id = @subject_id AND a.classof_id = @classof_id AND a.semester = @semester
+						) THEN 'ACCEPTED'
+				END 
+			AS NVARCHAR(10)),
+			a.addeddate
+			FROM STUDENT_ENROLLMENT a
+			INNER JOIN SUBJECT_CLASSOF b ON a.subject_id = b.subject_id
+			WHERE a.subject_id = @subject_id AND a.classof_id = @classof_id AND a.semester = @semester
+			ORDER BY a.logical_priority ASC, a.addeddate ASC
+
+	-- NOT GET ACCEPTED
+	INSERT INTO #TMP_STUDENTNOTACCEPTED
+			SELECT
+			a.student_id,
+			@subject_id,
+			@classof_id,
+			@semester,
+			'NOTSELECTED',
+			b.credit,
+			b.dayofweek,
+			b.timeofday,
+			b.isRequired,
+			a.priority,
+			a.logical_priority,
+			'STANDBY',
+			a.addeddate
+			FROM STUDENT_ENROLLMENT a
+			INNER JOIN SUBJECT_CLASSOF b ON a.subject_id = b.subject_id
+			WHERE a.subject_id = @subject_id AND a.classof_id = @classof_id AND a.semester = @semester 
+			AND a.student_id NOT IN (SELECT DISTINCT student_id FROM #TMP_STUDENTACCEPTED)
+			ORDER BY a.logical_priority ASC, a.addeddate ASC
+
+	-- update logical priority who don't get acceoted 
+	UPDATE STUDENT_ENROLLMENT SET logical_priority = priority + @maxpriority
+	WHERE student_id in (
+		SELECT student_id FROM #TMP_STUDENTNOTACCEPTED 
+	) AND subject_id = @subject_id AND classof_id = @classof_id AND semester = @semester 
+
+	-- update logical priority who get acceoted and almost accepted (เพราะว่านี่คือวิชาที่ priority สูงสุดของคนคนนี้ ณ​เวลานี้แล้ว ดังนั้น priority number นี้ของคนคนนี้จะต้องถูกปรับให้สูงขึ้นเพื่อไม่ให้priority นี้มีผลต่อการ weight priority ของวิชาถัดๆไป)
+	UPDATE STUDENT_ENROLLMENT SET logical_priority = priority + (@maxpriority * 3)
+	WHERE student_id in (
+		SELECT student_id FROM #TMP_STUDENTACCEPTED
+		WHERE type = 'ACCEPTED'
+	) AND subject_id = @subject_id AND classof_id = @classof_id AND semester = @semester
+
+	-- PUT Data into TMP_SELECTION
+	DELETE FROM TMP_SELECTION WHERE subject_id = @subject_id AND classof_id = @classof_id AND semester = @semester
+	INSERT INTO TMP_SELECTION
+		SELECT * FROM #TMP_STUDENTACCEPTED
+	INSERT INTO TMP_SELECTION
+		SELECT * FROM #TMP_STUDENTNOTACCEPTED
+
+	-- select * from #TMP_STUDENTACCEPTED
+	-- select * from #TMP_STUDENTNOTACCEPTED		
+
+END
+GO
+
+CREATE PROCEDURE enrollReconcile
+	-- Add the parameters for the stored procedure here
+	@subject_id nchar(10) = NULL,
+	@classof_id int = NULL,
+	@semester nchar(10) = NULL
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	DECLARE @maxstudent int
+	SET @maxstudent = (SELECT maxstudent FROM SUBJECT_CLASSOF WHERE subject_id = @subject_id AND classof_id = @classof_id AND semester = @semester)
+
+    -- UPDATE STANDBY TO ALMOST ACCEPTED
+    UPDATE TMP_SELECTION SET type = 'ACCEPTED'
+    WHERE tmp_id IN (SELECT top (@maxstudent) tmp_id FROM TMP_SELECTION WHERE subject_id = @subject_id AND classof_id = @classof_id AND semester = @semester ORDER BY tmp_id ASC)
+
+END
+GO
+
+CREATE PROCEDURE enrollStudentBasedOnCredit
+	-- Add the parameters for the stored procedure here
+	@student_id nchar(10) = NULL,
+	@classof_id int = NULL,
+	@semester nchar(10) = NULL,
+	@subject_id_list nvarchar(max) = NULL
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	UPDATE TMP_SELECTION SET status = 'CONFIRM' WHERE student_id = @student_id AND classof_id = @classof_id AND semester = @semester AND subject_id IN (@subject_id_list)
+
+	DECLARE @subject_new_available_gap int
+	SET @subject_new_available_gap = (SELECT COUNT(1) FROM TMP_SELECTION WHERE student_id = @student_id AND classof_id = @classof_id AND semester = @semester AND subject_id NOT IN (@subject_id_list))
+
+	DELETE FROM TMP_SELECTION WHERE student_id = @student_id AND classof_id = @classof_id AND semester = @semester AND subject_id NOT IN (@subject_id_list)
+
+END
+GO
