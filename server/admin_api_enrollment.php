@@ -234,7 +234,7 @@ function performEnrollment(){
 					$student_haveEnoughCredit = $calStudetCredit['student_haveEnoughCredit'];
 					$student_haveNOTEnoughCredit = $calStudetCredit['student_haveNOTEnoughCredit'];
 					$subject_id_confirm_list = $calStudetCredit['subject_id_confirm_list'];
-					$subject_id_NOTconfirm_arr = explode(',', $calStudetCredit['subject_id_NOTconfirm_list']);
+					$subject_id_NOTconfirm_arr = $calStudetCredit['subject_id_NOTconfirm_arr'];
 
 					if ($calStudetCredit['haveEnoughCreditToProcess']){
 						$sql_student_reconcile = "exec enrollStudentBasedOnCredit @student_id = '$student_id', @subject_id_list = '$subject_id_confirm_list'";
@@ -245,8 +245,8 @@ function performEnrollment(){
 							return;
 						}
 						foreach($subject_id_NOTconfirm_arr as $subject_id_NOTconfirm){
-							$subject_id_NOTconfirm = trim($subject_id_NOTconfirm);
-							echo $subject_id_NOTconfirm;
+							$subject_id_NOTconfirm = $subject_id_NOTconfirm;
+
 							$sql_reconcile = "exec enrollReconcile @subject_id = '$subject_id_NOTconfirm', @classof_id = '$classof_id', @semester = '$semester'";
 							if(!$db->setData($sql_reconcile))
 							{
@@ -297,20 +297,20 @@ function listStudentTmpSelectionSortByAcceptedCount($db){
 function calculateStudentCredit($db, $student_id, $mincredit, $maxcredit, $student_haveEnoughCredit, $student_haveNOTEnoughCredit){
 	$current_sum_credit = 0;
 	$subject_id_confirm_list = "";
-	$subject_id_NOTconfirm_list = "";
+	$subject_id_NOTconfirm_arr = array();
 	$haveEnoughCreditToProcess = false;
 	
 	$sql = "SELECT subject_id, credit FROM TMP_SELECTION WHERE student_id = '$student_id' AND type = 'ACCEPTED' ORDER BY priority ASC";
 	$result = $db->getData($sql);
 	if($result){
 		while($row = sqlsrv_fetch_array($result)){
-			$subject_id = $row['subject_id'];
-			$subject_credit = $row['credit'];
+			$subject_id = trim($row['subject_id']);
+			$subject_credit = trim($row['credit']);
 			if ($current_sum_credit + $subject_credit <= $maxcredit){
 				$current_sum_credit += $subject_credit;
 				$subject_id_confirm_list .= "''$subject_id'',";
 			} else {
-				$subject_id_NOTconfirm_list .= "''$subject_id'',";
+				array_push($subject_id_NOTconfirm_arr, $subject_id);
 			}
 		}
 
@@ -326,7 +326,7 @@ function calculateStudentCredit($db, $student_id, $mincredit, $maxcredit, $stude
 
 	return array(
 		"subject_id_confirm_list" => $subject_id_confirm_list,
-		"subject_id_NOTconfirm_list" => $subject_id_NOTconfirm_list,
+		"subject_id_NOTconfirm_arr" => $subject_id_NOTconfirm_arr,
 		"haveEnoughCreditToProcess" => $haveEnoughCreditToProcess,
 		"student_haveEnoughCredit" => $student_haveEnoughCredit,
 		"student_haveNOTEnoughCredit" => $student_haveNOTEnoughCredit
