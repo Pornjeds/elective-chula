@@ -145,7 +145,7 @@ function performEnrollment(){
 	//1. Gather input and init a sql statement to get list of opened subject ordered by count student enrolled
 	try {
 		$app = \Slim\Slim::getInstance();
-		//$app->response->headers->set('Content-Type', 'application/json');
+		$app->response->headers->set('Content-Type', 'application/json');
 		$request = $app->request();
 		$classof_id = json_decode($request->getBody())->classof_id;
 	    $semester = json_decode($request->getBody())->semester;
