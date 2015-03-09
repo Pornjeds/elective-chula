@@ -624,19 +624,14 @@ CREATE PROCEDURE enrollStudentBasedOnCredit
 	@student_id nchar(10) = NULL,
 	@classof_id int = NULL,
 	@semester nchar(10) = NULL,
-	@subject_id_list nvarchar(max) = NULL
+	@subject_id nchar(10) = NULL
 AS
 BEGIN
 	-- SET NOCOUNT ON added to prevent extra result sets from
 	-- interfering with SELECT statements.
 	SET NOCOUNT ON;
 
-	UPDATE TMP_SELECTION SET status = 'CONFIRM' WHERE student_id = @student_id AND classof_id = @classof_id AND semester = @semester AND subject_id IN (@subject_id_list)
-
-	DECLARE @subject_new_available_gap int
-	SET @subject_new_available_gap = (SELECT COUNT(1) FROM TMP_SELECTION WHERE student_id = @student_id AND classof_id = @classof_id AND semester = @semester AND subject_id NOT IN (@subject_id_list))
-
-	DELETE FROM TMP_SELECTION WHERE student_id = @student_id AND classof_id = @classof_id AND semester = @semester AND subject_id NOT IN (@subject_id_list)
+	UPDATE TMP_SELECTION SET status = 'CONFIRMED' WHERE student_id = @student_id AND classof_id = @classof_id AND semester = @semester AND subject_id = @subject_id
 
 END
 GO
