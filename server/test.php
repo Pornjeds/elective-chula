@@ -9,4 +9,10 @@ foreach($x_arr as $xx){
 $test = array("a"=>"gie", "b"=>"test");
 $k = $test;
 
+$m = array();
+foreach($m as $mm){
+	echo "mm is ".$mm['test'];
+}
+echo "ends mm";
+
 ?>

@@ -217,45 +217,51 @@ function performEnrollment(){
 			}
 
 			//ในกรณีที่มีการนำหน่วยกิจเข้ามาคิด (min, max ที่ นศ จะลงได้ เราก็จะต้องจัดให้เค้าได้ลงตาม ranking ที่เค้าส่งมา และถ้าเกินก็จะต้องตัดวิชาที่ priority น้อยออกไป)
-			$student_list = listStudentFromTmpSelectionSortedByAcceptedCount($db, $classof_id, $semester);
-			foreach($student_list as $student_id){
-				
-				$student_subject_arr = getStudentSubjectConfirmedList($db, $student_id, $mincredit, $maxcredit, $classof_id, $semester);
-				$subject_id_confirmed_arr = $student_subject_arr["subject_id_confirmed_arr"];
-				$subject_id_NOT_confirmed_arr = $student_subject_arr["subject_id_NOT_confirmed_arr"];
+			$someusers_dont_have_enough_credit = true;
+			$count_while = 0;
+			while($someusers_dont_have_enough_credit && $count_while < 50){
+				$student_list = listStudentFromTmpSelectionSortedByAcceptedCount($db, $classof_id, $semester);
+				foreach($student_list as $student_id){
+					
+					$student_subject_arr = getStudentSubjectConfirmedList($db, $student_id, $mincredit, $maxcredit, $classof_id, $semester);
+					$subject_id_confirmed_arr = $student_subject_arr["subject_id_confirmed_arr"];
+					$subject_id_NOT_confirmed_arr = $student_subject_arr["subject_id_NOT_confirmed_arr"];
+					$someusers_dont_have_enough_credit = $student_subject_arr["someusers_dont_have_enough_credit"] && $someusers_dont_have_enough_credit;
 
-				//ทำการ mark flag ว่าวิชานี้ของคนคนนี้ confirm แล้ว และจะลบวิชาที่ทำให้หน่วยกิตเกินออกไปเลย
-				foreach($subject_id_confirmed_arr as $subject_id){
-					$sql_confirm = "exec enrollStudentBasedOnCredit @student_id = '$student_id', @classof_id = '$classof_id', @semester = '$semester', @subject_id = '$subject_id'";
-					if(!$db->setData($sql_confirm))
-					{
-						$db->rollbackWork();
-						$app->response->setBody(json_encode(array("status"=>"fail4")));
-						return;
+					//ทำการ mark flag ว่าวิชานี้ของคนคนนี้ confirm แล้ว และจะลบวิชาที่ทำให้หน่วยกิตเกินออกไปเลย
+					foreach($subject_id_confirmed_arr as $subject_id){
+						$sql_confirm = "exec enrollStudentBasedOnCredit @student_id = '$student_id', @classof_id = '$classof_id', @semester = '$semester', @subject_id = '$subject_id'";
+						if(!$db->setData($sql_confirm))
+						{
+							$db->rollbackWork();
+							$app->response->setBody(json_encode(array("status"=>"fail4")));
+							return;
+						}
+					}
+
+					foreach($subject_id_NOT_confirmed_arr as $subject_id){
+						//ลบวิชาที่นิสิตคนนี้ไม่ลงทะเบียนออกจาก TMP_SELECTION เพื่อให้โอกาสคนที่ลงทะเบียนได้น้อยมีสิทธิ์ได้เรียน
+						$sql_remove = "DELETE FROM TMP_SELECTION WHERE subject_id = '$subject_id' AND classof_id = '$classof_id' AND semester = '$semester' AND student_id = '$student_id'";
+						if(!$db->setData($sql_remove))
+						{
+							$db->rollbackWork();
+							$app->response->setBody(json_encode(array("status"=>"fail5")));
+							return;
+						}
+
+						//แล้วทำการ reconcile เพื่อดึงคนที่เป็น STANDBY ขึ้นมาเพิ่ม (แทนที่ว่างที่พึ่งถูกลบไป)
+						$sql_reconcile = "exec enrollReconcile @subject_id = '$subject_id', @classof_id = '$classof_id', @semester = '$semester'";
+						if(!$db->setData($sql_reconcile))
+						{
+							$db->rollbackWork();
+							$app->response->setBody(json_encode(array("status"=>"fail6")));
+							return;
+						}
 					}
 				}
 
-				foreach($subject_id_NOT_confirmed_arr as $subject_id){
-					//ลบวิชาที่นิสิตคนนี้ไม่ลงทะเบียนออกจาก TMP_SELECTION เพื่อให้โอกาสคนที่ลงทะเบียนได้น้อยมีสิทธิ์ได้เรียน
-					$sql_remove = "DELETE FROM TMP_SELECTION WHERE subject_id = '$subject_id' AND classof_id = '$classof_id' AND semester = '$semester' AND student_id = '$student_id'";
-					if(!$db->setData($sql_remove))
-					{
-						$db->rollbackWork();
-						$app->response->setBody(json_encode(array("status"=>"fail5")));
-						return;
-					}
-
-					//แล้วทำการ reconcile เพื่อดึงคนที่เป็น STANDBY ขึ้นมาเพิ่ม (แทนที่ว่างที่พึ่งถูกลบไป)
-					$sql_reconcile = "exec enrollReconcile @subject_id = '$subject_id', @classof_id = '$classof_id', @semester = '$semester'";
-					if(!$db->setData($sql_reconcile))
-					{
-						$db->rollbackWork();
-						$app->response->setBody(json_encode(array("status"=>"fail6")));
-						return;
-					}
-				}
+				$count_while++;
 			}
-
 
 			$db->commitWork();
 			$app->response->setBody(json_encode(array("status"=>"success")));
@@ -295,8 +301,11 @@ function getStudentSubjectConfirmedList($db, $student_id, $mincredit, $maxcredit
 	$current_sum_credit = 0;
 	$subject_id_confirmed_arr = array();
 	$subject_id_NOT_confirmed_arr = array();
+	$dayofweek_timeofday = array();
+	$duplicate_date_and_time = false;
+	$someusers_dont_have_enough_credit = false;
 	
-	$sql = "SELECT subject_id, credit 
+	$sql = "SELECT subject_id, credit, dayofweek, timeofday
 			FROM TMP_SELECTION 
 			WHERE student_id = '$student_id' AND type = 'ACCEPTED' AND classof_id = '$classof_id' AND semester = '$semester'
 			ORDER BY priority ASC";
@@ -304,20 +313,36 @@ function getStudentSubjectConfirmedList($db, $student_id, $mincredit, $maxcredit
 	$result = $db->getData($sql);
 	if($result){
 		while($row = sqlsrv_fetch_array($result)){
+			$duplicate_date_and_time = false;
 			$subject_id = trim($row['subject_id']);
 			$subject_credit = trim($row['credit']);
-			if ($current_sum_credit + $subject_credit <= $maxcredit){
+			$dayofweek = trim($row['dayofweek']);
+			$timeofday = trim($row['timeofday']);
+			//check ก่อรว่ามันไปทับกับ วันและเวลาที่เราลงทะเบียนได้แล้วรึป่าว
+			foreach($dayofweek_timeofday as $dt){
+				if ($dayofweek == $dt["dayofweek"] && $timeofday == $dt["timeofday"]){
+					$duplicate_date_and_time = true;
+					break;
+				}
+			}
+			if ($current_sum_credit + $subject_credit <= $maxcredit && !$duplicate_date_and_time){
 				$current_sum_credit += $subject_credit;
 				array_push($subject_id_confirmed_arr, $subject_id);
+				array_push($dayofweek_timeofday, array("dayofweek" => $dayofweek, "timeofday" => $timeofday ));
 			} else {
 				array_push($subject_id_NOT_confirmed_arr, $subject_id);
 			}
-		}		
+		}
+
+		if ($current_sum_credit < $maxcredit){
+			$someusers_dont_have_enough_credit = true;
+		}
 	}
 
 	return array(
 		"subject_id_confirmed_arr" => $subject_id_confirmed_arr,
-		"subject_id_NOT_confirmed_arr" => $subject_id_NOT_confirmed_arr
+		"subject_id_NOT_confirmed_arr" => $subject_id_NOT_confirmed_arr,
+		"someusers_dont_have_enough_credit" => $someusers_dont_have_enough_credit
 	);
 }
 
