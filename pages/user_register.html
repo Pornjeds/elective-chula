@@ -203,273 +203,300 @@
     
     <script>
         $(document).ready(function () {
-            var registerControlElement = document.getElementById('registerControlElement');
-            var dayArry = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
-            var dayArryShipped = [];
-            dayArryShipped.push( '' );
-            for(var i=0; i< dayArry.length; i++){
-                dayArryShipped.push( dayArry[ i ] );
-            }
-            
-            var timeArry = ['เช้า', 'บ่าย', 'เย็น'];
-            var mocData  = {
-                subjects : [ 
-                    { subjectId: 28, subjectName: 'การเงินธุรกิจระหว่างประเทศ', studyDate: 1, studyTime: 0, numUnit: 3, isRequired: false },
-                    { subjectId: 43, subjectName: 'กลยุทธ์การตลาดเพื่อการแข่งขัน', studyDate: 1, studyTime: 0, numUnit: 3, isRequired: false },
-                    
-                    { subjectId: 54, subjectName: 'สัมนาหัวข้อร่วมสมัยทางการจัดการ', studyDate: 3, studyTime: 2, numUnit: 2, isRequired: false },
-                    { subjectId: 23, subjectName: 'วิเคราะห์การลงทุน', studyDate: 3, studyTime: 2, numUnit: 3, isRequired: false },
-                    { subjectId: 8, subjectName: 'ตลาดเงินและตลาดทุน', studyDate: 5, studyTime: 2, numUnit: 2, isRequired: false },
-                    
-                    
-                    { subjectId: 12, subjectName: 'การเป็นผู้ประกอบการณ์และการสร้างธุรกิจ', studyDate: 2, studyTime: 2, numUnit: 3, isRequired: true },
-                    { subjectId: 12, subjectName: 'วิเคราะห์พฤติกรรมผู้บริโภค', studyDate: 4, studyTime: 2, numUnit: 3, isRequired: true }
-                ]
-            };
-            //
-            //SEPARATE 'REQUIRED' AND 'ELECTIVE' SUBJECT
-            var requiredSubject = [];
-            var electiveSubject = [];
-            for( var index=0; index < mocData.subjects.length; index++){
-                if( mocData.subjects[ index ].isRequired === true ){
-                    requiredSubject.push( mocData.subjects[ index ] );
-                    //ADD NUMBER PRORITY FOR DRAG
-                    var tmpLiElement = document.createElement('li');
-                    tmpLiElement.innerHTML = requiredSubject.length ;
-                    $('#sortableRequired').append( tmpLiElement );
-                }else{
-                    electiveSubject.push( mocData.subjects[ index ] );
-                    //ADD NUMBER PRORITY FOR DRAG
-                    var tmpLiElement = document.createElement('li');
-                    tmpLiElement.innerHTML = electiveSubject.length ;
-                    $('#sortableElective').append( tmpLiElement );
-                }
-            }
-            //
-            //'ELECTIVE'
-            //SEPARATE EACH SUBJECT INTO  'STUDY-TIME' 0=MORNING, 1=NOON, 2=EVENING
-            var elecetiveSubjectMorning = [];
-            var elecetiveSubjectNoon = [];
-            var elecetiveSubjectEvening = [];
-            for( var index=0; index < electiveSubject.length; index++ ){
-                if( electiveSubject[ index ].studyTime === 0 ){
-                    elecetiveSubjectMorning.push( electiveSubject[ index ] );
-                }
-                else if( electiveSubject[ index ].studyTime === 1 ){
-                    elecetiveSubjectNoon.push( electiveSubject[ index ] );
-                }
-                else if( electiveSubject[ index ].studyTime === 2 ){
-                    elecetiveSubjectEvening.push( electiveSubject[ index ] );
-                }
-            }
-            var electiveSubjectArray = [];
-            electiveSubjectArray.push( elecetiveSubjectMorning );
-            electiveSubjectArray.push( elecetiveSubjectNoon );
-            electiveSubjectArray.push( elecetiveSubjectEvening );
-            for( var k=0; k < electiveSubjectArray.length; k++ ){
-                //CALCULATE NUBER SUBJECT IN A DAY
-                var numberOfSubjectInDay = 0;
-                var counts = {};
-                for( var index = 0; index < electiveSubjectArray[k].length; index++ ){
-                    var value = electiveSubjectArray[k][ index ].studyDate;
-                    counts[ value ] = (counts[ value ] || 0)+1;
-                    if( numberOfSubjectInDay < counts[ value ] ){
-                        numberOfSubjectInDay = counts[value];
-                    }
-                };
-                //GENERATE ROW OF DIV
-                for(var i=0; i< numberOfSubjectInDay; i++){
-                    var tmpTRElement = document.createElement('tr');
-                    registerControlElement.appendChild( tmpTRElement );
-                    for(var day=0; day < dayArryShipped.length; day++){
-                        var tmpTDElement = document.createElement('td');
-                        tmpTRElement.appendChild( tmpTDElement );
-                        var tmpDivElement = document.createElement('div');
-                        tmpTDElement.appendChild( tmpDivElement );
-                        tmpDivElement.id = 'cell' + day + '-' +  i    //(day, nomberOfSubjectInDay)
-                        //ADD SUBJECT TO DIV
-                        var subjectInformation = getInformationFromData( electiveSubjectArray[k], day); //MORNING, NOON, EVENING
-                        if( subjectInformation !== null ){
-                            tmpDivElement.innerHTML = subjectInformation[0];
-                            tmpDivElement.style.background = '#9d9d9d';
-                            //ADD UNIT OF SUBJECT
-                            var spanElement = document.createElement('span');
-                            spanElement.className = 'spanUnitOfSubject';
-                            spanElement.innerHTML = subjectInformation[1];
-                            tmpTDElement.appendChild( spanElement );
-                            var ulElement = document.createElement('ul');
-                            ulElement.id = 'sortableE' + day + '-' + i;
-                            ulElement.className = 'connectedSortableE';
-                            tmpTDElement.appendChild( ulElement );
-                        }
-                        else{
-                            if( i === 0 && day === 0 ){
-                                tmpDivElement.style.height = '30px';
-                                tmpDivElement.style.lineHeight = '30px';
-                                tmpDivElement.style.color = '#fff';
-                                tmpDivElement.style.background = '#d58512';
-                                tmpDivElement.style.padding = '0px';
-                                tmpDivElement.style.textAlign = 'center';
-                                tmpDivElement.innerHTML = 'วิชาเลือก(' + timeArry[ k ]+ ')';
-                                tmpDivElement.className = 'emptyHover';
-                            }else if( day === 0 ){
-                                tmpDivElement.style.background = 'transparent';
-                                tmpDivElement.className = 'emptyHover';
-                            }else{
-                                tmpDivElement.className = 'emptyClass';
-                            }
-                        }
-                    }
-                }
-            }
-            //
-            //BIND DRAG/SORABLE EVENT   FOR ELECTIVE 'ELECTIVE'
-            $( '.connectedSortableE' ).sortable({
-                connectWith: ".connectedSortableE",
-                stop: function( event, ui) {
-                    //SUPPORT SWAP
-                    var parentElement = event.toElement.parentElement;
-                    if( parentElement.childElementCount > 1 && parentElement.id !== 'sortableElective' ){
-                        for( var i=0; i< parentElement.childElementCount; i++ ){
-                            if( event.toElement.innerHTML !== parentElement.children[ i ].innerHTML ){
-                                event.target.appendChild( parentElement.children[i] );
-                                break;
-                            }
-                        }
-                    }
-                    checkConfirmButtonReady();
-                }
-            }).disableSelection();
-            //
-            //ADD MILE STONE DATES ROW
-            var tmpTRElement = document.createElement('tr');
-            registerControlElement.appendChild( tmpTRElement );
-            for(var day=0; day < dayArryShipped.length; day++){
-                var tmpTDElement = document.createElement('td');
-                tmpTRElement.appendChild( tmpTDElement );
-                var tmpDivElement = document.createElement('div');
-                tmpTDElement.appendChild( tmpDivElement );
-                tmpDivElement.className = 'registerMile';
-                tmpDivElement.innerHTML = dayArryShipped[ day ];
-                tmpDivElement.id = 'mileStone' + day;
-            }
-            //
-            //'REQUIRED'
-            //SEPARATE EACH SUBJECT INTO  'STUDY-TIME' 0=MORNING, 1=NOON, 2=EVENING
-            var requiredSubjectMorning = [];
-            var requiredSubjectNoon = [];
-            var requiredSubjectEvening = [];
-            for( var index=0; index < requiredSubject.length; index++ ){
-                if( requiredSubject[ index ].studyTime === 0 ){
-                    requiredSubjectMorning.push( requiredSubject[ index ] );
-                }
-                else if( requiredSubject[ index ].studyTime === 1 ){
-                    requiredSubjectNoon.push( requiredSubject[ index ] );
-                }
-                else if( requiredSubject[ index ].studyTime === 2 ){
-                    requiredSubjectEvening.push( requiredSubject[ index ] );
-                }
-            }
-            var requiredSubjectArray = [];
-            requiredSubjectArray.push( requiredSubjectMorning );
-            requiredSubjectArray.push( requiredSubjectNoon );
-            requiredSubjectArray.push( requiredSubjectEvening );
-            for( var k=0; k < requiredSubjectArray.length; k++ ){
-                //CALCULATE NUBER SUBJECT IN A DAY
-                var numberOfSubjectInDayRequired = 0;
-                var nSR_Count = {};
-                for( var index = 0; index < requiredSubjectArray[k].length; index++ ){
-                    var value = requiredSubjectArray[k][ index ].studyDate;
-                    nSR_Count[ value ] = (nSR_Count[ value ] || 0)+1;
-                    if( numberOfSubjectInDayRequired < nSR_Count[ value ] ){
-                        numberOfSubjectInDayRequired = nSR_Count[value];
-                    }
-                };
-                //GENERATE ROW OF DIV FOR 'REQUIRED' SUBJECT
-                for(var i=0; i< numberOfSubjectInDayRequired; i++){
-                    var tmpTRElement = document.createElement('tr');
-                    registerControlElement.appendChild( tmpTRElement );
-                    for(var day=0; day < dayArryShipped.length; day++){
-                        var tmpTDElement = document.createElement('td');
-                        tmpTRElement.appendChild( tmpTDElement );
-                        var tmpDivElement = document.createElement('div');
-                        tmpTDElement.appendChild( tmpDivElement );
-                        tmpDivElement.id = 'cell' + day + '-' +  i + 'required';   //day, numberOfSubjectInDayRequired
-                        //ADD SUBJECT TO DIV
-                        var subjectInformation = getInformationFromData( requiredSubjectArray[k], day); //MORNING, NOON, EVENING
-                        if( subjectInformation !== null ){
-                            tmpDivElement.innerHTML = subjectInformation[0];
-                            tmpDivElement.style.background = '#9d9d9d';
-                            //ADD UNIT OF SUBJECT
-                            var spanElement = document.createElement('span');
-                            spanElement.className = 'spanUnitOfSubject';
-                            spanElement.innerHTML = subjectInformation[1];
-                            tmpTDElement.appendChild( spanElement );
-                            var ulElement = document.createElement('ul');
-                            ulElement.id = 'sortableR' + day + '-' + i;
-                            ulElement.className = 'connectedSortableR';
-                            tmpTDElement.appendChild( ulElement );
-                        }
-                        else{
-                            if( i === 0 && day === 0 ){
-                                tmpDivElement.style.height = '30px';
-                                tmpDivElement.style.lineHeight = '30px';
-                                tmpDivElement.style.color = '#fff';
-                                tmpDivElement.style.background = '#a94442';
-                                tmpDivElement.style.padding = '0px';
-                                tmpDivElement.style.textAlign = 'center';
-                                tmpDivElement.innerHTML = 'วิชาบังคับ(' + timeArry[ k ]+ ')';
-                                tmpDivElement.className = 'emptyHover';
-                            }else if( day === 0 ){
-                                tmpDivElement.style.background = 'transparent';
-                                tmpDivElement.className = 'emptyHover';
-                            }else{
-                                tmpDivElement.className = 'emptyClass';
-                            }
-                        }
-                    }
-                }
-            }
-            //BIND DRAG/SORABLE EVENT   FOR ELECTIVE 'ELECTIVE'
-            $( '.connectedSortableR' ).sortable({
-                connectWith: ".connectedSortableR",
-                stop: function( event, ui) {
-                    //SUPPORT SWAP
-                    var parentElement = event.toElement.parentElement;
-                    if( parentElement.childElementCount > 1 && parentElement.id !== 'sortableRequired' ){
-                        for( var i=0; i< parentElement.childElementCount; i++ ){
-                            if( event.toElement.innerHTML !== parentElement.children[ i ].innerHTML ){
-                                event.target.appendChild( parentElement.children[i] );
-                                break;
-                            }
-                        }
-                    }
-                    checkConfirmButtonReady();
-                }
-            }).disableSelection();
-            //
-            //GET/CHANGE INFORMATION FROM DATA
-            function getInformationFromData( objectDataArray, targetDate ){
-                for( var i=0; i< objectDataArray.length; i++ ){
-                    if( objectDataArray[i].studyDate === targetDate ){
-                        objectDataArray[i].studyDate = -1;
-                        return [ objectDataArray[i].subjectName, objectDataArray[i].numUnit ];
-                    }
-                }
-                return null;
-            }
-            //CHECK CONFIRM BUTTON IS READY OR NOT
-            function checkConfirmButtonReady(){
-                if( $('#sortableRequired').children().length === 0 && $('#sortableElective').children().length === 0 ){
-                    $('#bt_confirm').removeClass('btn-disable');
-                    $('#bt_confirm').addClass('btn-success');
-                }else{
-                    $('#bt_confirm').removeClass('btn-success');
-                    $('#bt_confirm').addClass('btn-disable');
-                }
-            }
-        });
+
+            //INITIAL USER ENROLLMENT
+            getUserEnrollment( window.location.search.split('?id=')[1] );
         
+        });
+        //
+        //
+        function getUserEnrollment( id ){
+            var urlStr = window.location.origin + '/server/user_api.php/api/v1/enrollment/list';
+            var jsonObj = {
+                'student_id' : id
+            };
+            $.ajax({
+                type: 'POST',
+                contentType: 'application/json',
+                url: urlStr,
+                data: JSON.stringify( jsonObj ),
+                dataType: 'json',
+                contentType: "text/plain; charset=UTF-8",
+                success: function(data, textStatus, jqXHR){
+                    var registerControlElement = document.getElementById('registerControlElement');
+                    var dayArry = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
+                    var dayArryShipped = [];
+                    dayArryShipped.push( '' );
+                    for(var i=0; i< dayArry.length; i++){
+                        dayArryShipped.push( dayArry[ i ] );
+                    }
+                    var timeArry = ['เช้า', 'บ่าย', 'เย็น'];
+                    //TRANSFORM DATA
+                    var transformedData = { subjects: [] };
+                    var subject_list = data[0]['subject_list'];
+                    for( var i=0; i < subject_list.length; i++){
+                        var tmpObject = {
+                            'subject_id' : subject_list[ i ].subject_id,
+                            'subjectName' : subject_list[ i ].name,
+                            'studyDate' : subject_list[ i ].dayofweek,
+                            'studyTime' : subject_list[ i ].timeofday,
+                            'numUnit' : subject_list[ i ].credit,
+                            'isRequired' : (subject_list[ i ].isRequired === 0 ) ? false : true
+                        }
+                        transformedData.subjects.push( tmpObject );
+                    }
+                    //
+                    //SEPARATE 'REQUIRED' AND 'ELECTIVE' SUBJECT
+                    var requiredSubject = [];
+                    var electiveSubject = [];
+                    for( var index=0; index < transformedData.subjects.length; index++){
+                        if( transformedData.subjects[ index ].isRequired === true ){
+                            requiredSubject.push( transformedData.subjects[ index ] );
+                            //ADD NUMBER PRORITY FOR DRAG
+                            var tmpLiElement = document.createElement('li');
+                            tmpLiElement.innerHTML = requiredSubject.length ;
+                            $('#sortableRequired').append( tmpLiElement );
+                        }else{
+                            electiveSubject.push( transformedData.subjects[ index ] );
+                            //ADD NUMBER PRORITY FOR DRAG
+                            var tmpLiElement = document.createElement('li');
+                            tmpLiElement.innerHTML = electiveSubject.length ;
+                            $('#sortableElective').append( tmpLiElement );
+                        }
+                    }
+                    //
+                    //'ELECTIVE'
+                    //SEPARATE EACH SUBJECT INTO  'STUDY-TIME' 0=MORNING, 1=NOON, 2=EVENING
+                    var elecetiveSubjectMorning = [];
+                    var elecetiveSubjectNoon = [];
+                    var elecetiveSubjectEvening = [];
+                    for( var index=0; index < electiveSubject.length; index++ ){
+                        if( electiveSubject[ index ].studyTime === 0 ){
+                            elecetiveSubjectMorning.push( electiveSubject[ index ] );
+                        }
+                        else if( electiveSubject[ index ].studyTime === 1 ){
+                            elecetiveSubjectNoon.push( electiveSubject[ index ] );
+                        }
+                        else if( electiveSubject[ index ].studyTime === 2 ){
+                            elecetiveSubjectEvening.push( electiveSubject[ index ] );
+                        }
+                    }
+                    var electiveSubjectArray = [];
+                    electiveSubjectArray.push( elecetiveSubjectMorning );
+                    electiveSubjectArray.push( elecetiveSubjectNoon );
+                    electiveSubjectArray.push( elecetiveSubjectEvening );
+                    for( var k=0; k < electiveSubjectArray.length; k++ ){
+                        //CALCULATE NUBER SUBJECT IN A DAY
+                        var numberOfSubjectInDay = 0;
+                        var counts = {};
+                        for( var index = 0; index < electiveSubjectArray[k].length; index++ ){
+                            var value = electiveSubjectArray[k][ index ].studyDate;
+                            counts[ value ] = (counts[ value ] || 0)+1;
+                            if( numberOfSubjectInDay < counts[ value ] ){
+                                numberOfSubjectInDay = counts[value];
+                            }
+                        };
+                        //GENERATE ROW OF DIV
+                        for(var i=0; i< numberOfSubjectInDay; i++){
+                            var tmpTRElement = document.createElement('tr');
+                            registerControlElement.appendChild( tmpTRElement );
+                            for(var day=0; day < dayArryShipped.length; day++){
+                                var tmpTDElement = document.createElement('td');
+                                tmpTRElement.appendChild( tmpTDElement );
+                                var tmpDivElement = document.createElement('div');
+                                tmpTDElement.appendChild( tmpDivElement );
+                                tmpDivElement.id = 'cell' + day + '-' +  i    //(day, nomberOfSubjectInDay)
+                                //ADD SUBJECT TO DIV
+                                var subjectInformation = getInformationFromData( electiveSubjectArray[k], day); //MORNING, NOON, EVENING
+                                if( subjectInformation !== null ){
+                                    tmpDivElement.innerHTML = subjectInformation[0];
+                                    tmpDivElement.style.background = '#9d9d9d';
+                                    //ADD UNIT OF SUBJECT
+                                    var spanElement = document.createElement('span');
+                                    spanElement.className = 'spanUnitOfSubject';
+                                    spanElement.innerHTML = subjectInformation[1];
+                                    tmpTDElement.appendChild( spanElement );
+                                    var ulElement = document.createElement('ul');
+                                    ulElement.id = 'sortableE' + day + '-' + i;
+                                    ulElement.className = 'connectedSortableE';
+                                    tmpTDElement.appendChild( ulElement );
+                                }
+                                else{
+                                    if( i === 0 && day === 0 ){
+                                        tmpDivElement.style.height = '30px';
+                                        tmpDivElement.style.lineHeight = '30px';
+                                        tmpDivElement.style.color = '#fff';
+                                        tmpDivElement.style.background = '#d58512';
+                                        tmpDivElement.style.padding = '0px';
+                                        tmpDivElement.style.textAlign = 'center';
+                                        tmpDivElement.innerHTML = 'วิชาเลือก(' + timeArry[ k ]+ ')';
+                                        tmpDivElement.className = 'emptyHover';
+                                    }else if( day === 0 ){
+                                        tmpDivElement.style.background = 'transparent';
+                                        tmpDivElement.className = 'emptyHover';
+                                    }else{
+                                        tmpDivElement.className = 'emptyClass';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    //
+                    //BIND DRAG/SORABLE EVENT   FOR ELECTIVE 'ELECTIVE'
+                    $( '.connectedSortableE' ).sortable({
+                        connectWith: ".connectedSortableE",
+                        stop: function( event, ui) {
+                            //SUPPORT SWAP
+                            var parentElement = event.toElement.parentElement;
+                            if( parentElement.childElementCount > 1 && parentElement.id !== 'sortableElective' ){
+                                for( var i=0; i< parentElement.childElementCount; i++ ){
+                                    if( event.toElement.innerHTML !== parentElement.children[ i ].innerHTML ){
+                                        event.target.appendChild( parentElement.children[i] );
+                                        break;
+                                    }
+                                }
+                            }
+                            checkConfirmButtonReady();
+                        }
+                    }).disableSelection();
+                    //
+                    //ADD MILE STONE DATES ROW
+                    var tmpTRElement = document.createElement('tr');
+                    registerControlElement.appendChild( tmpTRElement );
+                    for(var day=0; day < dayArryShipped.length; day++){
+                        var tmpTDElement = document.createElement('td');
+                        tmpTRElement.appendChild( tmpTDElement );
+                        var tmpDivElement = document.createElement('div');
+                        tmpTDElement.appendChild( tmpDivElement );
+                        tmpDivElement.className = 'registerMile';
+                        tmpDivElement.innerHTML = dayArryShipped[ day ];
+                        tmpDivElement.id = 'mileStone' + day;
+                    }
+                    //
+                    //'REQUIRED'
+                    //SEPARATE EACH SUBJECT INTO  'STUDY-TIME' 0=MORNING, 1=NOON, 2=EVENING
+                    var requiredSubjectMorning = [];
+                    var requiredSubjectNoon = [];
+                    var requiredSubjectEvening = [];
+                    for( var index=0; index < requiredSubject.length; index++ ){
+                        if( requiredSubject[ index ].studyTime === 0 ){
+                            requiredSubjectMorning.push( requiredSubject[ index ] );
+                        }
+                        else if( requiredSubject[ index ].studyTime === 1 ){
+                            requiredSubjectNoon.push( requiredSubject[ index ] );
+                        }
+                        else if( requiredSubject[ index ].studyTime === 2 ){
+                            requiredSubjectEvening.push( requiredSubject[ index ] );
+                        }
+                    }
+                    var requiredSubjectArray = [];
+                    requiredSubjectArray.push( requiredSubjectMorning );
+                    requiredSubjectArray.push( requiredSubjectNoon );
+                    requiredSubjectArray.push( requiredSubjectEvening );
+                    for( var k=0; k < requiredSubjectArray.length; k++ ){
+                        //CALCULATE NUBER SUBJECT IN A DAY
+                        var numberOfSubjectInDayRequired = 0;
+                        var nSR_Count = {};
+                        for( var index = 0; index < requiredSubjectArray[k].length; index++ ){
+                            var value = requiredSubjectArray[k][ index ].studyDate;
+                            nSR_Count[ value ] = (nSR_Count[ value ] || 0)+1;
+                            if( numberOfSubjectInDayRequired < nSR_Count[ value ] ){
+                                numberOfSubjectInDayRequired = nSR_Count[value];
+                            }
+                        };
+                        //GENERATE ROW OF DIV FOR 'REQUIRED' SUBJECT
+                        for(var i=0; i< numberOfSubjectInDayRequired; i++){
+                            var tmpTRElement = document.createElement('tr');
+                            registerControlElement.appendChild( tmpTRElement );
+                            for(var day=0; day < dayArryShipped.length; day++){
+                                var tmpTDElement = document.createElement('td');
+                                tmpTRElement.appendChild( tmpTDElement );
+                                var tmpDivElement = document.createElement('div');
+                                tmpTDElement.appendChild( tmpDivElement );
+                                tmpDivElement.id = 'cell' + day + '-' +  i + 'required';   //day, numberOfSubjectInDayRequired
+                                //ADD SUBJECT TO DIV
+                                var subjectInformation = getInformationFromData( requiredSubjectArray[k], day); //MORNING, NOON, EVENING
+                                if( subjectInformation !== null ){
+                                    tmpDivElement.innerHTML = subjectInformation[0];
+                                    tmpDivElement.style.background = '#9d9d9d';
+                                    //ADD UNIT OF SUBJECT
+                                    var spanElement = document.createElement('span');
+                                    spanElement.className = 'spanUnitOfSubject';
+                                    spanElement.innerHTML = subjectInformation[1];
+                                    tmpTDElement.appendChild( spanElement );
+                                    var ulElement = document.createElement('ul');
+                                    ulElement.id = 'sortableR' + day + '-' + i;
+                                    ulElement.className = 'connectedSortableR';
+                                    tmpTDElement.appendChild( ulElement );
+                                }
+                                else{
+                                    if( i === 0 && day === 0 ){
+                                        tmpDivElement.style.height = '30px';
+                                        tmpDivElement.style.lineHeight = '30px';
+                                        tmpDivElement.style.color = '#fff';
+                                        tmpDivElement.style.background = '#a94442';
+                                        tmpDivElement.style.padding = '0px';
+                                        tmpDivElement.style.textAlign = 'center';
+                                        tmpDivElement.innerHTML = 'วิชาบังคับ(' + timeArry[ k ]+ ')';
+                                        tmpDivElement.className = 'emptyHover';
+                                    }else if( day === 0 ){
+                                        tmpDivElement.style.background = 'transparent';
+                                        tmpDivElement.className = 'emptyHover';
+                                    }else{
+                                        tmpDivElement.className = 'emptyClass';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    //BIND DRAG/SORABLE EVENT   FOR ELECTIVE 'ELECTIVE'
+                    $( '.connectedSortableR' ).sortable({
+                        connectWith: ".connectedSortableR",
+                        stop: function( event, ui) {
+                            //SUPPORT SWAP
+                            var parentElement = event.toElement.parentElement;
+                            if( parentElement.childElementCount > 1 && parentElement.id !== 'sortableRequired' ){
+                                for( var i=0; i< parentElement.childElementCount; i++ ){
+                                    if( event.toElement.innerHTML !== parentElement.children[ i ].innerHTML ){
+                                        event.target.appendChild( parentElement.children[i] );
+                                        break;
+                                    }
+                                }
+                            }
+                            checkConfirmButtonReady();
+                        }
+                    }).disableSelection();
+                    
+                    //END SUCCESS
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    alert('get user enrollment error: ' + textStatus);
+                }
+            });
+        };        
+        //
+        //GET/CHANGE INFORMATION FROM DATA
+        function getInformationFromData( objectDataArray, targetDate ){
+            for( var i=0; i< objectDataArray.length; i++ ){
+                if( objectDataArray[i].studyDate === targetDate ){
+                    objectDataArray[i].studyDate = -1;
+                    return [ objectDataArray[i].subjectName, objectDataArray[i].numUnit ];
+                }
+            }
+            return null;
+        }
+        //
+        //CHECK CONFIRM BUTTON IS READY OR NOT
+        function checkConfirmButtonReady(){
+            if( $('#sortableRequired').children().length === 0 && $('#sortableElective').children().length === 0 ){
+                $('#bt_confirm').removeClass('btn-disable');
+                $('#bt_confirm').addClass('btn-success');
+            }else{
+                $('#bt_confirm').removeClass('btn-success');
+                $('#bt_confirm').addClass('btn-disable');
+            }
+        }
+        //
         //AFTER CLICK CONFIRM BUTTON
         function sendConfirm(e){
             if( e.className.indexOf('btn-disable') !== -1 ){
