@@ -1,6 +1,7 @@
 <?php
 require_once 'Slim/Slim.php';
 require_once 'DBManager_sqlserver.php';
+require_once 'admin_enrollmentclass.php';
 require_once 'admin_api_account.php';
 require_once 'admin_api_student.php';
 require_once 'admin_api_import.php';

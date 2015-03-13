@@ -149,6 +149,8 @@ function performEnrollment(){
 		$request = $app->request();
 		$classof_id = json_decode($request->getBody())->classof_id;
 	    $semester = json_decode($request->getBody())->semester;
+	    $db = new DBManager();
+		$AdminEnroll = new AdminStudentEnrollment($app, $db, $classof_id, $semester);
 	} catch(Exception $e) {
 		$app->response->setBody(json_encode(array("error"=>array("source"=>"input", "reason"=>$e->getMessage()))));
 		return;
@@ -157,159 +159,86 @@ function performEnrollment(){
 	//2. Loop through those subject one by one (sorted by student count วิชาไหนคนลงเยอะก็เอามาคิดก่อน)
 	try {
 
-		$db = new DBManager();
-
+		$db->beginSet();
 		//check ก่อนว่า status ของ classof - semester นั้นเป็น 1 หรือป่าว ถ้าเป็น 1 ถึงทำ
 		//0 หมายถึงเทอมนั้นไม่ active
 		//1 หมายถึงเทอมนั้น active และเปิดให้ลงทะเบียน
 		//2 หมายถึงทำการเลือกแล้วและรู้ผลแล้ว
+		$semester_state = $AdminEnroll->getSemesterState();
+		$pickmethod_id = $AdminEnroll->pickmethod_id;
 
-		$sql = "select 
-				a.subject_id,
-				COUNT(c.student_id) AS studentcount,
-				d.mincredit,
-				d.maxcredit,
-				d.pickmethod_id
-				FROM SUBJECT_CLASSOF a
-				LEFT JOIN STUDENT_ENROLLMENT c ON a.subject_id = c.subject_id
-				LEFT JOIN CLASSOF_SEMESTER d ON a.classof_id = d.classof_id AND a.semester = d.semester
-				WHERE a.classof_id = '$classof_id' AND a.semester = '$semester'
-				GROUP BY a.subject_id, d.mincredit, d.maxcredit, d.pickmethod_id
-				ORDER BY studentcount DESC";
-
-		$result = $db->getData($sql);
-		$subject_arr = array();
-		if ($result){
-			while($row = sqlsrv_fetch_array($result)){
-				$subject_id = $row['subject_id'];
-				$mincredit = $row['mincredit'];
-				$maxcredit = $row['maxcredit'];
-				$pickmethod_id = $row['pickmethod_id'];
-				$studentcount = $row['studentcount'];
-
-				//เก็บวิชาเรียนใน subject_arr เพื่อใช้ใน loop อื่นๆ ไม่ต้องไป query database อีก
-				array_push($subject_arr, $subject_id);
-
-				//3. On each subject, perform a Selection which yield results of Students who got accepted and Students who didn't get accepted
-				if($pickmethod_id == 1){
-					//first come first serve
-					$sql_random = "exec enrollFirstComeFirstServe @subject_id = '$subject_id', @classof_id = '$classof_id', @semester = '$semester'";
-				}elseif($pickmethod_id == 2){
-					//sort by GPA
-					$sql_random = "exec enrollGPA @subject_id = '$subject_id', @classof_id = '$classof_id', @semester = '$semester'";
-				}elseif($pickmethod_id == 3){
-					//random by rank
-					$sql_random = "exec enrollRanking @subject_id = '$subject_id', @classof_id = '$classof_id', @semester = '$semester'";
-				}
-
-				$db->beginSet();
-				if(!$db->setData($sql_random))
-				{
-					$db->rollbackWork();
-					$app->response->setBody(json_encode(array("status"=>"fail1")));
-					return;
-				}
-			}
-
-			//ตอนนี้ได้ TMP_SELECTION ที่มี STANDBY กับ ACCEPTED มาแล้ว
-			//ทำการเกลี่ยคนที่เป็น STANDBY เข้่ามาเป็น ACCEPTED จนกว่าจะเต็ม maxstudent ของวิชานั้นๆ
-			foreach($subject_arr as $subject_id){
-				$sql_reconcile = "exec enrollReconcile @subject_id = '$subject_id', @classof_id = '$classof_id', @semester = '$semester'";
-				if(!$db->setData($sql_reconcile))
-				{
-					$db->rollbackWork();
-					$app->response->setBody(json_encode(array("status"=>"fail2")));
-					return;
-				}
-			}
-
-			//ในกรณีที่มีสิทธิ์ลงทะเบียนได้หลายตัว(เกินกว่า maxcredit) เราจะเลือกให้เค้าลงเฉพาะวิชาที่ priority สูงๆของเค้าเท่านั้น ส่วนวิชาที่ priority ต่ำที่เค้ามีสิธิ์ลงก็จะถูกยกเลิกไป
-			$someuser_dont_have_enough_credit = false;
-			$student_list = listStudentFromTmpSelectionSortedByAcceptedCount($db, $classof_id, $semester, $maxcredit);
-
-			foreach($student_list as $student_id){
-				$student_subject_arr = getStudentSubjectConfirmedList($db, $student_id, $mincredit, $maxcredit, $classof_id, $semester);
-				$subject_id_confirmed_list = $student_subject_arr["subject_id_confirmed_list"];
-				$subject_id_tobe_removed_arr = $student_subject_arr["subject_id_tobe_removed_arr"];
-
-				if ($student_subject_arr["thisuser_dont_have_enough_credit"]){
-					$someuser_dont_have_enough_credit = true;
-				}
-
-				//update status ให้เป็น confirm ในวิชาที่ priority สูงและได้รับเลือก
-				$sql_confirm = "UPDATE TMP_SELECTION SET status = 'CONFIRMED', type = 'ACCEPTED' WHERE student_id = '$student_id' AND classof_id = '$classof_id' AND semester = '$semester' 
-				AND subject_id in ($subject_id_confirmed_list)";
-				if(!$db->setData($sql_confirm))
-				{
-					$db->rollbackWork();
-					$app->response->setBody(json_encode(array("status"=>"fail4")));
-					return;
-				}
-
-				//ทำการ mark flag ว่าวิชานี้ของคนคนนี้ confirm แล้ว และจะลบวิชาที่ทำให้หน่วยกิตเกินออกไปเลย 
-				foreach($subject_id_tobe_removed_arr as $subject_id){
-					//ลบวิชาที่นิสิตคนนี้ไม่ลงทะเบียนออกจาก TMP_SELECTION เพื่อให้โอกาสคนที่ลงทะเบียนได้น้อยมีสิทธิ์ได้เรียน
-					$sql_remove = "DELETE FROM TMP_SELECTION WHERE subject_id = '$subject_id' AND type = 'ACCEPTED' AND classof_id = '$classof_id' AND semester = '$semester' AND student_id = '$student_id'";
-					if(!$db->setData($sql_remove))
-					{
-						$db->rollbackWork();
-						$app->response->setBody(json_encode(array("status"=>"fail5")));
-						return;
-					}
-
-					//แล้วทำการ reconcile เพื่อดึงคนที่เป็น STANDBY ขึ้นมาเพิ่ม (แทนที่ว่างที่พึ่งถูกลบไป)
-					$sql_reconcile = "exec enrollReconcile @subject_id = '$subject_id', @classof_id = '$classof_id', @semester = '$semester'";
-					if(!$db->setData($sql_reconcile))
-					{
-						$db->rollbackWork();
-						$app->response->setBody(json_encode(array("status"=>"fail6")));
-						return;
-					}
-				}
-			}
-
-			//จบกระบวนการเลือก update table classof_semester ของเทอมนี้ให้เป็น 2 
-			$sql_updateSemester = "UPDATE CLASSOF_SEMESTER SET semester_state = '2' WHERE classof_id = '$classof_id' AND semester = '$semester'";
-			if(!$db->setData($sql_updateSemester))
-			{
-				$db->rollbackWork();
-				$app->response->setBody(json_encode(array("status"=>"fail7")));
-				return;
-			}
-
-
-			$db->commitWork();
-			$app->response->setBody(json_encode(array("status"=>"success")));
-
-		} else {
-			$app->response->setBody(json_encode(array("status"=>"fail5")));
+		if ($semester_state != 1){
+			$app->response->setBody(json_encode(array("status"=>"Not in the correct semester state to call this function")));
 			return;
 		}
+		
+		$subject_id_sortedby_studentcount = $AdminEnroll->getSubjectArraySortedStudentEnrollment();
+		foreach($subject_id_sortedby_studentcount as $subject_id){
+			
+			//3. On each subject, perform a Selection which yield results of Students who got accepted and Students who didn't get accepted
+			if($pickmethod_id == 1){
+				//first come first serve
+				$AdminEnroll->enrollFirstComeFirstServe($subject_id);
+			}elseif($pickmethod_id == 2){
+				//sort by GPA
+				$AdminEnroll->enrollGPA($subject_id);
+			}elseif($pickmethod_id == 3){
+				//random by rank
+				$AdminEnroll->enrollRanking($subject_id);
+			}
+			
+		}
+		
+		//ตอนนี้ได้ TMP_SELECTION ที่มี STANDBY กับ ACCEPTED มาแล้ว
+		//ทำการเกลี่ยคนที่เป็น STANDBY เข้่ามาเป็น ACCEPTED จนกว่าจะเต็ม maxstudent ของวิชานั้นๆ
+		foreach($subject_id_sortedby_studentcount as $subject_id){
+			$AdminEnroll->enrollReconcile($subject_id);
+		}
+
+		//ในกรณีที่มีสิทธิ์ลงทะเบียนได้หลายตัว(เกินกว่า maxcredit) เราจะเลือกให้เค้าลงเฉพาะวิชาที่ priority สูงๆของเค้าเท่านั้น ส่วนวิชาที่ priority ต่ำที่เค้ามีสิธิ์ลงก็จะถูกยกเลิกไป
+		$someuser_dont_have_enough_credit = false;
+		$student_list = $AdminEnroll->listStudentFromTmpSelectionSortedByAcceptedCount();
+
+		foreach($student_list as $student_id){
+
+			$student_subject_arr = $AdminEnroll->getStudentSubjectConfirmedList($student_id);
+
+			$subject_id_confirmed_list = $student_subject_arr["subject_id_confirmed_list"];
+			$subject_id_tobe_removed_arr = $student_subject_arr["subject_id_tobe_removed_arr"];
+
+			if ($student_subject_arr["thisuser_dont_have_enough_credit"]){
+				$someuser_dont_have_enough_credit = true;
+			}
+
+			//update status ให้เป็น confirm ในวิชาที่ priority สูงและได้รับเลือก
+			$AdminEnroll->markAcceptedHighPrioritySubjectStatusToConfirmed($student_id, $subject_id_confirmed_list);
+
+			//ทำการ mark flag ว่าวิชานี้ของคนคนนี้ confirm แล้ว และจะลบวิชาที่ทำให้หน่วยกิตเกินออกไปเลย 
+			foreach($subject_id_tobe_removed_arr as $subject_id){
+				//ลบวิชาที่นิสิตคนนี้ไม่ลงทะเบียนออกจาก TMP_SELECTION เพื่อให้โอกาสคนที่ลงทะเบียนได้น้อยมีสิทธิ์ได้เรียน
+				$AdminEnroll->removeAcceptedLowPrioritySubjectStatus($student_id, $subject_id);
+
+				//แล้วทำการ reconcile เพื่อดึงคนที่เป็น STANDBY ขึ้นมาเพิ่ม (แทนที่ว่างที่พึ่งถูกลบไป)
+				$AdminEnroll->enrollReconcile($subject_id);
+			}
+
+		}
+		
+		//ย้าย data จาก TMP_SELECTION ไปไว้ใน StudentCOnfirmedEnrollment เป็นการ confirm ว่า user ลงทะเบียนแล้ว
+		$AdminEnroll->moveAllConfrimedAcceptedStudentsFromTmpSelectionToStudentConfirmedEnrollment();
+
+		//จบกระบวนการเลือก update table classof_semester ของเทอมนี้ให้เป็น 2 
+		$AdminEnroll->setStatusClassOfSemester(2);
+
+
+		$db->commitWork();
+		$app->response->setBody(json_encode(array("status"=>"success")));
 
 		$db = null;
-        
+
 	} catch(PDOException $e) {
         $app->response->setBody(json_encode(array("error"=>array("source"=>"SQL", "reason"=>$e->getMessage()))));
     }
-}
-
-function listStudentFromTmpSelectionSortedByAcceptedCount($db, $classof_id, $semester, $maxcredit){
-	$response_arr = array();
-	$sql = "SELECT student_id, 
-			SUM(CASE WHEN type='ACCEPTED' THEN credit ELSE 0 END) AS accepted_credit
-			FROM TMP_SELECTION
-			WHERE classof_id = '$classof_id' AND semester = '$semester'
-			GROUP BY student_id
-			ORDER BY accepted_credit DESC, student_id ASC";
-	$result = $db->getData($sql);
-	if($result){
-		while($row = sqlsrv_fetch_array($result)){
-			//ดึง credit ของแต่ละวิชาที่นศคนนี้ได้มาคำนวณเพื่อหาว่าเค้าควรจะได้เรียนกี่วิชา 
-			array_push($response_arr, $row['student_id']);	
-		}
-	}
-
-	return $response_arr;
 }
 
 function getStudentSubjectConfirmedList($db, $student_id, $mincredit, $maxcredit, $classof_id, $semester){

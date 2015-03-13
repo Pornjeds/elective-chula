@@ -4,6 +4,7 @@
 */
 class AdminStudentEnrollment
 {
+	var $app;
 	var $db;
 	var $classof_id;
 	var $semester;
@@ -11,11 +12,13 @@ class AdminStudentEnrollment
 	var $maxcredit;
 	var $pickmethod_id;
 	var $subject_id_sortedby_studentcount;
-	function __construct($db, $classof_id, $semester)
+	function __construct($app, $db, $classof_id, $semester)
 	{
+		$app = $this->app;
 		$this->db = $db;
 		$this->classof_id = $classof_id;
 		$this->semester = $semester;
+		$this->subject_id_sortedby_studentcount = array();
 	}
 
 	function getSemesterState(){
@@ -44,77 +47,74 @@ class AdminStudentEnrollment
 				ORDER BY studentcount DESC";
 
 		$result = $this->db->getData($sql);
-		$subject_arr = array();
 		if ($result){
 			while($row = sqlsrv_fetch_array($result)){
 				$subject_id = $row['subject_id'];
 				array_push($this->subject_id_sortedby_studentcount, $subject_id);
 			}
 		}
-
 		return $this->subject_id_sortedby_studentcount;
 	}
 
 	function enrollFirstComeFirstServe($subject_id){
-		$sql = "exec enrollFirstComeFirstServe @subject_id = '$subject_id', @classof_id = '$classof_id', @semester = '$semester'";
-		$this->db->beginSet();
+		$sql = "exec enrollFirstComeFirstServe @subject_id = '".$subject_id."', @classof_id = '".$this->classof_id."', @semester = '".$this->semester."'";
 		if(!$this->db->setData($sql))
 		{
 			$this->db->rollbackWork();
-			$app->response->setBody(json_encode(array("status"=>"fail enrollment enrollFirstComeFirstServe")));
+			$this->app->response->setBody(json_encode(array("status"=>"fail enrollment enrollFirstComeFirstServe")));
 			return;
 		}
 	}
 
 	function enrollGPA($subject_id){
-		$sql = "exec enrollGPA @subject_id = '$subject_id', @classof_id = '$classof_id', @semester = '$semester'";
-		$this->db->beginSet();
+		$sql = "exec enrollGPA @subject_id = '".$subject_id."', @classof_id = '".$this->classof_id."', @semester = '".$this->semester."'";
 		if(!$this->db->setData($sql))
 		{
 			$this->db->rollbackWork();
-			$app->response->setBody(json_encode(array("status"=>"fail enrollment enrollGPA")));
+			$this->app->response->setBody(json_encode(array("status"=>"fail enrollment enrollGPA")));
 			return;
 		}
 	}
 
-	function enrollRanking(){
-		$sql = "exec enrollRanking @subject_id = '$subject_id', @classof_id = '$classof_id', @semester = '$semester'";
-		$this->db->beginSet();
+	function enrollRanking($subject_id){
+
+		$sql = "exec enrollRanking @subject_id = '".$subject_id."', @classof_id = '".$this->classof_id."', @semester = '".$this->semester."'";
 		if(!$this->db->setData($sql))
 		{
 			$this->db->rollbackWork();
-			$app->response->setBody(json_encode(array("status"=>"fail enrollment enrollRanking")));
+			$this->app->response->setBody(json_encode(array("status"=>"fail enrollment enrollRanking")));
 			return;
 		}
+
 	}
 
 	function enrollReconcile($subject_id){
-		$sql = "exec enrollReconcile @subject_id = '$subject_id', @classof_id = '$classof_id', @semester = '$semester'";
-		if(!$db->setData($sql))
+		$sql = "exec enrollReconcile @subject_id = '".$subject_id."', @classof_id = '".$this->classof_id."', @semester = '".$this->semester."'";
+		if(!$this->db->setData($sql))
 		{
-			$db->rollbackWork();
-			$app->response->setBody(json_encode(array("status"=>"fail2")));
+			$this->db->rollbackWork();
+			$this->app->response->setBody(json_encode(array("status"=>"fail enrollReconcile")));
 			return;
 		}
 	}
 
 	function listStudentFromTmpSelectionSortedByAcceptedCount(){
-		$response_arr = array();
+		$student_arr = array();
 		$sql = "SELECT student_id, 
 				SUM(CASE WHEN type='ACCEPTED' THEN credit ELSE 0 END) AS accepted_credit
 				FROM TMP_SELECTION
-				WHERE classof_id = '$classof_id' AND semester = '$semester'
+				WHERE classof_id = '".$this->classof_id."' AND semester = '".$this->semester."'
 				GROUP BY student_id
 				ORDER BY accepted_credit DESC, student_id ASC";
-		$result = $db->getData($sql);
+		$result = $this->db->getData($sql);
 		if($result){
 			while($row = sqlsrv_fetch_array($result)){
 				//ดึง credit ของแต่ละวิชาที่นศคนนี้ได้มาคำนวณเพื่อหาว่าเค้าควรจะได้เรียนกี่วิชา 
-				array_push($response_arr, $row['student_id']);	
+				array_push($student_arr, $row['student_id']);	
 			}
 		}
 
-		return $response_arr;
+		return $student_arr;
 	}
 
 	function getStudentSubjectConfirmedList($student_id){
@@ -127,12 +127,14 @@ class AdminStudentEnrollment
 		
 		$sql = "SELECT subject_id, credit, dayofweek, timeofday, type
 				FROM TMP_SELECTION 
-				WHERE student_id = '$student_id' AND type = 'ACCEPTED' AND classof_id = '$classof_id' AND semester = '$semester'
+				WHERE student_id = '".$student_id."' AND type = 'ACCEPTED' AND classof_id = '".$this->classof_id."' AND semester = '".$this->semester."'
 				ORDER BY priority ASC";
-
-		$result = $db->getData($sql);
+		
+		$result = $this->db->getData($sql);
 		if($result){
+			
 			while($row = sqlsrv_fetch_array($result)){
+
 				$duplicate_date_and_time = false;
 				$subject_id = trim($row['subject_id']);
 				$subject_credit = trim($row['credit']);
@@ -145,21 +147,22 @@ class AdminStudentEnrollment
 						$duplicate_date_and_time = true;
 					}
 				}
-				if ($current_sum_credit + $subject_credit <= $maxcredit && !$duplicate_date_and_time){
+				if ($current_sum_credit + $subject_credit <= $this->maxcredit && !$duplicate_date_and_time){
 					$current_sum_credit += $subject_credit;
 					$subject_id_confirmed_list .= "'$subject_id',";
 					array_push($dayofweek_timeofday, array("dayofweek" => $dayofweek, "timeofday" => $timeofday ));
 				} else {
 					array_push($subject_id_tobe_removed_arr, $subject_id);
 				}
+
 			}
 
 			$subject_id_confirmed_list = substr($subject_id_confirmed_list, 0, -1);
 
-			if ($current_sum_credit < $maxcredit){
+			if ($current_sum_credit < $this->maxcredit){
 				$thisuser_dont_have_enough_credit = true;
 			}
-
+	
 		}
 
 		return array(
@@ -170,22 +173,22 @@ class AdminStudentEnrollment
 	}
 
 	function markAcceptedHighPrioritySubjectStatusToConfirmed($student_id, $subject_id_confirmed_list){
-		$sql = "UPDATE TMP_SELECTION SET status = 'CONFIRMED', type = 'ACCEPTED' WHERE student_id = '$student_id' AND classof_id = '$classof_id' AND semester = '$semester' 
-		AND subject_id in ($subject_id_confirmed_list)";
-		if(!$db->setData($sql))
+		$sql = "UPDATE TMP_SELECTION SET status = 'CONFIRMED', type = 'ACCEPTED' WHERE student_id = '".$student_id."' AND classof_id = '".$this->classof_id."' AND semester = '".$this->semester."' 
+		AND subject_id in (".$subject_id_confirmed_list.")";
+		if(!$this->db->setData($sql))
 		{
-			$db->rollbackWork();
-			$app->response->setBody(json_encode(array("status"=>"fail markAcceptedHighPrioritySubjectStatusToConfirmed")));
+			$this->db->rollbackWork();
+			$this->app->response->setBody(json_encode(array("status"=>"fail markAcceptedHighPrioritySubjectStatusToConfirmed")));
 			return;
 		}
 	}
 
 	function removeAcceptedLowPrioritySubjectStatus($student_id, $subject_id){
-		$sql = "DELETE FROM TMP_SELECTION WHERE subject_id = '$subject_id' AND type = 'ACCEPTED' AND classof_id = '$classof_id' AND semester = '$semester' AND student_id = '$student_id'";
-		if(!$db->setData($sql))
+		$sql = "DELETE FROM TMP_SELECTION WHERE subject_id = '".$subject_id."' AND type = 'ACCEPTED' AND classof_id = '".$this->classof_id."' AND semester = '".$this->semester."' AND student_id = '".$student_id."'";
+		if(!$this->db->setData($sql))
 		{
-			$db->rollbackWork();
-			$app->response->setBody(json_encode(array("status"=>"fail removeAcceptedLowPrioritySubjectStatus")));
+			$this->db->rollbackWork();
+			$this->app->response->setBody(json_encode(array("status"=>"fail removeAcceptedLowPrioritySubjectStatus")));
 			return;
 		}
 	}
@@ -195,11 +198,11 @@ class AdminStudentEnrollment
 	}
 
 	function setStatusClassOfSemester($semester_state){
-		$sql = "UPDATE CLASSOF_SEMESTER SET semester_state = '".$semester_state."' WHERE classof_id = '$classof_id' AND semester = '$semester'";
-		if(!$db->setData($sql))
+		$sql = "UPDATE CLASSOF_SEMESTER SET semester_state = '".$semester_state."' WHERE classof_id = '".$this->classof_id."' AND semester = '".$this->semester."'";
+		if(!$this->db->setData($sql))
 		{
-			$db->rollbackWork();
-			$app->response->setBody(json_encode(array("status"=>"fail7")));
+			$this->db->rollbackWork();
+			$this->app->response->setBody(json_encode(array("status"=>"fail setStatusClassOfSemester")));
 			return;
 		}
 	}
