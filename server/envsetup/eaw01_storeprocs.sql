@@ -619,19 +619,3 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE enrollStudentBasedOnCredit
-	-- Add the parameters for the stored procedure here
-	@student_id nchar(10) = NULL,
-	@classof_id int = NULL,
-	@semester nchar(10) = NULL,
-	@subject_id nchar(10) = NULL
-AS
-BEGIN
-	-- SET NOCOUNT ON added to prevent extra result sets from
-	-- interfering with SELECT statements.
-	SET NOCOUNT ON;
-
-	UPDATE TMP_SELECTION SET status = 'CONFIRMED' WHERE student_id = @student_id AND classof_id = @classof_id AND semester = @semester AND subject_id = @subject_id
-
-END
-GO

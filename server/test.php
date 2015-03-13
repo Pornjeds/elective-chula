@@ -12,7 +12,10 @@ $k = $test;
 $m = array();
 foreach($m as $mm){
 	echo "mm is ".$mm['test'];
+	break;
 }
 echo "ends mm";
+$x = '' && false;
+echo "x is $x";
 
 ?>
