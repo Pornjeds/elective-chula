@@ -63,6 +63,7 @@ $app->group('/api/v1', function() use ($app){
         $app->get('/:id', 'getSubjectInfoById');
         $app->post('/detail', 'getSubjectInfoByIdPost');
         $app->post('/list', 'listSubjectByClassOfAndSemester');
+        $app->post('/listall', 'listAllSubjects');
         $app->post('/submit', 'submitSubjectRegistration');
     });
 
