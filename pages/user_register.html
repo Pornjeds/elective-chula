@@ -181,6 +181,7 @@
             <input id='bt_reset' type='button' class="btn btn-primary" onClick='location.reload();' value='Reset' style='margin-left: 20px;' />
         </div>
     </div>
+    <div class="alert alert-success" role="alert" id="import-success" style="display:none; margin-top: 10px; text-align: center;">Register ข้อมูลวิชาเลือก <b>SUCCESS</b></div>
     
       <hr style='margin-top: 10px;'>
       <footer>
@@ -309,15 +310,16 @@
                                 //ADD SUBJECT TO DIV
                                 var subjectInformation = getInformationFromData( electiveSubjectArray[k], day); //MORNING, NOON, EVENING
                                 if( subjectInformation !== null ){
-                                    tmpDivElement.innerHTML = subjectInformation[0];
+                                    tmpDivElement.innerHTML = subjectInformation[1];
                                     tmpDivElement.style.background = '#9d9d9d';
                                     //ADD UNIT OF SUBJECT
                                     var spanElement = document.createElement('span');
                                     spanElement.className = 'spanUnitOfSubject';
-                                    spanElement.innerHTML = subjectInformation[1];
+                                    spanElement.innerHTML = subjectInformation[2];
                                     tmpTDElement.appendChild( spanElement );
                                     var ulElement = document.createElement('ul');
                                     ulElement.id = 'sortableE' + day + '-' + i;
+                                    ulElement.setAttribute('subject_id', subjectInformation[0]);
                                     ulElement.className = 'connectedSortableE';
                                     tmpTDElement.appendChild( ulElement );
                                 }
@@ -417,15 +419,16 @@
                                 //ADD SUBJECT TO DIV
                                 var subjectInformation = getInformationFromData( requiredSubjectArray[k], day); //MORNING, NOON, EVENING
                                 if( subjectInformation !== null ){
-                                    tmpDivElement.innerHTML = subjectInformation[0];
+                                    tmpDivElement.innerHTML = subjectInformation[1];
                                     tmpDivElement.style.background = '#9d9d9d';
                                     //ADD UNIT OF SUBJECT
                                     var spanElement = document.createElement('span');
                                     spanElement.className = 'spanUnitOfSubject';
-                                    spanElement.innerHTML = subjectInformation[1];
+                                    spanElement.innerHTML = subjectInformation[2];
                                     tmpTDElement.appendChild( spanElement );
                                     var ulElement = document.createElement('ul');
                                     ulElement.id = 'sortableR' + day + '-' + i;
+                                    ulElement.setAttribute('subject_id', subjectInformation[0]);
                                     ulElement.className = 'connectedSortableR';
                                     tmpTDElement.appendChild( ulElement );
                                 }
@@ -466,7 +469,23 @@
                             checkConfirmButtonReady();
                         }
                     }).disableSelection();
+                    //
+                    //ADD SELECTED ITEMS FROM DATABASE
+                    var selected_list = data[1]['selected'];
+                    var sortableElective = document.getElementById('sortableElective');
                     
+                    for( var selectedIndex=0; selectedIndex< selected_list.length; selectedIndex++ ){
+                        for(var i=0; i< sortableElective.children.length; i++){
+                            if( selected_list[ selectedIndex ].priority === parseInt( sortableElective.children[i].innerHTML )){
+                                //MOVE
+                                var subjectId = $.trim( selected_list[ selectedIndex ].subject_id );
+                                var targetMoveElement = $('ul[subject_id="' + subjectId + '"]')[0];
+                                targetMoveElement.appendChild( sortableElective.children[i] );
+                                break;
+                            }
+                        }
+                    }
+                    //STILL DIDN'T TEST AT 'REQUIRE' SUBJECT CASE !!
                     //END SUCCESS
                 },
                 error: function(jqXHR, textStatus, errorThrown){
@@ -480,7 +499,7 @@
             for( var i=0; i< objectDataArray.length; i++ ){
                 if( objectDataArray[i].studyDate === targetDate ){
                     objectDataArray[i].studyDate = -1;
-                    return [ objectDataArray[i].subjectName, objectDataArray[i].numUnit ];
+                    return [ $.trim(objectDataArray[i].subject_id), $.trim(objectDataArray[i].subjectName), $.trim(objectDataArray[i].numUnit) ];
                 }
             }
             return null;
@@ -505,20 +524,51 @@
                 var result = '';
                 var sortableElementsE = $('.connectedSortableE');
                 var sortableElementsR = $('.connectedSortableR');
+                var jsonObj = {
+                    'subject_enrollment': []
+                }
                 for(var i=0; i< sortableElementsE.length; i++){
                     if( sortableElementsE[ i ].id !== 'sortableElective' && sortableElementsE[ i ].children.length === 1 ){
-                        result = result + sortableElementsE[ i ].parentElement.firstChild.innerHTML + ' ->'  + sortableElementsE[ i ].children[0].innerHTML + '\n';
+                        //result = result + sortableElementsE[ i ].parentElement.firstChild.innerHTML + ' ->'  + sortableElementsE[ i ].children[0].innerHTML + '\n';
+                        jsonObj.subject_enrollment.push({
+                            'subject_id': sortableElementsE[ i ].getAttribute('subject_id'),
+                            'priority': sortableElementsE[ i ].firstChild.innerHTML
+                        });
                     }
                 }
                 for(var i=0; i< sortableElementsR.length; i++){
                     if( sortableElementsR[ i ].id !== 'sortableElective' && sortableElementsR[ i ].children.length === 1 ){
-                        result = result + sortableElementsR[ i ].parentElement.firstChild.innerHTML + ' ->'  + sortableElementsR[ i ].children[0].innerHTML + '\n';
+                        //result = result + sortableElementsR[ i ].parentElement.firstChild.innerHTML + ' ->'  + sortableElementsR[ i ].children[0].innerHTML + '\n';
+                        break;
                     }
                 }
-                alert( result );
+                //alert( result );
+                //CALLING SERVICE
+                //BONG
+                
+                var jsonString = JSON.stringify( jsonObj );
+                var urlStr = window.location.origin + '/server/user_api.php/api/v1/enrollment/submit';
+                $.ajax({
+                    type: 'POST',
+                    contentType: 'application/json',
+                    url: urlStr,
+                    dataType: 'json',
+                    contentType: "text/plain; charset=UTF-8",
+                    data: jsonString,
+                    success: function(data, textStatus, jqXHR){
+                        document.getElementById('import-success').style.display = 'block';
+                        var delay=2000;//1 seconds
+                        setTimeout(function(){
+                            window.location.href ="user_dashboard.html" + '?id=' + window.location.search.split('?id=')[1];
+                        },delay);
+                    },
+                    error: function(jqXHR, textStatus, errorThrown){
+                        alert('Register enrollment error: ' + textStatus);
+                    }
+                });
             }
         }
-        
+        //END
     </script>
   </body>
 </html>
