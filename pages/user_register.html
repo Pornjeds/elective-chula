@@ -473,15 +473,31 @@
                     //ADD SELECTED ITEMS FROM DATABASE
                     var selected_list = data[1]['selected'];
                     var sortableElective = document.getElementById('sortableElective');
+                    var sortableRequired = document.getElementById('sortableRequired');
                     
                     for( var selectedIndex=0; selectedIndex< selected_list.length; selectedIndex++ ){
-                        for(var i=0; i< sortableElective.children.length; i++){
-                            if( selected_list[ selectedIndex ].priority === parseInt( sortableElective.children[i].innerHTML )){
-                                //MOVE
-                                var subjectId = $.trim( selected_list[ selectedIndex ].subject_id );
-                                var targetMoveElement = $('ul[subject_id="' + subjectId + '"]')[0];
-                                targetMoveElement.appendChild( sortableElective.children[i] );
-                                break;
+                        if( selected_list[ selectedIndex ].isRequired === 0 ){
+                            //ELECTIVE SUBJECT
+                            for(var i=0; i< sortableElective.children.length; i++){
+                                if( selected_list[ selectedIndex ].priority === parseInt( sortableElective.children[i].innerHTML )){
+                                    //MOVE
+                                    var subjectId = $.trim( selected_list[ selectedIndex ].subject_id );
+                                    var targetMoveElement = $('ul[subject_id="' + subjectId + '"]')[0];
+                                    targetMoveElement.appendChild( sortableElective.children[i] );
+                                    break;
+                                }
+                            }
+                        }
+                        else{
+                            //REQUIRED SUBJECT
+                            for(var i=0; i< sortableRequired.children.length; i++){
+                                if( selected_list[ selectedIndex ].priority === parseInt( sortableRequired.children[i].innerHTML )){
+                                    //MOVE
+                                    var subjectId = $.trim( selected_list[ selectedIndex ].subject_id );
+                                    var targetMoveElement = $('ul[subject_id="' + subjectId + '"]')[0];
+                                    targetMoveElement.appendChild( sortableRequired.children[i] );
+                                    break;
+                                }
                             }
                         }
                     }
@@ -525,21 +541,25 @@
                 var sortableElementsE = $('.connectedSortableE');
                 var sortableElementsR = $('.connectedSortableR');
                 var jsonObj = {
-                    'subject_enrollment': []
+                    'subject_enrollment': [],
+                    'student_id': window.location.search.split('?id=')[1]
                 }
                 for(var i=0; i< sortableElementsE.length; i++){
                     if( sortableElementsE[ i ].id !== 'sortableElective' && sortableElementsE[ i ].children.length === 1 ){
-                        //result = result + sortableElementsE[ i ].parentElement.firstChild.innerHTML + ' ->'  + sortableElementsE[ i ].children[0].innerHTML + '\n';
                         jsonObj.subject_enrollment.push({
                             'subject_id': sortableElementsE[ i ].getAttribute('subject_id'),
-                            'priority': sortableElementsE[ i ].firstChild.innerHTML
+                            'priority': sortableElementsE[ i ].firstChild.innerHTML,
+                            'isRequired': 0
                         });
                     }
                 }
                 for(var i=0; i< sortableElementsR.length; i++){
                     if( sortableElementsR[ i ].id !== 'sortableElective' && sortableElementsR[ i ].children.length === 1 ){
-                        //result = result + sortableElementsR[ i ].parentElement.firstChild.innerHTML + ' ->'  + sortableElementsR[ i ].children[0].innerHTML + '\n';
-                        break;
+                        jsonObj.subject_enrollment.push({
+                            'subject_id': sortableElementsE[ i ].getAttribute('subject_id'),
+                            'priority': sortableElementsE[ i ].firstChild.innerHTML,
+                            'isRequired': 1
+                        });
                     }
                 }
                 //alert( result );
