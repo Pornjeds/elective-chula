@@ -58,11 +58,11 @@ INSERT INTO [eaw01].[dbo].[SUBJECT] ([subject_id],[name] ,[description] ,[defaul
 
 /* [eaw01].[dbo].[[SUBJECT_CLASSOF]]  */
 INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[credit], [dayofweek], [timeofday], [instructor], [isRequired], [addeddate], [updatedate]) VALUES
-( 1, 1, '4' , 3, 6, 3, 1, 2, 'Dr. A BCD', 0, GETDATE(), GETDATE() )
+( 1, 1, '4' , 3, 6, 3, 1, 2, 'Dr. A BCD', 1, GETDATE(), GETDATE() )
 INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[credit], [dayofweek], [timeofday], [instructor], [isRequired], [addeddate], [updatedate]) VALUES
 ( 2, 1, '4' , 0, 4, 3, 2, 2, 'Dr. A BCD', 0, GETDATE(), GETDATE() )
 INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[credit], [dayofweek], [timeofday], [instructor], [isRequired], [addeddate], [updatedate]) VALUES
-( 3, 1, '4' , 4, 5, 3, 2, 2, 'Dr. A BCD', 0, GETDATE(), GETDATE() )
+( 3, 1, '4' , 4, 5, 3, 2, 2, 'Dr. A BCD', 1, GETDATE(), GETDATE() )
 INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[credit], [dayofweek], [timeofday], [instructor], [isRequired], [addeddate], [updatedate]) VALUES
 ( 4, 1, '4' , 0, 10, 3, 3, 2, 'Dr. A BCD', 0, GETDATE(), GETDATE() )
 INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[credit], [dayofweek], [timeofday], [instructor], [isRequired], [addeddate], [updatedate]) VALUES

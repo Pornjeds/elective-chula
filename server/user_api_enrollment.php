@@ -72,12 +72,14 @@ function getSubjectList(){
 		$sql_getSelectedSubjectList = "SELECT 
 										a.subject_id,
 										a.priority,
+										c.isRequired,
 										b.name
 										FROM STUDENT_ENROLLMENT a
 										INNER JOIN SUBJECT b ON a.subject_id = b.subject_id
-										WHERE student_id = '$student_id' AND 
-												classof_id = '$classof_id' AND 
-												semester = '$semester'";
+										INNER JOIN SUBJECT_CLASSOF c ON a.subject_id = c.subject_id
+										WHERE a.student_id = '$student_id' AND 
+												c.classof_id = '$classof_id' AND 
+												c.semester = '$semester'";
 		$result = $db->getData($sql_getSelectedSubjectList);
 		if ($result){
 			while($row = sqlsrv_fetch_array($result)){
