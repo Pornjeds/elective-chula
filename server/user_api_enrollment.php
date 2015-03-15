@@ -71,7 +71,13 @@ function getSubjectList(){
 		//3. get subject list
 		$sql_getSelectedSubjectList = "SELECT 
 										a.subject_id,
-										a.priority,
+										priority = CAST
+											(CASE 
+												WHEN c.isRequired = 1 
+													THEN a.priority + (SELECT MAX(priority) FROM STUDENT_ENROLLMENT WHERE student_id = 'student_id' AND classof_id = '$classof_id' AND semester = '$semester') 
+													ELSE a.priority
+											END)
+										AS INT,
 										c.isRequired,
 										b.name
 										FROM STUDENT_ENROLLMENT a
@@ -146,8 +152,7 @@ function submitEnrollment(){
 	    //$student_id = json_decode($jsonData)->student_id;
 	    $subject_enrollment = json_decode($request->getBody())->subject_enrollment;
 	    $student_id = json_decode($request->getBody())->student_id;
-
-
+	    $maxpriority = count($subject_enrollment);
 
 	} catch(Exception $e) {
 		$app->response->setBody(json_encode(array("error"=>array("source"=>"input", "reason"=>$e->getMessage()))));
@@ -182,8 +187,24 @@ function submitEnrollment(){
 		
 		//2. Insert data into enrollment
 		foreach($subject_enrollment as $subject){
+
+			//check if it's required subject -> if yes, priority will be minus by max of that priority
+			$sql = "SELECT isRequired FROM SUBJECT_CLASSOF WHERE classof_id = '$classof_id' AND semester = '$semester' AND subject_id = '$subject->subject_id'";
+			$result = $db->getData($sql);
+			$isRequired = 0;
+			if ($result){
+				while($row = sqlsrv_fetch_array($result)){
+					$isRequired = $row["isRequired"];
+				}
+			}
+
+			$priority = $subject->priority;
+			if ($isRequired == 1){
+				$priority -= $maxpriority;
+			}
+
 			$sql = "merge STUDENT_ENROLLMENT as target
-				using (values ('$student_id', '$subject->subject_id', '$classof_id', '$semester', '$subject->priority'))
+				using (values ('$student_id', '$subject->subject_id', '$classof_id', '$semester', '$priority'))
 				    as source (student_id, subject_id, classof_id, semester, priority)
 				    on target.student_id = source.student_id AND target.subject_id = source.subject_id AND target.classof_id = source.classof_id AND target.semester = source.semester
 				when matched then
