@@ -36,7 +36,7 @@ BEGIN
 
 	CREATE TABLE #TMP_SUBJECTCLASSOF(
 	subject_id nchar(10),
-	name nvarchar(256), 
+	subject_name nvarchar(256), 
 	selected bit,
 	classof_id nchar(10),
 	semester nchar(10),
@@ -53,7 +53,7 @@ BEGIN
 
 	INSERT INTO #TMP_SUBJECTCLASSOF 
 			SELECT b.subject_id, 
-			b.name,
+			b.subject_name,
 			CAST(CASE WHEN classof_id is not NULL THEN 1 ELSE 0 END AS bit) AS selected, 
 			classof_id, 
 			semester, 
@@ -71,7 +71,7 @@ BEGIN
 				where (classof_id = @classof_id and semester = @semester) OR (classof_id is NULL and semester is NULL)
 			
 	INSERT INTO #TMP_SUBJECTCLASSOF (subject_id, name, credit, selected) (
-	SELECT subject_id, name, defaultpoint, 0 FROM [SUBJECT] WHERE subject_id not in 
+	SELECT subject_id, subject_name, defaultpoint, 0 FROM [SUBJECT] WHERE subject_id not in 
 	(select subject_id from #TMP_SUBJECTCLASSOF))
 			
 	select * from #TMP_SUBJECTCLASSOF
@@ -195,6 +195,7 @@ GO
 CREATE PROCEDURE enrollFirstComeFirstServe 
 	-- Add the parameters for the stored procedure here
 	@subject_id nchar(10) = NULL,
+	@subject_name nvarchar(256) = NULL,
 	@classof_id int = NULL,
 	@semester nchar(10) = NULL
 AS
@@ -205,8 +206,8 @@ BEGIN
 
 	DECLARE @maxstudent int
 	DECLARE @maxpriority int
-	SET @maxstudent = (SELECT maxstudent FROM SUBJECT_CLASSOF WHERE subject_id = @subject_id AND classof_id = @classof_id AND semester = @semester)
-	SET @maxpriority = (SELECT max(priority) FROM STUDENT_ENROLLMENT WHERE subject_id = @subject_id AND classof_id = @classof_id AND semester = @semester)
+	SET @maxstudent = (SELECT maxstudent FROM SUBJECT_CLASSOF WHERE subject_id = @subject_id AND subject_name = @subject_name AND classof_id = @classof_id AND semester = @semester)
+	SET @maxpriority = (SELECT max(priority) FROM STUDENT_ENROLLMENT WHERE subject_id = @subject_id AND subject_name = @subject_name AND classof_id = @classof_id AND semester = @semester)
 
     -- Insert statements for procedure here
 	IF OBJECT_ID('tempdb..#TMP_STUDENTACCEPTED') IS NOT NULL DROP TABLE #TMP_STUDENTACCEPTED
@@ -215,6 +216,7 @@ BEGIN
 	CREATE TABLE #TMP_STUDENTACCEPTED(
 	student_id nchar(10),
 	subject_id nchar(10),
+	subject_name nvarchar(256),
 	classof_id int,
 	semester nchar(10),
 	status nvarchar(50),
@@ -231,6 +233,7 @@ BEGIN
 	CREATE TABLE #TMP_STUDENTNOTACCEPTED(
 	student_id nchar(10),
 	subject_id nchar(10),
+	subject_name nvarchar(256),
 	classof_id int,
 	semester nchar(10),
 	status nvarchar(50),
@@ -249,6 +252,7 @@ BEGIN
 			SELECT top (@maxstudent)
 			a.student_id,
 			@subject_id,
+			@subject_name,
 			@classof_id,
 			@semester,
 			'SELECTED',
@@ -263,19 +267,19 @@ BEGIN
 					WHEN a.logical_priority > (
 						SELECT min(logical_priority) 
 						FROM  STUDENT_ENROLLMENT 
-						WHERE student_id = a.student_id AND a.subject_id = @subject_id AND a.classof_id = @classof_id AND a.semester = @semester
+						WHERE student_id = a.student_id AND a.subject_id = @subject_id AND a.subject_name = @subject_name AND a.classof_id = @classof_id AND a.semester = @semester
 						) THEN 'STANDBY'
 					WHEN a.logical_priority = (
 						SELECT min(logical_priority) 
 						FROM  STUDENT_ENROLLMENT 
-						WHERE student_id = a.student_id AND a.subject_id = @subject_id AND a.classof_id = @classof_id AND a.semester = @semester
+						WHERE student_id = a.student_id AND a.subject_id = @subject_id AND a.subject_name = @subject_name AND a.classof_id = @classof_id AND a.semester = @semester
 						) THEN 'ACCEPTED'
 				END 
 			AS NVARCHAR(10)),
 			a.addeddate
 			FROM STUDENT_ENROLLMENT a
-			INNER JOIN SUBJECT_CLASSOF b ON a.subject_id = b.subject_id
-			WHERE b.subject_id = @subject_id AND b.classof_id = @classof_id AND b.semester = @semester
+			INNER JOIN SUBJECT_CLASSOF b ON a.subject_id = b.subject_id AND a.subject_name = b.subject_name
+			WHERE b.subject_id = @subject_id AND b.subject_name = @subject_name AND b.classof_id = @classof_id AND b.semester = @semester
 			ORDER BY a.addeddate ASC, a.logical_priority ASC
 
 	-- NOT GET ACCEPTED
@@ -283,6 +287,7 @@ BEGIN
 			SELECT
 			a.student_id,
 			@subject_id,
+			@subject_name,
 			@classof_id,
 			@semester,
 			'NOTSELECTED',
@@ -295,8 +300,8 @@ BEGIN
 			'STANDBY',
 			a.addeddate
 			FROM STUDENT_ENROLLMENT a
-			INNER JOIN SUBJECT_CLASSOF b ON a.subject_id = b.subject_id
-			WHERE b.subject_id = @subject_id AND b.classof_id = @classof_id AND b.semester = @semester
+			INNER JOIN SUBJECT_CLASSOF b ON a.subject_id = b.subject_id AND a.subject_name = b.subject_name
+			WHERE b.subject_id = @subject_id AND b.subject_name = @subject_name AND b.classof_id = @classof_id AND b.semester = @semester
 			AND a.student_id NOT IN (SELECT DISTINCT student_id FROM #TMP_STUDENTACCEPTED)
 			ORDER BY a.addeddate ASC, a.logical_priority ASC
 
@@ -330,6 +335,7 @@ GO
 CREATE PROCEDURE enrollGPA
 	-- Add the parameters for the stored procedure here
 	@subject_id nchar(10) = NULL,
+	@subject_name nvarchar(256) = NULL,
 	@classof_id int = NULL,
 	@semester nchar(10) = NULL
 AS
@@ -340,8 +346,8 @@ BEGIN
 
 	DECLARE @maxstudent int
 	DECLARE @maxpriority int
-	SET @maxstudent = (SELECT maxstudent FROM SUBJECT_CLASSOF WHERE subject_id = @subject_id AND classof_id = @classof_id AND semester = @semester)
-	SET @maxpriority = (SELECT max(priority) FROM STUDENT_ENROLLMENT WHERE subject_id = @subject_id AND classof_id = @classof_id AND semester = @semester)
+	SET @maxstudent = (SELECT maxstudent FROM SUBJECT_CLASSOF WHERE subject_id = @subject_id AND subject_name = @subject_name AND classof_id = @classof_id AND semester = @semester)
+	SET @maxpriority = (SELECT max(priority) FROM STUDENT_ENROLLMENT WHERE subject_id = @subject_id AND subject_name = @subject_name AND classof_id = @classof_id AND semester = @semester)
 
     -- Insert statements for procedure here
 	IF OBJECT_ID('tempdb..#TMP_STUDENTACCEPTED') IS NOT NULL DROP TABLE #TMP_STUDENTACCEPTED
@@ -350,6 +356,7 @@ BEGIN
 	CREATE TABLE #TMP_STUDENTACCEPTED(
 	student_id nchar(10),
 	subject_id nchar(10),
+	subject_name nvarchar(256),
 	classof_id int,
 	semester nchar(10),
 	status nvarchar(50),
@@ -366,6 +373,7 @@ BEGIN
 	CREATE TABLE #TMP_STUDENTNOTACCEPTED(
 	student_id nchar(10),
 	subject_id nchar(10),
+	subject_name nvarchar(256),
 	classof_id int,
 	semester nchar(10),
 	status nvarchar(50),
@@ -384,6 +392,7 @@ BEGIN
 			SELECT top (@maxstudent)
 			a.student_id,
 			@subject_id,
+			@subject_name,
 			@classof_id,
 			@semester,
 			'SELECTED',
@@ -398,20 +407,20 @@ BEGIN
 					WHEN a.logical_priority > (
 						SELECT min(logical_priority) 
 						FROM  STUDENT_ENROLLMENT 
-						WHERE student_id = a.student_id AND a.subject_id = @subject_id AND a.classof_id = @classof_id AND a.semester = @semester
+						WHERE student_id = a.student_id AND a.subject_id = @subject_id AND a.subject_name = @subject_name AND a.classof_id = @classof_id AND a.semester = @semester
 						) THEN 'STANDBY'
 					WHEN a.logical_priority = (
 						SELECT min(logical_priority) 
 						FROM  STUDENT_ENROLLMENT 
-						WHERE student_id = a.student_id AND a.subject_id = @subject_id AND a.classof_id = @classof_id AND a.semester = @semester
+						WHERE student_id = a.student_id AND a.subject_id = @subject_id AND a.subject_name = @subject_name AND a.classof_id = @classof_id AND a.semester = @semester
 						) THEN 'ACCEPTED'
 				END 
 			AS NVARCHAR(10)),
 			a.addeddate
 			FROM STUDENT_ENROLLMENT a
-			INNER JOIN SUBJECT_CLASSOF b ON a.subject_id = b.subject_id
+			INNER JOIN SUBJECT_CLASSOF b ON a.subject_id = b.subject_id AND a.subject_name = b.subject_name
 			INNER JOIN STUDENT c ON a.student_id = c.student_id
-			WHERE b.subject_id = @subject_id AND b.classof_id = @classof_id AND b.semester = @semester
+			WHERE b.subject_id = @subject_id AND b.subject_name = @subject_name AND b.classof_id = @classof_id AND b.semester = @semester
 			ORDER BY c.GPA DESC, a.addeddate ASC, a.logical_priority ASC
 
 	-- NOT GET ACCEPTED
@@ -419,6 +428,7 @@ BEGIN
 			SELECT
 			a.student_id,
 			@subject_id,
+			@subject_name,
 			@classof_id,
 			@semester,
 			'NOTSELECTED',
@@ -431,9 +441,9 @@ BEGIN
 			'STANDBY',
 			a.addeddate
 			FROM STUDENT_ENROLLMENT a
-			INNER JOIN SUBJECT_CLASSOF b ON a.subject_id = b.subject_id
+			INNER JOIN SUBJECT_CLASSOF b ON a.subject_id = b.subject_id AND a.subject_name = b.subject_name
 			INNER JOIN STUDENT c ON a.student_id = c.student_id
-			WHERE b.subject_id = @subject_id AND b.classof_id = @classof_id AND b.semester = @semester
+			WHERE b.subject_id = @subject_id AND b.subject_name = @subject_name AND b.classof_id = @classof_id AND b.semester = @semester
 			AND a.student_id NOT IN (SELECT DISTINCT student_id FROM #TMP_STUDENTACCEPTED)
 			ORDER BY c.GPA DESC, a.addeddate ASC, a.logical_priority ASC
 
@@ -467,6 +477,7 @@ GO
 CREATE PROCEDURE enrollRanking
 	-- Add the parameters for the stored procedure here
 	@subject_id nchar(10) = NULL,
+	@subject_name nvarchar(256) = NULL,
 	@classof_id int = NULL,
 	@semester nchar(10) = NULL
 AS
@@ -477,8 +488,8 @@ BEGIN
 
 	DECLARE @maxstudent int
 	DECLARE @maxpriority int
-	SET @maxstudent = (SELECT maxstudent FROM SUBJECT_CLASSOF WHERE subject_id = @subject_id AND classof_id = @classof_id AND semester = @semester)
-	SET @maxpriority = (SELECT max(priority) FROM STUDENT_ENROLLMENT WHERE subject_id = @subject_id AND classof_id = @classof_id AND semester = @semester)
+	SET @maxstudent = (SELECT maxstudent FROM SUBJECT_CLASSOF WHERE subject_id = @subject_id AND subject_name = @subject_name AND classof_id = @classof_id AND semester = @semester)
+	SET @maxpriority = (SELECT max(priority) FROM STUDENT_ENROLLMENT WHERE subject_id = @subject_id AND subject_name = @subject_name AND classof_id = @classof_id AND semester = @semester)
 
     -- Insert statements for procedure here
 	IF OBJECT_ID('tempdb..#TMP_STUDENTACCEPTED') IS NOT NULL DROP TABLE #TMP_STUDENTACCEPTED
@@ -487,6 +498,7 @@ BEGIN
 	CREATE TABLE #TMP_STUDENTACCEPTED(
 	student_id nchar(10),
 	subject_id nchar(10),
+	subject_name nvarchar(256),
 	classof_id int,
 	semester nchar(10),
 	status nvarchar(50),
@@ -503,6 +515,7 @@ BEGIN
 	CREATE TABLE #TMP_STUDENTNOTACCEPTED(
 	student_id nchar(10),
 	subject_id nchar(10),
+	subject_name nvarchar(256),
 	classof_id int,
 	semester nchar(10),
 	status nvarchar(50),
@@ -521,6 +534,7 @@ BEGIN
 			SELECT top (@maxstudent)
 			a.student_id,
 			@subject_id,
+			@subject_name,
 			@classof_id,
 			@semester,
 			'SELECTED',
@@ -535,19 +549,19 @@ BEGIN
 					WHEN a.logical_priority > (
 						SELECT min(logical_priority) 
 						FROM  STUDENT_ENROLLMENT 
-						WHERE student_id = a.student_id AND a.subject_id = @subject_id AND a.classof_id = @classof_id AND a.semester = @semester
+						WHERE student_id = a.student_id AND a.subject_id = @subject_id AND a.subject_name = @subject_name AND a.classof_id = @classof_id AND a.semester = @semester
 						) THEN 'STANDBY'
 					WHEN a.logical_priority = (
 						SELECT min(logical_priority) 
 						FROM  STUDENT_ENROLLMENT 
-						WHERE student_id = a.student_id AND a.subject_id = @subject_id AND a.classof_id = @classof_id AND a.semester = @semester
+						WHERE student_id = a.student_id AND a.subject_id = @subject_id AND a.subject_name = @subject_name AND a.classof_id = @classof_id AND a.semester = @semester
 						) THEN 'ACCEPTED'
 				END 
 			AS NVARCHAR(10)),
 			a.addeddate
 			FROM STUDENT_ENROLLMENT a
-			INNER JOIN SUBJECT_CLASSOF b ON a.subject_id = b.subject_id
-			WHERE b.subject_id = @subject_id AND b.classof_id = @classof_id AND b.semester = @semester
+			INNER JOIN SUBJECT_CLASSOF b ON a.subject_id = b.subject_id AND a.subject_name = b.subject_name
+			WHERE b.subject_id = @subject_id AND b.subject_name = @subject_name AND b.classof_id = @classof_id AND b.semester = @semester
 			ORDER BY a.logical_priority ASC, a.addeddate ASC
 
 	-- NOT GET ACCEPTED
@@ -555,6 +569,7 @@ BEGIN
 			SELECT
 			a.student_id,
 			@subject_id,
+			@subject_name,
 			@classof_id,
 			@semester,
 			'NOTSELECTED',
@@ -567,8 +582,8 @@ BEGIN
 			'STANDBY',
 			a.addeddate
 			FROM STUDENT_ENROLLMENT a
-			INNER JOIN SUBJECT_CLASSOF b ON a.subject_id = b.subject_id
-			WHERE b.subject_id = @subject_id AND b.classof_id = @classof_id AND b.semester = @semester
+			INNER JOIN SUBJECT_CLASSOF b ON a.subject_id = b.subject_id AND a.subject_name = b.subject_name
+			WHERE b.subject_id = @subject_id AND b.subject_name = @subject_name AND b.classof_id = @classof_id AND b.semester = @semester
 			AND a.student_id NOT IN (SELECT DISTINCT student_id FROM #TMP_STUDENTACCEPTED)
 			ORDER BY a.logical_priority ASC, a.addeddate ASC
 
@@ -601,6 +616,7 @@ GO
 CREATE PROCEDURE enrollReconcile
 	-- Add the parameters for the stored procedure here
 	@subject_id nchar(10) = NULL,
+	@subject_name nvarchar(256) = NULL,
 	@classof_id int = NULL,
 	@semester nchar(10) = NULL
 AS
@@ -610,11 +626,11 @@ BEGIN
 	SET NOCOUNT ON;
 
 	DECLARE @maxstudent int
-	SET @maxstudent = (SELECT maxstudent FROM SUBJECT_CLASSOF WHERE subject_id = @subject_id AND classof_id = @classof_id AND semester = @semester)
+	SET @maxstudent = (SELECT maxstudent FROM SUBJECT_CLASSOF WHERE subject_id = @subject_id AND subject_name = @subject_name AND classof_id = @classof_id AND semester = @semester)
 
     -- UPDATE STANDBY TO ALMOST ACCEPTED
     UPDATE TMP_SELECTION SET type = 'ACCEPTED'
-    WHERE tmp_id IN (SELECT top (@maxstudent) tmp_id FROM TMP_SELECTION WHERE subject_id = @subject_id AND classof_id = @classof_id AND semester = @semester ORDER BY tmp_id ASC)
+    WHERE tmp_id IN (SELECT top (@maxstudent) tmp_id FROM TMP_SELECTION WHERE subject_id = @subject_id AND subject_name = @subject_name AND classof_id = @classof_id AND semester = @semester ORDER BY tmp_id ASC)
 
 END
 GO

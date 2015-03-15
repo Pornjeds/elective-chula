@@ -179,16 +179,17 @@ SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[SUBJECT](
 	[subject_id] [nchar](10) NOT NULL,
-	[name] [nvarchar](256) NOT NULL,
+	[subject_name] [nvarchar](256) NOT NULL,
 	[description] [nvarchar](max) NOT NULL,
 	[defaultpoint] [float] NOT NULL,
 	[addeddate] [datetime] NOT NULL,
 	[updatedate] [datetime] NULL,
  CONSTRAINT [PK_SUBJECT] PRIMARY KEY CLUSTERED 
 (
-	[subject_id] ASC
+	[subject_id] ASC,
+	[subject_name] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+) ON [PRIMARY]
 GO
 /****** Object:  Table [dbo].[USER_ROLE]    Script Date: 01/12/2015 23:44:56 ******/
 SET ANSI_NULLS ON
@@ -214,6 +215,7 @@ CREATE TABLE [dbo].[TMP_SELECTION](
 	[tmp_id] [int] NOT NULL IDENTITY(1,1),
 	[student_id] [nchar](10) NOT NULL,
 	[subject_id] [nchar](10) NOT NULL,
+	[subject_name] [nvarchar](256) NOT NULL,
 	[classof_id] [int] NOT NULL,
 	[semester] [nchar](10) NOT NULL,
 	[status] [nvarchar](50) NOT NULL,
@@ -229,6 +231,7 @@ CREATE TABLE [dbo].[TMP_SELECTION](
 (
 	[student_id] ASC,
 	[subject_id] ASC,
+	[subject_name] ASC,
 	[classof_id] ASC,
 	[semester] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
@@ -241,6 +244,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[SUBJECT_CLASSOF](
 	[subject_id] [nchar](10) NOT NULL,
+	[subject_name] [nvarchar](256) NOT NULL,
 	[classof_id] [int] NOT NULL,
 	[semester] [nchar](10) NOT NULL,
 	[minstudent] [int] NOT NULL,
@@ -255,6 +259,7 @@ CREATE TABLE [dbo].[SUBJECT_CLASSOF](
  CONSTRAINT [PK_SUBJECT_CLASSOF] PRIMARY KEY CLUSTERED 
 (
 	[subject_id] ASC,
+	[subject_name] ASC,
 	[classof_id] ASC,
 	[semester] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
@@ -305,6 +310,7 @@ GO
 CREATE TABLE [dbo].[STUDENT_ENROLLMENT](
 	[student_id] [nchar](10) NOT NULL,
 	[subject_id] [nchar](10) NOT NULL,
+	[subject_name] [nvarchar](256) NOT NULL,
 	[classof_id] [int] NOT NULL,
 	[semester] [nchar](10) NOT NULL,
 	[priority] [int] NOT NULL,
@@ -313,6 +319,7 @@ CREATE TABLE [dbo].[STUDENT_ENROLLMENT](
  CONSTRAINT [PK_STUDENT_ENROLLMENT] PRIMARY KEY CLUSTERED 
 (
 	[student_id] ASC,
+	[subject_name] ASC,
 	[subject_id] ASC,
 	[classof_id] ASC,
 	[semester] ASC
@@ -327,6 +334,7 @@ GO
 CREATE TABLE [dbo].[STUDENT_CONFIRMED_ENROLLMENT](
 	[student_id] [nchar](10) NOT NULL,
 	[subject_id] [nchar](10) NOT NULL,
+	[subject_name] [nvarchar](256) NOT NULL,
 	[classof_id] [int] NOT NULL,
 	[semester_id] [nchar](10) NOT NULL,
 	[addeddate] [datetime] NOT NULL,
@@ -334,6 +342,7 @@ CREATE TABLE [dbo].[STUDENT_CONFIRMED_ENROLLMENT](
 (
 	[student_id] ASC,
 	[subject_id] ASC,
+	[subject_name] ASC,
 	[classof_id] ASC,
 	[semester_id] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
@@ -377,8 +386,8 @@ GO
 ALTER TABLE [dbo].[STUDENT_CONFIRMED_ENROLLMENT] CHECK CONSTRAINT [FK_STUDENT_CONFIRMED_ENROLLMENT_STUDENT]
 GO
 /****** Object:  ForeignKey [FK_STUDENT_CONFIRMED_ENROLLMENT_SUBJECT]    Script Date: 01/12/2015 23:44:56 ******/
-ALTER TABLE [dbo].[STUDENT_CONFIRMED_ENROLLMENT]  WITH CHECK ADD  CONSTRAINT [FK_STUDENT_CONFIRMED_ENROLLMENT_SUBJECT] FOREIGN KEY([subject_id])
-REFERENCES [dbo].[SUBJECT] ([subject_id])
+ALTER TABLE [dbo].[STUDENT_CONFIRMED_ENROLLMENT]  WITH CHECK ADD  CONSTRAINT [FK_STUDENT_CONFIRMED_ENROLLMENT_SUBJECT] FOREIGN KEY([subject_id],[subject_name])
+REFERENCES [dbo].[SUBJECT] ([subject_id],[subject_name])
 ON DELETE CASCADE
 GO
 ALTER TABLE [dbo].[STUDENT_CONFIRMED_ENROLLMENT] CHECK CONSTRAINT [FK_STUDENT_CONFIRMED_ENROLLMENT_SUBJECT]
@@ -398,8 +407,8 @@ GO
 ALTER TABLE [dbo].[STUDENT_ENROLLMENT] CHECK CONSTRAINT [FK_STUDENT_ENROLLMENT_STUDENT]
 GO
 /****** Object:  ForeignKey [FK_STUDENT_ENROLLMENT_SUBJECT]    Script Date: 01/12/2015 23:44:56 ******/
-ALTER TABLE [dbo].[STUDENT_ENROLLMENT]  WITH CHECK ADD  CONSTRAINT [FK_STUDENT_ENROLLMENT_SUBJECT] FOREIGN KEY([subject_id])
-REFERENCES [dbo].[SUBJECT] ([subject_id])
+ALTER TABLE [dbo].[STUDENT_ENROLLMENT]  WITH CHECK ADD  CONSTRAINT [FK_STUDENT_ENROLLMENT_SUBJECT] FOREIGN KEY([subject_id], [subject_name])
+REFERENCES [dbo].[SUBJECT] ([subject_id], [subject_name])
 ON DELETE CASCADE
 GO
 ALTER TABLE [dbo].[STUDENT_ENROLLMENT] CHECK CONSTRAINT [FK_STUDENT_ENROLLMENT_SUBJECT]
@@ -412,8 +421,8 @@ GO
 ALTER TABLE [dbo].[SUBJECT_CLASSOF] CHECK CONSTRAINT [FK_SUBJECT_CLASSOF_CLASSOF]
 GO
 /****** Object:  ForeignKey [FK_SUBJECT_CLASSOF_SUBJECT]    Script Date: 01/12/2015 23:44:56 ******/
-ALTER TABLE [dbo].[SUBJECT_CLASSOF]  WITH CHECK ADD  CONSTRAINT [FK_SUBJECT_CLASSOF_SUBJECT] FOREIGN KEY([subject_id])
-REFERENCES [dbo].[SUBJECT] ([subject_id])
+ALTER TABLE [dbo].[SUBJECT_CLASSOF]  WITH CHECK ADD  CONSTRAINT [FK_SUBJECT_CLASSOF_SUBJECT] FOREIGN KEY([subject_id], [subject_name])
+REFERENCES [dbo].[SUBJECT] ([subject_id], [subject_name])
 ON DELETE CASCADE
 GO
 ALTER TABLE [dbo].[SUBJECT_CLASSOF] CHECK CONSTRAINT [FK_SUBJECT_CLASSOF_SUBJECT]
@@ -440,8 +449,8 @@ GO
 ALTER TABLE [dbo].[TMP_SELECTION] CHECK CONSTRAINT [FK_TMP_SELECTION_STUDENT]
 GO
 /****** Object:  ForeignKey [FK_TMP_SELECTION_SUBJECT]    Script Date: 01/12/2015 23:44:56 ******/
-ALTER TABLE [dbo].[TMP_SELECTION]  WITH CHECK ADD  CONSTRAINT [FK_TMP_SELECTION_SUBJECT] FOREIGN KEY([subject_id])
-REFERENCES [dbo].[SUBJECT] ([subject_id])
+ALTER TABLE [dbo].[TMP_SELECTION]  WITH CHECK ADD  CONSTRAINT [FK_TMP_SELECTION_SUBJECT] FOREIGN KEY([subject_id], [subject_name])
+REFERENCES [dbo].[SUBJECT] ([subject_id], [subject_name])
 ON DELETE CASCADE
 GO
 ALTER TABLE [dbo].[TMP_SELECTION] CHECK CONSTRAINT [FK_TMP_SELECTION_SUBJECT]

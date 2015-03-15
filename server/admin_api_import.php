@@ -79,7 +79,7 @@ function importSubjects(){
 			$sql = "merge SUBJECT as target
 				using (values ('$subject->id', N'$subject->name', N'$subject->description', '$subject->credit'))
 				    as source (subject_id, name, description, credit)
-				    on target.subject_id = '$subject->id'
+				    on target.subject_id = '$subject->id' AND target.name = source.name
 				when matched then
 				    update
 				    set name = source.name,

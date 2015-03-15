@@ -17,6 +17,7 @@ Delete from dbo.ADMIN_MEMBER
 Delete from dbo.USER_ROLE
 
 /* [eaw01].[dbo].[[CLASSOF]]  */
+INSERT INTO [eaw01].[dbo].[CLASSOF] ([classof_description]) VALUES ( 'Admin' )
 INSERT INTO [eaw01].[dbo].[CLASSOF] ([classof_description]) VALUES ( '19/1' )
 INSERT INTO [eaw01].[dbo].[CLASSOF] ([classof_description]) VALUES ( '19/2' )
 INSERT INTO [eaw01].[dbo].[CLASSOF] ([classof_description]) VALUES ( '20/1' )
@@ -39,36 +40,38 @@ INSERT INTO [eaw01].[dbo].[STUDENT] ([student_id],[classof_id],[name],[lastname]
 ( '5682221825', 1, N'ยงค์', N'นามสมมติ', 'yong@gmail.com','passwd01','profilepic',3.50, GETDATE(), GETDATE(), 0 )
 
 /* [eaw01].[dbo].[[SUBJECT]]  */
-INSERT INTO [eaw01].[dbo].[SUBJECT] ([subject_id],[name] ,[description] ,[defaultpoint] ,[addeddate] ,[updatedate]) VALUES
+INSERT INTO [eaw01].[dbo].[SUBJECT] ([subject_id],[subject_name] ,[description] ,[defaultpoint] ,[addeddate] ,[updatedate]) VALUES
 ( 1, N'OPERATION MANAGEMENT', N'description OM' , 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT] ([subject_id],[name] ,[description] ,[defaultpoint] ,[addeddate] ,[updatedate]) VALUES
-( 2, N'FINANCIAL MANAGEMENT', N'description FM' , 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT] ([subject_id],[name] ,[description] ,[defaultpoint] ,[addeddate] ,[updatedate]) VALUES
+INSERT INTO [eaw01].[dbo].[SUBJECT] ([subject_id],[subject_name] ,[description] ,[defaultpoint] ,[addeddate] ,[updatedate]) VALUES
+( 2, N'FINANCIAL MANAGEMENT - 1', N'description FM' , 3, GETDATE(), GETDATE() )
+INSERT INTO [eaw01].[dbo].[SUBJECT] ([subject_id],[subject_name] ,[description] ,[defaultpoint] ,[addeddate] ,[updatedate]) VALUES
+( 2, N'FINANCIAL MANAGEMENT - 2', N'description FM' , 3, GETDATE(), GETDATE() )
+INSERT INTO [eaw01].[dbo].[SUBJECT] ([subject_id],[subject_name] ,[description] ,[defaultpoint] ,[addeddate] ,[updatedate]) VALUES
 ( 3, N'MARKETING MANAGEMENT', N'description MM' , 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT] ([subject_id],[name] ,[description] ,[defaultpoint] ,[addeddate] ,[updatedate]) VALUES
+INSERT INTO [eaw01].[dbo].[SUBJECT] ([subject_id],[subject_name] ,[description] ,[defaultpoint] ,[addeddate] ,[updatedate]) VALUES
 ( 4, N'ORGANICATION BEHAVIOUR', N'description OB' , 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT] ([subject_id],[name] ,[description] ,[defaultpoint] ,[addeddate] ,[updatedate]) VALUES
+INSERT INTO [eaw01].[dbo].[SUBJECT] ([subject_id],[subject_name] ,[description] ,[defaultpoint] ,[addeddate] ,[updatedate]) VALUES
 ( 5, N'INTERFINANCIAL', N'description INTER FIN' , 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT] ([subject_id],[name] ,[description] ,[defaultpoint] ,[addeddate] ,[updatedate]) VALUES
+INSERT INTO [eaw01].[dbo].[SUBJECT] ([subject_id],[subject_name] ,[description] ,[defaultpoint] ,[addeddate] ,[updatedate]) VALUES
 ( 6, N'ENTREPRENUR', N'description ENTRE' , 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT] ([subject_id],[name] ,[description] ,[defaultpoint] ,[addeddate] ,[updatedate]) VALUES
+INSERT INTO [eaw01].[dbo].[SUBJECT] ([subject_id],[subject_name] ,[description] ,[defaultpoint] ,[addeddate] ,[updatedate]) VALUES
 ( 7, N'INTERFINANCIAL2', N'description INTER FIN' , 3, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT] ([subject_id],[name] ,[description] ,[defaultpoint] ,[addeddate] ,[updatedate]) VALUES
+INSERT INTO [eaw01].[dbo].[SUBJECT] ([subject_id],[subject_name] ,[description] ,[defaultpoint] ,[addeddate] ,[updatedate]) VALUES
 ( 8, N'ENTREPRENUR2', N'description ENTRE' , 3, GETDATE(), GETDATE() )
 
 /* [eaw01].[dbo].[[SUBJECT_CLASSOF]]  */
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[credit], [dayofweek], [timeofday], [instructor], [isRequired], [addeddate], [updatedate]) VALUES
-( 1, 1, '4' , 3, 6, 3, 1, 2, 'Dr. A BCD', 1, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[credit], [dayofweek], [timeofday], [instructor], [isRequired], [addeddate], [updatedate]) VALUES
-( 2, 1, '4' , 0, 4, 3, 2, 2, 'Dr. A BCD', 0, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[credit], [dayofweek], [timeofday], [instructor], [isRequired], [addeddate], [updatedate]) VALUES
-( 3, 1, '4' , 4, 5, 3, 2, 2, 'Dr. A BCD', 1, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[credit], [dayofweek], [timeofday], [instructor], [isRequired], [addeddate], [updatedate]) VALUES
-( 4, 1, '4' , 0, 10, 3, 3, 2, 'Dr. A BCD', 0, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[credit], [dayofweek], [timeofday], [instructor], [isRequired], [addeddate], [updatedate]) VALUES
-( 5, 1, '4' , 4, 5, 3, 4, 2, 'Dr. A BCD', 0, GETDATE(), GETDATE() )
-INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id],[classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[credit], [dayofweek], [timeofday], [instructor], [isRequired], [addeddate], [updatedate]) VALUES
-( 6, 1, '4' , 3, 5, 3, 5, 2, 'Dr. A BCD', 0, GETDATE(), GETDATE() )
+INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id], [subject_name], [classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[credit], [dayofweek], [timeofday], [instructor], [isRequired], [addeddate], [updatedate]) VALUES
+( 1, N'OPERATION MANAGEMENT', 1, '4' , 3, 6, 3, 1, 2, 'Dr. A BCD', 1, GETDATE(), GETDATE() )
+INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id], [subject_name], [classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[credit], [dayofweek], [timeofday], [instructor], [isRequired], [addeddate], [updatedate]) VALUES
+( 2, N'FINANCIAL MANAGEMENT - 1',  1, '4' , 0, 4, 3, 2, 2, 'Dr. A BCD', 0, GETDATE(), GETDATE() )
+INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id], [subject_name], [classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[credit], [dayofweek], [timeofday], [instructor], [isRequired], [addeddate], [updatedate]) VALUES
+( 2, N'FINANCIAL MANAGEMENT - 2',  1, '4' , 0, 4, 3, 4, 2, 'Dr. A BCD', 0, GETDATE(), GETDATE() )
+INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id], [subject_name], [classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[credit], [dayofweek], [timeofday], [instructor], [isRequired], [addeddate], [updatedate]) VALUES
+( 3, N'MARKETING MANAGEMENT', 1, '4' , 4, 5, 3, 2, 2, 'Dr. A BCD', 1, GETDATE(), GETDATE() )
+INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id], [subject_name], [classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[credit], [dayofweek], [timeofday], [instructor], [isRequired], [addeddate], [updatedate]) VALUES
+( 4, N'ORGANICATION BEHAVIOUR', 1, '4' , 0, 10, 3, 3, 2, 'Dr. A BCD', 0, GETDATE(), GETDATE() )
+INSERT INTO [eaw01].[dbo].[SUBJECT_CLASSOF] ([subject_id], [subject_name], [classof_id] ,[semester] ,[minstudent] ,[maxstudent] ,[credit], [dayofweek], [timeofday], [instructor], [isRequired], [addeddate], [updatedate]) VALUES
+( 5, N'INTERFINANCIAL', 1, '4' , 4, 5, 3, 4, 2, 'Dr. A BCD', 0, GETDATE(), GETDATE() )
 
 /* [eaw01].[dbo].[[CLASSOF_SEMESTER]]  */
 INSERT INTO [eaw01].[dbo].[CLASSOF_SEMESTER] ([classof_id] ,[semester] ,[mincredit] ,[maxcredit] ,[pickmethod_id], [semester_state],[addeddate], [updatedate]) VALUES
@@ -105,58 +108,99 @@ INSERT INTO [eaw01].[dbo].[USER_ROLE] ([user_id], [role], [updatedate]) VALUES
 ('5682221824', 'Admin', GETDATE())
 
 /* [eaw01].[dbo].[[STUDENT_ENROLLMENT]] */
-INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
-('5682221820',1,1,'4',-3, -3, GETDATE())
-INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
-('5682221821',1,1,'4',2, 2, GETDATE())
-INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
-('5682221822',1,1,'4',3, 3, GETDATE())
-INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
-('5682221823',1,1,'4',4, 4, GETDATE())
-INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
-('5682221824',1,1,'4',5, 5, GETDATE())
-INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
-('5682221825',1,1,'4',6, 6, GETDATE())
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221820',1,N'OPERATION MANAGEMENT',1,'4',-5, -5, GETDATE())
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221820',2,N'FINANCIAL MANAGEMENT - 1',1,'4',1, 1, GETDATE())
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221820',2,N'FINANCIAL MANAGEMENT - 2',1,'4',1, 1, GETDATE())
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221820',3,N'MARKETING MANAGEMENT',1,'4',-4, -4, GETDATE())
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221820',4,N'ORGANICATION BEHAVIOUR',1,'4',2, 2, GETDATE())
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221820',5,N'INTERFINANCIAL',1,'4',2, 2, GETDATE())
 
-INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
-('5682221820',2,1,'4',1, 1, GETDATE())
-INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
-('5682221821',2,1,'4',5, 5, GETDATE())
-INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
-('5682221822',2,1,'4',4, 4, GETDATE())
-INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
-('5682221823',2,1,'4',3, 3, GETDATE())
-INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
-('5682221824',2,1,'4',2, 2, GETDATE())
-INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
-('5682221825',2,1,'4',1, 1, GETDATE())
+/*
+NOT COMPLETED. Do not run this
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221820',1,N'OPERATION MANAGEMENT',1,'4',-5, -5, GETDATE())
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221821',1,N'OPERATION MANAGEMENT',1,'4',2, 2, GETDATE())
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221822',1,N'OPERATION MANAGEMENT',1,'4',3, 3, GETDATE())
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221823',1,N'OPERATION MANAGEMENT',1,'4',4, 4, GETDATE())
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221824',1,N'OPERATION MANAGEMENT',1,'4',5, 5, GETDATE())
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221825',1,N'OPERATION MANAGEMENT',1,'4',6, 6, GETDATE())
 
-INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
-('5682221820',3,1,'4',-2, -2, GETDATE())
-INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
-('5682221821',3,1,'4',4, 4, GETDATE())
-INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
-('5682221822',3,1,'4',6, 6, GETDATE())
-INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
-('5682221823',3,1,'4',1, 1, GETDATE())
-INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
-('5682221824',3,1,'4',3, 3, GETDATE())
-INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
-('5682221825',3,1,'4',2, 2, GETDATE())
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221820',2,N'FINANCIAL MANAGEMENT - 1',1,'4',1, 1, GETDATE())
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221821',2,N'FINANCIAL MANAGEMENT - 1',1,'4',5, 5, GETDATE())
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221822',2,N'FINANCIAL MANAGEMENT - 1',1,'4',4, 4, GETDATE())
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221823',2,N'FINANCIAL MANAGEMENT - 1',1,'4',3, 3, GETDATE())
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221824',2,N'FINANCIAL MANAGEMENT - 1',1,'4',2, 2, GETDATE())
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221825',2,N'FINANCIAL MANAGEMENT - 1',1,'4',1, 1, GETDATE())
+
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221820',2,N'FINANCIAL MANAGEMENT - 2',1,'4',1, 1, GETDATE())
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221821',2,N'FINANCIAL MANAGEMENT - 2',1,'4',5, 5, GETDATE())
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221822',2,N'FINANCIAL MANAGEMENT - 2',1,'4',4, 4, GETDATE())
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221823',2,N'FINANCIAL MANAGEMENT - 2',1,'4',3, 3, GETDATE())
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221824',2,N'FINANCIAL MANAGEMENT - 2',1,'4',2, 2, GETDATE())
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221825',2,N'FINANCIAL MANAGEMENT - 2',1,'4',1, 1, GETDATE())
+
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221820',3,N'MARKETING MANAGEMENT',1,'4',-4, -4, GETDATE())
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221821',3,N'MARKETING MANAGEMENT',1,'4',4, 4, GETDATE())
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221822',3,N'MARKETING MANAGEMENT',1,'4',6, 6, GETDATE())
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221823',3,N'MARKETING MANAGEMENT',1,'4',1, 1, GETDATE())
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221824',3,N'MARKETING MANAGEMENT',1,'4',3, 3, GETDATE())
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221825',3,N'MARKETING MANAGEMENT',1,'4',2, 2, GETDATE())
 
 
-INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
-('5682221820',4,1,'4',2, 2, GETDATE())
-INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
-('5682221821',4,1,'4',3, 3, GETDATE())
-INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
-('5682221822',4,1,'4',1, 1, GETDATE())
-INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
-('5682221823',4,1,'4',6, 6, GETDATE())
-INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
-('5682221824',4,1,'4',4, 4, GETDATE())
-INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
-('5682221825',4,1,'4',5, 5, GETDATE())
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221820',4,N'ORGANICATION BEHAVIOUR',1,'4',2, 2, GETDATE())
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221821',4,N'ORGANICATION BEHAVIOUR',1,'4',3, 3, GETDATE())
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221822',4,N'ORGANICATION BEHAVIOUR',1,'4',1, 1, GETDATE())
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221823',4,N'ORGANICATION BEHAVIOUR',1,'4',6, 6, GETDATE())
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221824',4,N'ORGANICATION BEHAVIOUR',1,'4',4, 4, GETDATE())
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221825',4,N'ORGANICATION BEHAVIOUR',1,'4',5, 5, GETDATE())
 
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221820',5,N'INTERFINANCIAL',1,'4',2, 2, GETDATE())
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221821',5,N'INTERFINANCIAL',1,'4',3, 3, GETDATE())
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221822',5,N'INTERFINANCIAL',1,'4',1, 1, GETDATE())
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221823',5,N'INTERFINANCIAL',1,'4',6, 6, GETDATE())
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221824',5,N'INTERFINANCIAL',1,'4',4, 4, GETDATE())
+INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [subject_name], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
+('5682221825',5,N'INTERFINANCIAL',1,'4',5, 5, GETDATE())
 
+*/
 
