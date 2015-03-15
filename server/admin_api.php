@@ -8,12 +8,16 @@ require_once 'admin_api_import.php';
 require_once 'admin_api_subject.php';
 require_once 'admin_api_classof.php';
 require_once 'admin_api_enrollment.php';
+require 'Slim/Middleware.php';
+require 'Slim/Middleware/HttpBasicAuth.php';
 
 \Slim\Slim::registerAutoloader();
 
 $app = new \Slim\Slim(array(
 	'mode' => 'development',
 	));
+
+$app->add(new \HttpBasicAuth());
 
 $app->setName('CUYExAdmin');
 
