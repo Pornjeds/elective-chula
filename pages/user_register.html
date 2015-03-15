@@ -556,8 +556,8 @@
                 for(var i=0; i< sortableElementsR.length; i++){
                     if( sortableElementsR[ i ].id !== 'sortableElective' && sortableElementsR[ i ].children.length === 1 ){
                         jsonObj.subject_enrollment.push({
-                            'subject_id': sortableElementsE[ i ].getAttribute('subject_id'),
-                            'priority': sortableElementsE[ i ].firstChild.innerHTML,
+                            'subject_id': sortableElementsR[ i ].getAttribute('subject_id'),
+                            'priority': sortableElementsR[ i ].firstChild.innerHTML,
                             'isRequired': 1
                         });
                     }

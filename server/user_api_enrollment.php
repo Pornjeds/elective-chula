@@ -33,7 +33,7 @@ function getSubjectList(){
 		if ($result){
 			while($row = sqlsrv_fetch_array($result)){
 				$classof_id = $row["classof_id"];
-				$semester = $row["semester"];
+				$semester = trim($row["semester"]);
 				$semester_state = $row["semester_state"];
 			}
 		}
@@ -74,10 +74,10 @@ function getSubjectList(){
 										priority = CAST
 											(CASE 
 												WHEN c.isRequired = 1 
-													THEN a.priority + (SELECT MAX(priority) FROM STUDENT_ENROLLMENT WHERE student_id = 'student_id' AND classof_id = '$classof_id' AND semester = '$semester') 
+													THEN a.priority + (SELECT COUNT(priority) FROM STUDENT_ENROLLMENT WHERE student_id = '$student_id' AND classof_id = '$classof_id' AND semester = '$semester') 
 													ELSE a.priority
-											END)
-										AS INT,
+											END
+										AS INT),
 										c.isRequired,
 										b.name
 										FROM STUDENT_ENROLLMENT a
@@ -86,6 +86,7 @@ function getSubjectList(){
 										WHERE a.student_id = '$student_id' AND 
 												c.classof_id = '$classof_id' AND 
 												c.semester = '$semester'";
+
 		$result = $db->getData($sql_getSelectedSubjectList);
 		if ($result){
 			while($row = sqlsrv_fetch_array($result)){
@@ -109,41 +110,44 @@ function getSubjectList(){
 }
 
 function submitEnrollment(){
+	/*
 	$jsonData = '{
 			"subject_enrollment": 
 				[
 					{
-						"subject_id": 1,
-						"priority": 3
-					},
-					{
 						"subject_id": 2,
-						"priority": 1
-					},
-					{
-						"subject_id": 3,
-						"priority": 2
+						"priority": 1,
+						"isRequired": 0
 					},
 					{
 						"subject_id": 4,
-						"priority": 5
+						"priority": 3,
+						"isRequired": 0
 					},
 					{
 						"subject_id": 5,
-						"priority": 4
+						"priority": 2,
+						"isRequired": 0
 					},
 					{
 						"subject_id": 6,
-						"priority": 2
+						"priority": 4,
+						"isRequired": 0
 					},
 					{
-						"subject_id": 7,
-						"priority": 1
+						"subject_id": 1,
+						"priority": 1,
+						"isRequired": 1
+					},
+					{
+						"subject_id": 3,
+						"priority": 2,
+						"isRequired": 1
 					}
 				],
-				"student_id": "5682221822"
+				"student_id": "5682221820"
 			}';
-	
+	*/
 	try {
 		$app = \Slim\Slim::getInstance();
 		$app->response->headers->set('Content-Type', 'application/json');
@@ -174,7 +178,7 @@ function submitEnrollment(){
 		if ($result){
 			while($row = sqlsrv_fetch_array($result)){
 				$classof_id = $row["classof_id"];
-				$semester = $row["semester"];
+				$semester = trim($row["semester"]);
 				$semester_state = $row["semester_state"];
 			}
 		}
@@ -184,25 +188,15 @@ function submitEnrollment(){
 			return;
 		}
 
-		
+
 		//2. Insert data into enrollment
 		foreach($subject_enrollment as $subject){
 
-			//check if it's required subject -> if yes, priority will be minus by max of that priority
-			$sql = "SELECT isRequired FROM SUBJECT_CLASSOF WHERE classof_id = '$classof_id' AND semester = '$semester' AND subject_id = '$subject->subject_id'";
-			$result = $db->getData($sql);
-			$isRequired = 0;
-			if ($result){
-				while($row = sqlsrv_fetch_array($result)){
-					$isRequired = $row["isRequired"];
-				}
-			}
-
 			$priority = $subject->priority;
-			if ($isRequired == 1){
+			if ($subject->isRequired == 1){
 				$priority -= $maxpriority;
 			}
-
+		
 			$sql = "merge STUDENT_ENROLLMENT as target
 				using (values ('$student_id', '$subject->subject_id', '$classof_id', '$semester', '$priority'))
 				    as source (student_id, subject_id, classof_id, semester, priority)
@@ -210,52 +204,28 @@ function submitEnrollment(){
 				when matched then
 				    update
 				    set priority = source.priority,
+				        logical_priority = source.priority,
 				        addeddate = GETDATE()
 				when not matched then
-				    insert ( student_id, subject_id, classof_id, semester, priority, addeddate)
-				    values ( source.student_id,  source.subject_id, source.classof_id, source.semester, source.priority, GETDATE() );";
-
-			$subject_id_list .= "'$subject->subject_id',";
+				    insert ( student_id, subject_id, classof_id, semester, priority, logical_priority, addeddate)
+				    values ( source.student_id,  source.subject_id, source.classof_id, source.semester, source.priority, source.priority, GETDATE() );";
+			
 
 			if($db->setData($sql))
 		    {
-		        $enrollstatus = true;
+		        $db->commitWork();
 		    }
 		    else
 		    {
 		    	$db->rollbackWork();
-		        $app->response->setBody(json_encode(array("status"=>"fail")));
-		    	$enrollstatus = false;
+		        $app->response->setBody(json_encode(array("status"=>"fail - merge")));
 		    	return;
 		    }
-		}
 
-		if ($enrollstatus)
-		{
-			$subject_id_list = substr($subject_id_list,0,-1); //remove the last ,
-			$deleteSql = "DELETE FROM STUDENT_ENROLLMENT WHERE subject_id not in ($subject_id_list) AND student_id = '$student_id' AND classof_id = '$classof_id' AND semester = '$semester'";
-			if($db->setData($deleteSql))
-			{
-				$enrollstatus = true;
-			}
-			else
-			{
-				$enrollstatus = false;
-				$db->rollbackWork();
-		        $app->response->setBody(json_encode(array("status"=>"fail")));
-		        $app->response->write(json_encode($db->errmsg()));    	
-			}
-			$db->commitWork();
-	        $app->response->setBody(json_encode(array("status"=>"success")));
-	    }
-	    else
-		{
-			$db->rollbackWork();
-	        $app->response->setBody(json_encode(array("status"=>"fail")));
-	        $app->response->write(json_encode($db->errmsg()));    	
 		}
-
+		
 		$db = null;
+		$app->response->setBody(json_encode(array("status"=>"success")));
 
 	} catch(PDOException $e) {
 		$app->response->setBody(json_encode(array("error"=>array("source"=>"SQL", "reason"=>$e->getMessage()))));

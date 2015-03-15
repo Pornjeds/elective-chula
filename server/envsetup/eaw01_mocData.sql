@@ -106,7 +106,7 @@ INSERT INTO [eaw01].[dbo].[USER_ROLE] ([user_id], [role], [updatedate]) VALUES
 
 /* [eaw01].[dbo].[[STUDENT_ENROLLMENT]] */
 INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
-('5682221820',1,1,'4',-5, -5, GETDATE())
+('5682221820',1,1,'4',-3, -3, GETDATE())
 INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
 ('5682221821',1,1,'4',2, 2, GETDATE())
 INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
@@ -119,7 +119,7 @@ INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [cla
 ('5682221825',1,1,'4',6, 6, GETDATE())
 
 INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
-('5682221820',2,1,'4',0, 0, GETDATE())
+('5682221820',2,1,'4',1, 1, GETDATE())
 INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
 ('5682221821',2,1,'4',5, 5, GETDATE())
 INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
@@ -132,7 +132,7 @@ INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [cla
 ('5682221825',2,1,'4',1, 1, GETDATE())
 
 INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
-('5682221820',3,1,'4',-1, -1, GETDATE())
+('5682221820',3,1,'4',-2, -2, GETDATE())
 INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
 ('5682221821',3,1,'4',4, 4, GETDATE())
 INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
@@ -146,7 +146,7 @@ INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [cla
 
 
 INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
-('5682221820',4,1,'4',-4, -4, GETDATE())
+('5682221820',4,1,'4',2, 2, GETDATE())
 INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
 ('5682221821',4,1,'4',3, 3, GETDATE())
 INSERT INTO [eaw01].[dbo].[STUDENT_ENROLLMENT] ([student_id], [subject_id], [classof_id], [semester], [priority], [logical_priority], [addeddate]) VALUES 
