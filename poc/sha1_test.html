@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>JavaScript Implementation of SHA-1 Cryptographic Hash Algorithm | Movable Type Scripts</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Chris Veness, 2002-2013">
+    <script src="sha1.js">/* SHA-256 JavaScript implementation */</script>
+    <script src="../scripts/js/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // hash listener
+            $('#generate-hash').click( function() {
+                var t = new Date();
+                hash = Sha1.hash($('#message').val());
+                $('#hash-time').html(((new Date() - t))+'ms');
+                $('#hash').val(hash);
+            });
+        });
+    </script>
+</head>
+
+<body>
+<header>
+  <h1>Movable Type Scripts</h1>
+  <hr>
+  <h2>SHA-1 Cryptographic Hash Algorithm</h2>
+</header>
+
+<p>A <b>cryptographic hash</b> (sometimes called ‘digest’) is a kind of ‘signature’ for a text or
+  a data file. SHA1 generates an almost-unique 160-bit (20-byte) signature for a text. See <a href="#src-code">below</a> for
+  the source code. </p>
+<form name="f">
+    <fieldset>
+        <legend>Enter any message to check its SHA-1 hash</legend>
+        <ul>
+            <li>
+                <label for="message">Message</label>
+                <textarea name="message" id="message" class="width-full">abc</textarea>
+            </li>
+            <li>
+                <button type="button" name="generate-hash" id="generate-hash">Generate Hash</button>
+            </li>
+            <li>
+                <label for="message">Hash</label>
+                <input type="text" name="hash" id="hash" style='width:500px' class="width-full">
+                <output class="small grey" id="hash-time"></output>
+            </li>
+            <li><small><i>Note SHA-1 hash of ‘abc’ should be: a9993e364706816aba3e25717850c26c9cd0d89d</i></small></li>
+        </ul>
+    </fieldset>
+</form>
+</body>
+</html>
