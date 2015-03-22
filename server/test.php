@@ -1,4 +1,10 @@
 <?php
+session_start();
+
+//$_SESSION['gie'] = "hello";
+if (isset($_SESSION['loginStatus']) && $_SESSION['loginStatus'] == 1){
+    echo 'gie';
+}
 
 $x = "Hello";
 $x_arr = explode(",", $x);

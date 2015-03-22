@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 require_once '../server/DBManager_sqlserver.php';
 
 function adminLogin($username, $password){
@@ -28,11 +28,11 @@ $username = $_POST["txtUsername"];
 $password = $_POST["txtPassword"];
 
 if(isset($username) && isset($password) && adminLogin($username, $password)){
-	$_SERVER['PHP_AUTH_USER'] = $username;
-	$_SERVER['PHP_AUTH_PW'] = $password;
-	header('Location: admin_dashboard.html');
+	$_SESSION['loginUsername'] = $username;
+	$_SESSION['loginStatus'] = 1;
+	header('Location: ../pages/admin_dashboard.html');
 }else{
-	header('Location: ../index.html');
+	header('Location: ../admin_login.html');
 }
 
 

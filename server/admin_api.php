@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once 'Slim/Slim.php';
 require_once 'DBManager_sqlserver.php';
 require_once 'admin_enrollmentclass.php';
