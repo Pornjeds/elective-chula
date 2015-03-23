@@ -11,7 +11,8 @@ function getUserDashboardInfo(){
 		$app = \Slim\Slim::getInstance();
 		$app->response->headers->set('Content-Type', 'application/json');
 	    $request = $app->request();
-	    $student_id = json_decode($request->getBody())->student_id;
+	    //$student_id = json_decode($request->getBody())->student_id;
+	    $student_id = $_SESSION['loginUsername'];
 
 	} catch(Exception $e) {
 		$app->response->setBody(json_encode(array("error"=>array("source"=>"input", "reason"=>$e->getMessage()))));

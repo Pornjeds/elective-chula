@@ -1,6 +1,6 @@
 <?php
 
-class HttpBasicAuth extends \Slim\Middleware
+class HttpBasicUserAuth extends \Slim\Middleware
 {
     /**
      * @var string
@@ -12,7 +12,7 @@ class HttpBasicAuth extends \Slim\Middleware
      *
      * @param   string  $realm      The HTTP Authentication realm
      */
-    public function __construct($realm = 'Admin Protected Area')
+    public function __construct($realm = 'User Protected Area')
     {
         $this->realm = $realm;
     }
@@ -40,7 +40,7 @@ class HttpBasicAuth extends \Slim\Middleware
         $res = $this->app->response();
 
         //loginStatus will be set after admin successfully login (./admin_login.html -> ./server/admin_login.php)
-        if (isset($_SESSION['loginStatus']) && isset($_SESSION['loginType']) && $_SESSION['loginStatus'] == 1 && $_SESSION['loginType'] == 'admin'){
+        if (isset($_SESSION['loginStatus']) && isset($_SESSION['loginType']) && $_SESSION['loginStatus'] == 1 && $_SESSION['loginType'] == 'user'){
             $this->next->call();
         } else {
             $this->deny_access();

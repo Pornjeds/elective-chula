@@ -10,7 +10,8 @@ function getSubjectList(){
 		$app = \Slim\Slim::getInstance();
 		$app->response->headers->set('Content-Type', 'application/json');
 	    $request = $app->request();
-	    $student_id = json_decode($request->getBody())->student_id;
+	    //$student_id = json_decode($request->getBody())->student_id;
+	    $student_id = $_SESSION['loginUsername'];
 
 	} catch(Exception $e) {
 		$app->response->setBody(json_encode(array("error"=>array("source"=>"input", "reason"=>$e->getMessage()))));
@@ -155,7 +156,8 @@ function submitEnrollment(){
 	    //$subject_enrollment = json_decode($jsonData)->subject_enrollment;
 	    //$student_id = json_decode($jsonData)->student_id;
 	    $subject_enrollment = json_decode($request->getBody())->subject_enrollment;
-	    $student_id = json_decode($request->getBody())->student_id;
+	    //$student_id = json_decode($request->getBody())->student_id;
+	    $student_id = $_SESSION['loginUsername'];
 	    $maxpriority = count($subject_enrollment);
 
 	} catch(Exception $e) {

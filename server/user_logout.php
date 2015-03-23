@@ -11,6 +11,6 @@ if(isset($_SESSION['loginStatus'])){
 
 echo "Successfully logout";
 
-header('Location: ../admin_login.html');
+header('Location: ../index.html');
 
 ?>

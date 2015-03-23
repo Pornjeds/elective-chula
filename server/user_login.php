@@ -30,10 +30,10 @@ $password = $_POST["txtPassword"];
 if(isset($username) && isset($password) && adminLogin($username, $password)){
 	$_SESSION['loginUsername'] = $username;
 	$_SESSION['loginStatus'] = 1;
-	$_SESSION['loginType'] = 'admin';
-	header('Location: ../pages/admin_dashboard.html');
+	$_SESSION['loginType'] = 'user';
+	header('Location: ../pages/user_dashboard.html');
 }else{
-	header('Location: ../admin_login.html');
+	header('Location: ../index.html');
 }
 
 
