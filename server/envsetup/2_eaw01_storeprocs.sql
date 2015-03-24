@@ -104,17 +104,7 @@ BEGIN
 			1,
 			a.updatedate 
 				FROM STUDENT a 
-				WHERE a.student_id in (SELECT user_id FROM USER_ROLE)
-
-	INSERT INTO #TMP_LISTNONADMIN 
-	SELECT DISTINCT
-			a.admin_id,
-			a.name,
-			a.lastname,
-			1,
-			a.updatedate 
-				FROM ADMIN_MEMBER a 
-				WHERE CAST(a.admin_id AS NCHAR(10)) in (SELECT user_id FROM USER_ROLE)
+				WHERE a.student_id in (SELECT user_id FROM ADMIN_USERS)
 
 	INSERT INTO #TMP_LISTNONADMIN 
 	SELECT DISTINCT
@@ -124,17 +114,7 @@ BEGIN
 			0,
 			a.updatedate 
 				FROM STUDENT a 
-				WHERE a.student_id not in (SELECT user_id FROM USER_ROLE)
-
-	INSERT INTO #TMP_LISTNONADMIN 
-	SELECT DISTINCT
-			a.admin_id,
-			a.name,
-			a.lastname,
-			0,
-			a.updatedate 
-				FROM ADMIN_MEMBER a 
-				WHERE CAST(a.admin_id AS NCHAR(10)) not in (SELECT user_id FROM USER_ROLE)
+				WHERE a.student_id not in (SELECT user_id FROM ADMIN_USERS)
 			
 			
 	select * from #TMP_LISTNONADMIN order by user_type DESC, user_id ASC

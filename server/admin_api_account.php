@@ -45,7 +45,7 @@ function updateListOfAdmin(){
 		$adminUserIdList = "";
 		$adminRole = "Admin"; //hardcode, add more logic if you want roles more than Admin 
 	    foreach($admin_arr->data as $admin_data){
-			$mergeSql = "merge USER_ROLE as target
+			$mergeSql = "merge ADMIN_USERS as target
 					using (values ('$adminRole'))
 					    as source (role)
 					    on target.user_id = '$admin_data->user_id'
@@ -74,7 +74,7 @@ function updateListOfAdmin(){
 
 		$adminUserIdList = substr($adminUserIdList,0,-1); //remove the last ,
 		if ($updateStatus) {
-			$deleteSql = "DELETE FROM USER_ROLE WHERE user_id not in ($adminUserIdList)";
+			$deleteSql = "DELETE FROM ADMIN_USERS WHERE user_id not in ($adminUserIdList)";
 			if($db->setData($deleteSql))
 			{
 				$updateStatus = true;
