@@ -15,8 +15,9 @@ function importStudents(){
 	try {
 		$classof_id = $student_arr->classof_id;
 		foreach($student_arr->data as $student){
+			$password = productSecretPassword($student->student_id, $student->password);
 			$sql = "merge STUDENT as target
-				using (values (N'$student->name', N'$student->lastname', '$classof_id', '$student->email', '$student->password', '$student->profilepic', '$student->GPA', '$student->status'))
+				using (values (N'$student->name', N'$student->lastname', '$classof_id', '$student->email', '$password', '$student->profilepic', '$student->GPA', '$student->status'))
 				    as source (name, lastname, classofid, email, password, profilepic, GPA, student_status)
 				    on target.student_id = '$student->student_id'
 				when matched then
@@ -116,6 +117,11 @@ function importSubjects(){
         $app->response->write(json_encode($db->errmsg()));    	
 	}
     $db = null;
+}
+
+function productSecretPassword($username, $password) {
+	$hashPassword = sha1($username.$password);
+	return sha1($username.$hashPassword);
 }
 
 ?>

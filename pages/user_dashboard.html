@@ -70,6 +70,8 @@
                         </div>
                         <span style='font-size: 30px; color: #333; line-height:40px; width: 100%; display: block;' class='studentName'>โอโซระ ซึบาซะ</span>
                         <span style='font-size: 18px; color: #666; margin-left: 4px;' class='studentId'>5682221826</span>
+                        <br>
+                        <span style='font-size: 14px; color: #666; margin-left: 4px; margin-top:4px' data-toggle="modal" data-target="#modalChangePassword"><a href='#'>Change Password</a></span>
                     </div>
                     <div style='padding:10px;'>
                         <input type='button' class="btn btn-success" onClick='moveToRegisterPage();' value='Register' />
@@ -163,6 +165,32 @@
             </div>
           </div>
         </div>
+
+        <!-- MODAL CHANGE PASSWORD -->
+        <div class="modal fade" id="modalChangePassword" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel" style='font-weight:bold'>Change Password</h4>
+              </div>
+              <div class="modal-body" style='text-align:center'>
+                <div class="alert alert-success" role="alert" id="updatePassword-success" style="display:none; margin-top: 10px; text-align: center;">ได้รับการแก้ไข password แล้ว</div>
+                <div class="alert alert-danger" role="alert" id="updatePassword-fail" style="display:none; margin-top: 10px; text-align: center;">ไม่สามารถแก้ password ได้ เกิดปัญหาขึ้นในระบบ</div>
+                <div>
+                    <input type="password" id="currentPassword" class="form-control" placeholder="Current Password" required>
+                    <br>
+                    <input type="password" id="newPassword" class="form-control" placeholder="New Password" required>
+                    <br>
+                    <input type="password" id="newPasswordRepeat" class="form-control" placeholder="New Password Again" required>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onClick="updatePasswordExecuted();">Confirm</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div><!-- body item-->
       <hr>
       <footer>
@@ -182,12 +210,15 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="../scripts/js/jquery.min.js"></script>
+    <script src="../scripts/js/sha1.js">/* SHA-256 JavaScript implementation */</script>
     <script src="../scripts/js/bootstrap.min.js"></script>
     <script src="../scripts/js/jasny-bootstrap.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="../scripts/js/ie10-viewport-bug-workaround.js"></script>
     
     <script>
+        var student_id = '';
+
         $(document).ready(function () {
             $('.profile_image').hover( 
                 function(){
@@ -220,6 +251,7 @@
                         $('.studentId').each(function(){
                             $(this).text(data[0].userdata[0].student_id);
                         });
+                        student_id = data[0].userdata[0].student_id;
                         //
                         toggleUserState( data[1].semester_state );
                         //
@@ -374,6 +406,81 @@
         
         function moveToRegisterPage(){
             window.location.href ="user_register.html?id=" + window.location.search.split('?id=')[1];
+        }
+
+        function updatePasswordExecuted() {
+            var currentPassword = $('#currentPassword').val();
+            var newPassword = $('#newPassword').val();
+            var newPasswordRepeat = $('#newPasswordRepeat').val();
+            var urlStrCheckPass = window.location.origin + '/server/user_api.php/api/v1/account/checkPass';
+            var urlStrUpdatePass = window.location.origin + '/server/user_api.php/api/v1/account/updatePass';
+            var secretMessage = '';
+            var hashPassword = '';
+            var jsonObj = {};
+
+            if (newPassword !== newPasswordRepeat) {
+                console.log('new password mismatched');
+                document.getElementById('updatePassword-fail').innerHTML = 'Password ที่กรอกใหม่ไม่ตรงกัน';
+                document.getElementById('updatePassword-success').style.display = 'none';
+                document.getElementById('updatePassword-fail').style.display = 'block';
+                return;
+            }
+
+            secretMessage = student_id + currentPassword;
+            hashPassword = Sha1.hash(secretMessage);
+
+            jsonObj = {
+                'hashPassword' : hashPassword
+            };
+
+            //send check old password
+            $.ajax({
+                type: 'POST',
+                contentType: 'application/json',
+                url: urlStrCheckPass,
+                data: JSON.stringify( jsonObj ),
+                dataType: 'json',
+                contentType: "text/plain; charset=UTF-8",
+                success: function(data, textStatus, jqXHR){
+                    if (data.cnt == 1) {
+                        secretMessage = student_id + newPassword;
+                        hashPassword = Sha1.hash(secretMessage);
+
+                        jsonObj = {
+                            'hashPassword' : hashPassword
+                        };
+
+                        //send update password
+                        $.ajax({
+                            type: 'POST',
+                            contentType: 'application/json',
+                            url: urlStrUpdatePass,
+                            data: JSON.stringify( jsonObj ),
+                            dataType: 'json',
+                            contentType: "text/plain; charset=UTF-8",
+                            success: function(data, textStatus, jqXHR){
+                                document.getElementById('updatePassword-success').style.display = 'block';
+                                document.getElementById('updatePassword-fail').style.display = 'none';
+                            },
+                            error: function(jqXHR, textStatus, errorThrown){
+                                document.getElementById('updatePassword-fail').innerHTML = 'ไม่สามารถแก้ password ได้ เกิดปัญหาขึ้นในระบบ';
+                                document.getElementById('updatePassword-success').style.display = 'none';
+                                document.getElementById('updatePassword-fail').style.display = 'block';
+                            }
+                        });
+                    } else {
+                        document.getElementById('updatePassword-fail').innerHTML = 'กรอก Password ผิด คุณไม่สามารถแก้ไขได้';
+                        document.getElementById('updatePassword-success').style.display = 'none';
+                        document.getElementById('updatePassword-fail').style.display = 'block';
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    document.getElementById('updatePassword-fail').innerHTML = 'ไม่สามารถแก้ password ได้ เกิดปัญหาขึ้นในระบบ';
+                    document.getElementById('updatePassword-success').style.display = 'none';
+                    document.getElementById('updatePassword-fail').style.display = 'block';
+                }
+            });
+            
         }
         
     </script>

@@ -5,9 +5,8 @@ require_once '../server/DBManager_sqlserver.php';
 function adminLogin($username, $hashPassword){
 	try{
 	    $db = new DBManager();
-	    $sql = "SELECT COUNT(1) AS loginStatus from ADMIN_USERS a 
-	        INNER JOIN STUDENT b ON a.user_id = b.student_id
-	        WHERE a.user_id = '".$username."' AND b.password = '".$hashPassword."'";
+	    $sql = "SELECT COUNT(1) AS loginStatus from STUDENT
+	        WHERE student_id = '".$username."' AND password = '".$hashPassword."'";
 	    $result = $db->getData($sql);
 	    if ($result){
 	        while($row = sqlsrv_fetch_array($result)){
