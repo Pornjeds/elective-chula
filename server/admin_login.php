@@ -2,12 +2,12 @@
 session_start();
 require_once '../server/DBManager_sqlserver.php';
 
-function adminLogin($username, $password){
+function adminLogin($username, $hashPassword){
 	try{
 	    $db = new DBManager();
 	    $sql = "SELECT COUNT(1) AS loginStatus from ADMIN_USERS a 
 	        INNER JOIN STUDENT b ON a.user_id = b.student_id
-	        WHERE a.user_id = '".$username."' AND b.password = '".$password."'";
+	        WHERE a.user_id = '".$username."' AND b.password = '".$hashPassword."'";
 	    $result = $db->getData($sql);
 	    if ($result){
 	        while($row = sqlsrv_fetch_array($result)){
@@ -25,9 +25,10 @@ function adminLogin($username, $password){
 }
 
 $username = $_POST["txtUsername"];
-$password = $_POST["txtPassword"];
+$hashPassword = $_POST["hashPassword"];
+$hashPassword = sha1($username.$hashPassword);
 
-if(isset($username) && isset($password) && adminLogin($username, $password)){
+if(isset($username) && isset($hashPassword) && adminLogin($username, $hashPassword)){
 	$_SESSION['loginUsername'] = $username;
 	$_SESSION['loginStatus'] = 1;
 	$_SESSION['loginType'] = 'admin';
