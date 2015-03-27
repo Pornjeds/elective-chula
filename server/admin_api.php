@@ -9,6 +9,7 @@ require_once 'admin_api_import.php';
 require_once 'admin_api_subject.php';
 require_once 'admin_api_classof.php';
 require_once 'admin_api_enrollment.php';
+require_once 'admin_api_admin.php';
 require 'Slim/Middleware.php';
 require 'Slim/Middleware/HttpBasicAuth.php';
 
@@ -91,6 +92,13 @@ $app->group('/api/v1', function() use ($app){
         $app->post('/listpickmethod', 'listPickMethod');
         $app->post('/run', 'performEnrollment');
     });
+
+    $app->group('/admin', function() use ($app){
+        $app->post('/id', 'getAdminId');
+        $app->post('/checkPass', 'checkCurrentPassword');
+        $app->post('/updatePass', 'updatePassword');
+
+    });
 });
 
 $app->run();
@@ -99,8 +107,6 @@ function test($name)
 {
 	echo "hello ".$name;
 }
-
-
 
 
 ?>

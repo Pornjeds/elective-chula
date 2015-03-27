@@ -100,7 +100,7 @@ function getUserDashboardInfo(){
 function checkCurrentPassword() {
 	try {
 		$app = \Slim\Slim::getInstance();
-		//$app->response->headers->set('Content-Type', 'application/json');
+		$app->response->headers->set('Content-Type', 'application/json');
 	    $request = $app->request();
 	    //$student_id = json_decode($request->getBody())->student_id;
 	    $student_id = $_SESSION['loginUsername'];
@@ -134,7 +134,7 @@ function checkCurrentPassword() {
 function updatePassword() {
 	try {
 		$app = \Slim\Slim::getInstance();
-		//$app->response->headers->set('Content-Type', 'application/json');
+		$app->response->headers->set('Content-Type', 'application/json');
 	    $request = $app->request();
 	    //$student_id = json_decode($request->getBody())->student_id;
 	    $student_id = $_SESSION['loginUsername'];
@@ -148,7 +148,7 @@ function updatePassword() {
     
 	try {
 		$db = new DBManager();
-		$sql = "UPDATE STUDENT SET password = '$hashPassword' WHERE student_id = '$student_id'";
+		$sql = "UPDATE STUDENT SET password = '$hashPassword', updatedate = GETDATE() WHERE student_id = '$student_id'";
 		$db->beginSet();
         if($db->setData($sql))
         {
