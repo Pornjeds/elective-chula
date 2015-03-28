@@ -58,6 +58,8 @@ class AdminStudentEnrollment
 
 	function enrollFirstComeFirstServe($subject_id){
 		$sql = "exec enrollFirstComeFirstServe @subject_id = '".$subject_id."', @classof_id = '".$this->classof_id."', @semester = '".$this->semester."'";
+		echo $sql;
+		exit();
 		if(!$this->db->setData($sql))
 		{
 			$this->db->rollbackWork();
@@ -141,14 +143,30 @@ class AdminStudentEnrollment
 				$dayofweek = trim($row['dayofweek']);
 				$timeofday = trim($row['timeofday']);
 				$type = trim($row['type']);
-				//check ก่อรว่ามันไปทับกับ วันและเวลาที่เราลงทะเบียนได้แล้วรึป่าว - ซึ่งลำดับมันจะเรียงตาม priority อยู่แล้ว 
+				//check ก่อนว่ามันไปทับกับ วันและเวลาที่เราลงทะเบียนได้แล้วรึป่าว - ซึ่งลำดับมันจะเรียงตาม priority อยู่แล้ว 
 				foreach($dayofweek_timeofday as $dt){
 					if ($dayofweek == $dt["dayofweek"] && $timeofday == $dt["timeofday"]){
 						$duplicate_date_and_time = true;
 					}
 				}
-				if ($current_sum_credit + $subject_credit <= $this->maxcredit && !$duplicate_date_and_time){
+
+				//handle กรณีที่วิชาเดียวเปิดหลายวัน (เช่น SM เปิด 2 sec)
+				//subject_id จะเป็น 1000012-1 กับ 1000012-2
+				//ในกรณีนี้ ถ้าได้วิชาไหนก่อนก็ตัดอีกวิชาทิ้งไป
+				$need_to_be_added_to_confirmed_list = false;
+				$subject_id_exploded = explode('-', $subject_id);
+				if (count($subject_id_exploded) > 1) {
+					$subject_id_withoutSec = $subject_id_exploded[0];
+					if (strpos($subject_id_confirmed_list, $subject_id_withoutSec) != false) {
+						$need_to_add_confirmed_list = false;
+					} else {
+						$need_to_add_confirmed_list = true;
+					}
+				}
+
+				if ($current_sum_credit + $subject_credit <= $this->maxcredit && !$duplicate_date_and_time && $need_to_be_added_to_confirmed_list){
 					$current_sum_credit += $subject_credit;
+
 					$subject_id_confirmed_list .= "'$subject_id',";
 					array_push($dayofweek_timeofday, array("dayofweek" => $dayofweek, "timeofday" => $timeofday ));
 				} else {

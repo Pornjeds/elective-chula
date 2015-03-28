@@ -158,7 +158,7 @@ function performEnrollment(){
 
 	//2. Loop through those subject one by one (sorted by student count วิชาไหนคนลงเยอะก็เอามาคิดก่อน)
 	try {
-
+		
 		$db->beginSet();
 		//check ก่อนว่า status ของ classof - semester นั้นเป็น 1 หรือป่าว ถ้าเป็น 1 ถึงทำ
 		//0 หมายถึงเทอมนั้นไม่ active
@@ -188,13 +188,13 @@ function performEnrollment(){
 			}
 			
 		}
-		
+		/*
 		//ตอนนี้ได้ TMP_SELECTION ที่มี STANDBY กับ ACCEPTED มาแล้ว
 		//ทำการเกลี่ยคนที่เป็น STANDBY เข้่ามาเป็น ACCEPTED จนกว่าจะเต็ม maxstudent ของวิชานั้นๆ
 		foreach($subject_id_sortedby_studentcount as $subject_id){
 			$AdminEnroll->enrollReconcile($subject_id);
 		}
-
+		
 		//ในกรณีที่มีสิทธิ์ลงทะเบียนได้หลายตัว(เกินกว่า maxcredit) เราจะเลือกให้เค้าลงเฉพาะวิชาที่ priority สูงๆของเค้าเท่านั้น ส่วนวิชาที่ priority ต่ำที่เค้ามีสิธิ์ลงก็จะถูกยกเลิกไป
 		$someuser_dont_have_enough_credit = false;
 		$student_list = $AdminEnroll->listStudentFromTmpSelectionSortedByAcceptedCount();
@@ -235,62 +235,11 @@ function performEnrollment(){
 		$app->response->setBody(json_encode(array("status"=>"success")));
 
 		$db = null;
+		*/
 
 	} catch(PDOException $e) {
         $app->response->setBody(json_encode(array("error"=>array("source"=>"SQL", "reason"=>$e->getMessage()))));
     }
-}
-
-function getStudentSubjectConfirmedList($db, $student_id, $mincredit, $maxcredit, $classof_id, $semester){
-	$current_sum_credit = 0;
-	$subject_id_confirmed_list = "";
-	$subject_id_tobe_removed_arr = array();
-	$dayofweek_timeofday = array();
-	$duplicate_date_and_time = false;
-	$thisuser_dont_have_enough_credit = false;
-	
-	$sql = "SELECT subject_id, credit, dayofweek, timeofday, type
-			FROM TMP_SELECTION 
-			WHERE student_id = '$student_id' AND type = 'ACCEPTED' AND classof_id = '$classof_id' AND semester = '$semester'
-			ORDER BY priority ASC";
-
-	$result = $db->getData($sql);
-	if($result){
-		while($row = sqlsrv_fetch_array($result)){
-			$duplicate_date_and_time = false;
-			$subject_id = trim($row['subject_id']);
-			$subject_credit = trim($row['credit']);
-			$dayofweek = trim($row['dayofweek']);
-			$timeofday = trim($row['timeofday']);
-			$type = trim($row['type']);
-			//check ก่อรว่ามันไปทับกับ วันและเวลาที่เราลงทะเบียนได้แล้วรึป่าว - ซึ่งลำดับมันจะเรียงตาม priority อยู่แล้ว 
-			foreach($dayofweek_timeofday as $dt){
-				if ($dayofweek == $dt["dayofweek"] && $timeofday == $dt["timeofday"]){
-					$duplicate_date_and_time = true;
-				}
-			}
-			if ($current_sum_credit + $subject_credit <= $maxcredit && !$duplicate_date_and_time){
-				$current_sum_credit += $subject_credit;
-				$subject_id_confirmed_list .= "'$subject_id',";
-				array_push($dayofweek_timeofday, array("dayofweek" => $dayofweek, "timeofday" => $timeofday ));
-			} else {
-				array_push($subject_id_tobe_removed_arr, $subject_id);
-			}
-		}
-
-		$subject_id_confirmed_list = substr($subject_id_confirmed_list, 0, -1);
-
-		if ($current_sum_credit < $maxcredit){
-			$thisuser_dont_have_enough_credit = true;
-		}
-
-	}
-
-	return array(
-		"subject_id_confirmed_list" => $subject_id_confirmed_list,
-		"subject_id_tobe_removed_arr" => $subject_id_tobe_removed_arr,
-		"thisuser_dont_have_enough_credit" => $thisuser_dont_have_enough_credit
-	);
 }
 
 ?>
