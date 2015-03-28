@@ -23,7 +23,7 @@
     <style>
         #sortableMain {
             list-style-type: none;
-            text-align: center;
+            text-align: left;
             background: #ddd;
             padding: 0px;
             position: relative;
@@ -38,12 +38,12 @@
         }
         
         ul[id*='sortable']:not(#sortableMain) {
-            width: 200px;
+            width: 300px;
             min-height: 40px;
             list-style-type: none;
             margin-top: 2px;
             background: #ddd;
-            text-align: center;
+            text-align: left;
             margin-left: 1px;
             position: relative;
         }
@@ -53,7 +53,7 @@
             background-color: #dff0d8;
             border: 1px solid #d6e9c6;
             color: #000;
-            width: 200px;
+            width: 300px;
             margin-left: 1px;
             padding: 5px;
             color: green;
@@ -186,8 +186,9 @@
                     </td>
                 </tr>
             </table>
-            
             <div style='margin-top: 20px;'>
+            <input type='button' class="btn btn-default" style="margin-right:5px;" onClick='clearFunction();' value='Clear' />
+            <input type='button' class="btn btn-default" style="margin-right:5px;" onClick='selectAllFunction();' value='Select All' />
                 <input type='button' class="btn btn-primary" onClick='toggleToSteps(2)' value='Next' />
             </div>
       </div>
@@ -213,7 +214,7 @@
             </div>
             <div style='margin-top: 20px;' id='buttonArea'>
                 <input  type='button' class="btn btn-primary" onClick='toggleToSteps(1)' value='Back' />
-                <input style='margin-left: 20px;' type='button' class="btn btn-success" onClick='onSubmitSubject();' value='Submit' />
+                <input style='margin-left: 10px;' type='button' class="btn btn-success" onClick='onSubmitSubject();' value='Submit' />
             </div>
             <div class="alert alert-success" role="alert" id="import-success" style="display:none; margin-top: 20px;"><b>SUCCESS</b> ทำการ Enrollment เรียบร้อยแล้ว</div>
             <div class="alert alert-warning" role="alert" id="import-warning" style="display:none; margin-top: 20px;"><b>WARNING</b> Enrollment Error</div>
@@ -275,7 +276,7 @@
 
             for(var i =0; i < subjectList.length; i++){
                 var tmpLiElement = document.createElement('li');
-                tmpLiElement.innerHTML = subjectList[ i ];
+                tmpLiElement.innerHTML = '[' + $.trim(subjectListObj[i].subject_id) + ']-' +subjectList[ i ];
                 tmpLiElement.setAttribute('tmpSelected', subjectListObj[ i ].selected);
                 tmpLiElement.setAttribute('subjectId', $.trim(subjectListObj[i].subject_id));
                 $('#sortableMain').append( tmpLiElement );
@@ -414,6 +415,7 @@
                         itemDivTextSubject.style.width = '200px';
                         itemDivTextSubject.style.wordWrap = 'break-word';
                         itemDivTextSubject.style.verticalAlign = 'middle';
+                        itemDivTextSubject.style.textAlign = 'left';
                         itemDivTextSubject.innerHTML = $(this).children().text();
                         itemDiv.appendChild( itemDivTextSubject )
                         itemDiv.setAttribute('subjectId', $(this).children()[0].getAttribute('subjectId'));
@@ -692,7 +694,9 @@
                     $('#studentYear').empty();
                     $('#studentYear').append( "<option value='' selected disabled>รุ่นนิสิต</option>");
                     for(var i=0; i< data.length; i++){
-                        $('#studentYear').append( "<option value='" + data[i]['classof_id'] + "'>" + data[i]['classof_description'] +'</option>' );
+                        if( $.trim(data[i]['classof_description']) !== 'Admin' && data[i]['classof_id'] !== 1 ){ //FILTER OUT 'Admin' ITEM
+                            $('#studentYear').append( "<option value='" + data[i]['classof_id'] + "'>" + data[i]['classof_description'] +'</option>' );
+                        }
                     }
                     $('.selectpicker').selectpicker('refresh');
                 },
@@ -762,6 +766,102 @@
             });
         }
         
+        //
+        function selectAllFunction(){
+
+            $('#sortableMain').empty();
+            $('#selectedZone').empty();
+
+            for(var i =0; i < subjectList.length; i++){
+                var tmpLiElement = document.createElement('li');
+                tmpLiElement.innerHTML = '[' + $.trim(subjectListObj[i].subject_id) + ']-' +subjectList[ i ];
+                tmpLiElement.setAttribute('tmpSelected', subjectListObj[ i ].selected);
+                tmpLiElement.setAttribute('subjectId', $.trim(subjectListObj[i].subject_id));
+                $('#sortableMain').append( tmpLiElement );
+                //bong
+            }
+            //
+            //ADD <UL> LANDING ITEMS
+            var selectedZoneElement = document.getElementById('selectedZone');
+            var initialNum = 5;
+            for( var i=0; i< initialNum; i++){
+                var tmpUIElement =  document.createElement('ul');
+                tmpUIElement.id = 'sortable' + i;
+                tmpUIElement.className = 'connectedSortable';
+                tmpUIElement.style.padding = '0px';
+                tmpUIElement.style.marginBottom = '0px';
+                selectedZoneElement.appendChild( tmpUIElement );
+            }
+            
+            //BIND DRAG/SORABLE EVENT
+            $( '.connectedSortable' ).sortable({
+                connectWith: ".connectedSortable",
+                stop: function( event, ui) {
+                    //SUPPORT SWAP
+                    var parentElement = event.toElement.parentElement;
+                    if( parentElement.childElementCount > 1 && parentElement.id !== 'sortableMain' ){
+                        for( var i=0; i< parentElement.childElementCount; i++ ){
+                            if( event.toElement.innerHTML !== parentElement.children[ i ].innerHTML ){
+                                event.target.appendChild( parentElement.children[i] );
+                                break;
+                            }
+                        }
+                    }
+                    
+                    var countSelectedItem = countSelectedItemText();
+                    if( $('#selectedZone').children().length <= countSelectedItem ){
+                        var tmpUIElement =  document.createElement('ul');
+                        tmpUIElement.id = 'sortable' + (countSelectedItem+1) ;
+                        tmpUIElement.className = 'connectedSortable';
+                        tmpUIElement.style.padding = '0px';
+                        tmpUIElement.style.marginBottom = '0px';
+                        $('#selectedZone').append( tmpUIElement );
+                        //ACTIVATE FOR NEW ITEM ADDED
+                        $( '.connectedSortable' ).sortable({
+                            connectWith: ".connectedSortable"
+                        }).disableSelection();
+                    }
+                },
+                receive: function(){
+                    countSelectedItemText();
+                }
+            }).disableSelection();
+            
+            //SELECT ALL
+            var indexMove = 0;
+            while( indexMove < $('#sortableMain').children().length ){
+                var countSelectedItem = countSelectedItemText();
+                if( $('#selectedZone').children().length <= countSelectedItem ){
+                    var tmpUIElement =  document.createElement('ul');
+                    tmpUIElement.id = 'sortable' + (countSelectedItem+1) ;
+                    tmpUIElement.className = 'connectedSortable';
+                    tmpUIElement.style.padding = '0px';
+                    tmpUIElement.style.marginBottom = '0px';
+                    $('#selectedZone').append( tmpUIElement );
+                    //ACTIVATE FOR NEW ITEM ADDED
+                    $( '.connectedSortable' ).sortable({
+                        connectWith: ".connectedSortable"
+                    }).disableSelection();
+                }
+                //
+                for( var i=0; i < $('#selectedZone').children().length; i++ ){
+                    if( ! $('#selectedZone').children()[i].hasChildNodes() ){
+                        $('#selectedZone').children()[i].appendChild( $('#sortableMain').children()[ indexMove ] );
+                        break;
+                    }
+                }
+                indexMove = 0;
+            }//END WHILE
+        }
+    
+        //
+        function clearFunction(){
+            $('#selectedZone').children().each(function(){
+                if( $(this).has('li').length > 0 ){
+                    $('#sortableMain').append( $(this).children()[0] );
+                }
+            });
+        }
     </script>
   
     </body>

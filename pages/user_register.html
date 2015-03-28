@@ -310,7 +310,7 @@
                                 //ADD SUBJECT TO DIV
                                 var subjectInformation = getInformationFromData( electiveSubjectArray[k], day); //MORNING, NOON, EVENING
                                 if( subjectInformation !== null ){
-                                    tmpDivElement.innerHTML = subjectInformation[1];
+                                    tmpDivElement.innerHTML = '[' + subjectInformation[0] +']-' + subjectInformation[1];
                                     tmpDivElement.style.background = '#9d9d9d';
                                     //ADD UNIT OF SUBJECT
                                     var spanElement = document.createElement('span');

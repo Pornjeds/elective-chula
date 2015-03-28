@@ -21,19 +21,6 @@
             width:232px;
             position: relative;
         }
-        .profile_image:hover{
-            border: 1px solid #666;
-            cursor: pointer;
-        }
-        
-         .bannerChangeImage{
-            position: absolute; 
-            color: #fff; 
-            top:0; 
-            padding: 0px 5px 0px 5px; 
-            background: green;
-            display: none;
-         }
     </style>
   </head>
 
@@ -64,17 +51,15 @@
             <tr>
                 <td style='width: 250px; vertical-align:top;'>
                     <div style='font-family: Tahoma; margin-top: 5px; margin-left: 5px;'>
-                        <div class='profile_image' data-toggle="modal" data-target="#modalUploadImage">
-                            <image  src='../images/ozoraT.png' style='width:230px; height:230px;' />
-                            <div class='bannerChangeImage'>Change your image</div>
+                        <div class='profile_image'>
+                            <image  src='../images/profile.png' style='width:230px; height:230px;' />
                         </div>
-                        <span style='font-size: 30px; color: #333; line-height:40px; width: 100%; display: block;' class='studentName'>โอโซระ ซึบาซะ</span>
-                        <span style='font-size: 18px; color: #666; margin-left: 4px;' class='studentId'>5682221826</span>
-                        <br>
-                        <span style='font-size: 14px; color: #666; margin-left: 4px; margin-top:4px' data-toggle="modal" data-target="#modalChangePassword"><a href='#'>Change Password</a></span>
+                        <span style='font-size: 24px; color: #333; line-height:40px; width: 100%; display: block;' class='studentName'>โอโซระ ซึบาซะ</span>
+                        <div style='font-size: 18px; color: #666; margin-left: 4px; text-align:center;' class='studentId'></div>
                     </div>
                     <div style='padding:10px;'>
                         <input type='button' class="btn btn-success" onClick='moveToRegisterPage();' value='Register' />
+                        <div style='font-size: 14px; color: #666; margin-left: 4px; margin-top:4px; display:inline-block;' data-toggle="modal" data-target="#modalChangePassword"><a href='#'>Change Password</a></div>
                     </div>
                 </td>
                 <td style='vertical-align: top; padding: 5px;'>
@@ -95,14 +80,12 @@
             <tr>
                 <td style='width: 250px; vertical-align:top;'>
                     <div style='font-family: Tahoma; margin-top: 5px; margin-left: 5px;'>
-                        <div class='profile_image' data-toggle="modal" data-target="#modalUploadImage">
-                            <image  src='../images/ozoraT.png' style='width:230px; height:230px;' />
-                            <div class='bannerChangeImage'>Change your image</div>
+                        <div class='profile_image'>
+                            <image  src='../images/profile.png' style='width:230px; height:230px;' />
                         </div>
-                        <span style='font-size: 30px; color: #333; line-height:40px; width: 100%; display: block;' class='studentName'>โอโซระ ซึบาซะ</span>
-                        <span style='font-size: 18px; color: #666; margin-left: 4px;' class='studentId'>5682221826</span>
-                        <br>
-                        <span style='font-size: 14px; color: #666; margin-left: 4px; margin-top:4px' data-toggle="modal" data-target="#modalChangePassword"><a href='#'>Change Password</a></span>
+                        <span style='font-size: 24px; color: #333; line-height:40px; width: 100%; display: block;' class='studentName'>โอโซระ ซึบาซะ</span>
+                        <div style='font-size: 18px; color: #666; margin-left: 4px; text-align: center' class='studentId'></div>
+                        <div style='font-size: 14px; color: #666; margin-left: 4px; margin-top:4px; text-align: center;' data-toggle="modal" data-target="#modalChangePassword"><a href='#'>Change Password</a></div>
                     </div>
                 </td>
                 <td style='vertical-align: top; padding: 5px;'>
@@ -111,7 +94,6 @@
                           <h3 class="panel-title">สรุปผลการเลือกวิชา</h3>
                         </div>        
                         <div class="panel-body" id="appendSubjectResult">
-                        
                         </div>
                     </div>
                 </td>
@@ -123,14 +105,12 @@
             <tr>
                 <td style='width: 250px; vertical-align:top;'>
                     <div style='font-family: Tahoma; margin-top: 5px; margin-left: 5px;'>
-                        <div class='profile_image' data-toggle="modal" data-target="#modalUploadImage">
-                            <image  src='../images/ozoraT.png' style='width:230px; height:230px;' />
-                            <div class='bannerChangeImage'>Change your image</div>
+                        <div class='profile_image'>
+                            <image  src='../images/profile.png' style='width:230px; height:230px;' />
                         </div>
-                        <span style='font-size: 30px; color: #333; line-height:40px; width: 100%; display: block;' class='studentName'>โอโซระ ซึบาซะ</span>
-                        <span style='font-size: 18px; color: #666; margin-left: 4px;' class='studentId'>5682221826</span>
-                        <br>
-                        <span style='font-size: 14px; color: #666; margin-left: 4px; margin-top:4px' data-toggle="modal" data-target="#modalChangePassword"><a href='#'>Change Password</a></span>
+                        <span style='font-size: 24px; color: #333; line-height:40px; width: 100%; display: block;' class='studentName'>โอโซระ ซึบาซะ</span>
+                        <div style='font-size: 18px; color: #666; margin-left: 4px; text-align: center;' class='studentId'></div>
+                        <div style='font-size: 14px; color: #666; margin-left: 4px; margin-top:4px; text-align: center;' data-toggle="modal" data-target="#modalChangePassword"><a href='#'>Change Password</a></div>
                     </div>
                 </td>
                 <td style='vertical-align: top; padding: 5px;'>
@@ -143,33 +123,6 @@
             </tr>
         </table>
         
-        <!-- MODAL UPLOAD IMAGE -->
-        <div class="modal fade" id="modalUploadImage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel" style='font-weight:bold'>Upload your image</h4>
-              </div>
-              <div class="modal-body" style='text-align:center'>
-                    <div class="fileinput fileinput-new" data-provides="fileinput">
-                      <div class="fileinput-new thumbnail" style="width: 230px; height: 230px; background:#efefef">
-                      W230 x H230
-                      </div>
-                      <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 230px; max-height: 230px;"></div>
-                      <div>
-                        <span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists">Change</span><input type="file" name="..."></span>
-                        <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
-                      </div>
-                    </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Confirm</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <!-- MODAL CHANGE PASSWORD -->
         <div class="modal fade" id="modalChangePassword" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
           <div class="modal-dialog">
@@ -224,15 +177,6 @@
         var student_id = '';
 
         $(document).ready(function () {
-            $('.profile_image').hover( 
-                function(){
-                        $('.bannerChangeImage').css('display','block');
-                }, 
-                function(){
-                        $('.bannerChangeImage').css('display','none');
-                }
-            );
-            //
             getUserInformation( window.location.search.split('?id=')[1] );
         });
         //
@@ -273,7 +217,7 @@
                                 aElement.setAttribute('data-parent', '#accordion');
                                 aElement.setAttribute('href', '#collapse' + i );
                                 aElement.style.fontSize = '18px';
-                                aElement.innerHTML = data[2].subjectlist[i].name ;
+                                aElement.innerHTML = '[' + $.trim( data[2].subjectlist[i].subject_id ) + ']-' + data[2].subjectlist[i].name ;
                                 accordionElement.appendChild( aElement );
                                 
                                 var collapseElement = document.createElement('div');
@@ -331,7 +275,7 @@
                                 aElement.setAttribute('data-parent', '#accordion');
                                 aElement.setAttribute('href', '#collapse' + i );
                                 aElement.style.fontSize = '18px';
-                                aElement.innerHTML = data[2].subjectlist[i].name ;
+                                aElement.innerHTML = '[' + $.trim( data[2].subjectlist[i].subject_id ) + ']-' + data[2].subjectlist[i].name ;
                                 accordionElement.appendChild( aElement );
                                 
                                 var collapseElement = document.createElement('div');
