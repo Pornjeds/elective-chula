@@ -151,8 +151,69 @@
                 dataType: 'json',
                 contentType: "text/plain; charset=UTF-8",
                 success: function(data, textStatus, jqXHR){
-                  console.log('in');
                   that.admin_id = data.admin_id
+                  if (newPassword !== newPasswordRepeat) {
+                      console.log('new password mismatched');
+                      document.getElementById('updatePassword-fail').innerHTML = 'Password ที่กรอกใหม่ไม่ตรงกัน';
+                      document.getElementById('updatePassword-success').style.display = 'none';
+                      document.getElementById('updatePassword-fail').style.display = 'block';
+                      return;
+                  }
+
+                  secretMessage = admin_id + currentPassword;
+                  hashPassword = Sha1.hash(secretMessage);
+
+                  jsonObj = {
+                      'hashPassword' : hashPassword
+                  };
+
+                  //send check old password
+                  $.ajax({
+                      type: 'POST',
+                      contentType: 'application/json',
+                      url: urlStrCheckPass,
+                      data: JSON.stringify( jsonObj ),
+                      dataType: 'json',
+                      contentType: "text/plain; charset=UTF-8",
+                      success: function(data, textStatus, jqXHR){
+                          if (data.cnt == 1) {
+                              secretMessage = admin_id + newPassword;
+                              hashPassword = Sha1.hash(secretMessage);
+
+                              jsonObj = {
+                                  'hashPassword' : hashPassword
+                              };
+
+                              //send update password
+                              $.ajax({
+                                  type: 'POST',
+                                  contentType: 'application/json',
+                                  url: urlStrUpdatePass,
+                                  data: JSON.stringify( jsonObj ),
+                                  dataType: 'json',
+                                  contentType: "text/plain; charset=UTF-8",
+                                  success: function(data, textStatus, jqXHR){
+                                      document.getElementById('updatePassword-success').style.display = 'block';
+                                      document.getElementById('updatePassword-fail').style.display = 'none';
+                                  },
+                                  error: function(jqXHR, textStatus, errorThrown){
+                                      document.getElementById('updatePassword-fail').innerHTML = 'ไม่สามารถแก้ password ได้ เกิดปัญหาขึ้นในระบบ';
+                                      document.getElementById('updatePassword-success').style.display = 'none';
+                                      document.getElementById('updatePassword-fail').style.display = 'block';
+                                  }
+                              });
+                          } else {
+                              document.getElementById('updatePassword-fail').innerHTML = 'กรอก Password ผิด คุณไม่สามารถแก้ไขได้';
+                              document.getElementById('updatePassword-success').style.display = 'none';
+                              document.getElementById('updatePassword-fail').style.display = 'block';
+                          }
+                      },
+                      error: function(jqXHR, textStatus, errorThrown){
+                          document.getElementById('updatePassword-fail').innerHTML = 'ไม่สามารถแก้ password ได้ เกิดปัญหาขึ้นในระบบ';
+                          document.getElementById('updatePassword-success').style.display = 'none';
+                          document.getElementById('updatePassword-fail').style.display = 'block';
+                      }
+                  });
                 },
                 error: function(jqXHR, textStatus, errorThrown){
                     document.getElementById('updatePassword-fail').innerHTML = 'ไม่สามารถแก้ password ได้ เกิดปัญหาขึ้นในระบบ';
@@ -160,70 +221,6 @@
                     document.getElementById('updatePassword-fail').style.display = 'block';
                 }
             });
-
-            if (newPassword !== newPasswordRepeat) {
-                console.log('new password mismatched');
-                document.getElementById('updatePassword-fail').innerHTML = 'Password ที่กรอกใหม่ไม่ตรงกัน';
-                document.getElementById('updatePassword-success').style.display = 'none';
-                document.getElementById('updatePassword-fail').style.display = 'block';
-                return;
-            }
-
-            secretMessage = admin_id + currentPassword;
-            hashPassword = Sha1.hash(secretMessage);
-
-            jsonObj = {
-                'hashPassword' : hashPassword
-            };
-
-            //send check old password
-            $.ajax({
-                type: 'POST',
-                contentType: 'application/json',
-                url: urlStrCheckPass,
-                data: JSON.stringify( jsonObj ),
-                dataType: 'json',
-                contentType: "text/plain; charset=UTF-8",
-                success: function(data, textStatus, jqXHR){
-                    if (data.cnt == 1) {
-                        secretMessage = admin_id + newPassword;
-                        hashPassword = Sha1.hash(secretMessage);
-
-                        jsonObj = {
-                            'hashPassword' : hashPassword
-                        };
-
-                        //send update password
-                        $.ajax({
-                            type: 'POST',
-                            contentType: 'application/json',
-                            url: urlStrUpdatePass,
-                            data: JSON.stringify( jsonObj ),
-                            dataType: 'json',
-                            contentType: "text/plain; charset=UTF-8",
-                            success: function(data, textStatus, jqXHR){
-                                document.getElementById('updatePassword-success').style.display = 'block';
-                                document.getElementById('updatePassword-fail').style.display = 'none';
-                            },
-                            error: function(jqXHR, textStatus, errorThrown){
-                                document.getElementById('updatePassword-fail').innerHTML = 'ไม่สามารถแก้ password ได้ เกิดปัญหาขึ้นในระบบ';
-                                document.getElementById('updatePassword-success').style.display = 'none';
-                                document.getElementById('updatePassword-fail').style.display = 'block';
-                            }
-                        });
-                    } else {
-                        document.getElementById('updatePassword-fail').innerHTML = 'กรอก Password ผิด คุณไม่สามารถแก้ไขได้';
-                        document.getElementById('updatePassword-success').style.display = 'none';
-                        document.getElementById('updatePassword-fail').style.display = 'block';
-                    }
-                },
-                error: function(jqXHR, textStatus, errorThrown){
-                    document.getElementById('updatePassword-fail').innerHTML = 'ไม่สามารถแก้ password ได้ เกิดปัญหาขึ้นในระบบ';
-                    document.getElementById('updatePassword-success').style.display = 'none';
-                    document.getElementById('updatePassword-fail').style.display = 'block';
-                }
-            });
-            
         }
     </script>
   </body>
