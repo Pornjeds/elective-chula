@@ -7,7 +7,6 @@ $app->group('/enrollmentadmin', function() use ($app){
         $app->post('/listpickmethod', 'listPickMethod');
         $app->post('/run', 'performEnrollment');
 */
-
 function getSubjectEnrollmentInfoByIdPost(){
 	try {
 		$app = \Slim\Slim::getInstance();
@@ -188,7 +187,7 @@ function performEnrollment(){
 			}
 			
 		}
-		/*
+		
 		//ตอนนี้ได้ TMP_SELECTION ที่มี STANDBY กับ ACCEPTED มาแล้ว
 		//ทำการเกลี่ยคนที่เป็น STANDBY เข้่ามาเป็น ACCEPTED จนกว่าจะเต็ม maxstudent ของวิชานั้นๆ
 		foreach($subject_id_sortedby_studentcount as $subject_id){
@@ -202,17 +201,16 @@ function performEnrollment(){
 		foreach($student_list as $student_id){
 
 			$student_subject_arr = $AdminEnroll->getStudentSubjectConfirmedList($student_id);
-
+			
 			$subject_id_confirmed_list = $student_subject_arr["subject_id_confirmed_list"];
 			$subject_id_tobe_removed_arr = $student_subject_arr["subject_id_tobe_removed_arr"];
-
 			if ($student_subject_arr["thisuser_dont_have_enough_credit"]){
 				$someuser_dont_have_enough_credit = true;
 			}
-
+			
 			//update status ให้เป็น confirm ในวิชาที่ priority สูงและได้รับเลือก
 			$AdminEnroll->markAcceptedHighPrioritySubjectStatusToConfirmed($student_id, $subject_id_confirmed_list);
-
+			
 			//ทำการ mark flag ว่าวิชานี้ของคนคนนี้ confirm แล้ว และจะลบวิชาที่ทำให้หน่วยกิตเกินออกไปเลย 
 			foreach($subject_id_tobe_removed_arr as $subject_id){
 				//ลบวิชาที่นิสิตคนนี้ไม่ลงทะเบียนออกจาก TMP_SELECTION เพื่อให้โอกาสคนที่ลงทะเบียนได้น้อยมีสิทธิ์ได้เรียน
@@ -235,7 +233,6 @@ function performEnrollment(){
 		$app->response->setBody(json_encode(array("status"=>"success")));
 
 		$db = null;
-		*/
 
 	} catch(PDOException $e) {
         $app->response->setBody(json_encode(array("error"=>array("source"=>"SQL", "reason"=>$e->getMessage()))));

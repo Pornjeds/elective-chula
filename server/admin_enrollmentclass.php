@@ -49,7 +49,7 @@ class AdminStudentEnrollment
 		$result = $this->db->getData($sql);
 		if ($result){
 			while($row = sqlsrv_fetch_array($result)){
-				$subject_id = $row['subject_id'];
+				$subject_id = trim($row['subject_id']);
 				array_push($this->subject_id_sortedby_studentcount, $subject_id);
 			}
 		}
@@ -58,8 +58,6 @@ class AdminStudentEnrollment
 
 	function enrollFirstComeFirstServe($subject_id){
 		$sql = "exec enrollFirstComeFirstServe @subject_id = '".$subject_id."', @classof_id = '".$this->classof_id."', @semester = '".$this->semester."'";
-		echo $sql;
-		exit();
 		if(!$this->db->setData($sql))
 		{
 			$this->db->rollbackWork();
@@ -153,17 +151,17 @@ class AdminStudentEnrollment
 				//handle กรณีที่วิชาเดียวเปิดหลายวัน (เช่น SM เปิด 2 sec)
 				//subject_id จะเป็น 1000012-1 กับ 1000012-2
 				//ในกรณีนี้ ถ้าได้วิชาไหนก่อนก็ตัดอีกวิชาทิ้งไป
-				$need_to_be_added_to_confirmed_list = false;
+				$need_to_be_added_to_confirmed_list = true;
 				$subject_id_exploded = explode('-', $subject_id);
 				if (count($subject_id_exploded) > 1) {
 					$subject_id_withoutSec = $subject_id_exploded[0];
 					if (strpos($subject_id_confirmed_list, $subject_id_withoutSec) != false) {
-						$need_to_add_confirmed_list = false;
+						$need_to_be_added_to_confirmed_list = false;
 					} else {
-						$need_to_add_confirmed_list = true;
+						$need_to_be_added_to_confirmed_list = true;
 					}
 				}
-
+				
 				if ($current_sum_credit + $subject_credit <= $this->maxcredit && !$duplicate_date_and_time && $need_to_be_added_to_confirmed_list){
 					$current_sum_credit += $subject_credit;
 
@@ -193,6 +191,7 @@ class AdminStudentEnrollment
 	function markAcceptedHighPrioritySubjectStatusToConfirmed($student_id, $subject_id_confirmed_list){
 		$sql = "UPDATE TMP_SELECTION SET status = 'CONFIRMED', type = 'ACCEPTED' WHERE student_id = '".$student_id."' AND classof_id = '".$this->classof_id."' AND semester = '".$this->semester."' 
 		AND subject_id in (".$subject_id_confirmed_list.")";
+
 		if(!$this->db->setData($sql))
 		{
 			$this->db->rollbackWork();

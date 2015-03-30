@@ -103,7 +103,7 @@ function listSubjectByClassOfAndSemester(){
 function listAllSubjects(){
 	try {
 		$app = \Slim\Slim::getInstance();
-		$app->response->headers->set('Content-Type', 'application/json');
+		//$app->response->headers->set('Content-Type', 'application/json');
 	    $request = $app->request();
 		$sql = "SELECT * FROM SUBJECT order by subject_id";
 		

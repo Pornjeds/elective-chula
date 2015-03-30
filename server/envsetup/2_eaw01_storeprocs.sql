@@ -254,8 +254,8 @@ BEGIN
 			AS NVARCHAR(10)),
 			a.addeddate
 			FROM STUDENT_ENROLLMENT a
-			INNER JOIN SUBJECT_CLASSOF b ON a.subject_id = b.subject_id
-			WHERE b.subject_id = @subject_id AND b.classof_id = @classof_id AND b.semester = @semester
+			INNER JOIN SUBJECT_CLASSOF b ON a.subject_id = b.subject_id AND a.classof_id = b.classof_id AND a.semester = b.semester
+			WHERE a.subject_id = @subject_id AND a.classof_id = @classof_id AND a.semester = @semester
 			ORDER BY a.addeddate ASC, a.logical_priority ASC
 
 	-- NOT GET ACCEPTED
@@ -275,8 +275,8 @@ BEGIN
 			'STANDBY',
 			a.addeddate
 			FROM STUDENT_ENROLLMENT a
-			INNER JOIN SUBJECT_CLASSOF b ON a.subject_id = b.subject_id
-			WHERE b.subject_id = @subject_id AND b.classof_id = @classof_id AND b.semester = @semester
+			INNER JOIN SUBJECT_CLASSOF b ON a.subject_id = b.subject_id AND a.classof_id = b.classof_id AND a.semester = b.semester
+			WHERE a.subject_id = @subject_id AND a.classof_id = @classof_id AND a.semester = @semester
 			AND a.student_id NOT IN (SELECT DISTINCT student_id FROM #TMP_STUDENTACCEPTED)
 			ORDER BY a.addeddate ASC, a.logical_priority ASC
 
@@ -295,6 +295,7 @@ BEGIN
 
 	-- PUT Data into TMP_SELECTION
 	DELETE FROM TMP_SELECTION WHERE subject_id = @subject_id AND classof_id = @classof_id AND semester = @semester
+
 	INSERT INTO TMP_SELECTION
 		SELECT * FROM #TMP_STUDENTACCEPTED
 	INSERT INTO TMP_SELECTION
@@ -389,9 +390,9 @@ BEGIN
 			AS NVARCHAR(10)),
 			a.addeddate
 			FROM STUDENT_ENROLLMENT a
-			INNER JOIN SUBJECT_CLASSOF b ON a.subject_id = b.subject_id
+			INNER JOIN SUBJECT_CLASSOF b ON a.subject_id = b.subject_id AND a.classof_id = b.classof_id AND a.semester = b.semester
 			INNER JOIN STUDENT c ON a.student_id = c.student_id
-			WHERE b.subject_id = @subject_id AND b.classof_id = @classof_id AND b.semester = @semester
+			WHERE a.subject_id = @subject_id AND a.classof_id = @classof_id AND a.semester = @semester
 			ORDER BY c.GPA DESC, a.addeddate ASC, a.logical_priority ASC
 
 	-- NOT GET ACCEPTED
@@ -411,9 +412,9 @@ BEGIN
 			'STANDBY',
 			a.addeddate
 			FROM STUDENT_ENROLLMENT a
-			INNER JOIN SUBJECT_CLASSOF b ON a.subject_id = b.subject_id
+			INNER JOIN SUBJECT_CLASSOF b ON a.subject_id = b.subject_id AND a.classof_id = b.classof_id AND a.semester = b.semester
 			INNER JOIN STUDENT c ON a.student_id = c.student_id
-			WHERE b.subject_id = @subject_id AND b.classof_id = @classof_id AND b.semester = @semester
+			WHERE a.subject_id = @subject_id AND a.classof_id = @classof_id AND a.semester = @semester
 			AND a.student_id NOT IN (SELECT DISTINCT student_id FROM #TMP_STUDENTACCEPTED)
 			ORDER BY c.GPA DESC, a.addeddate ASC, a.logical_priority ASC
 
@@ -526,8 +527,8 @@ BEGIN
 			AS NVARCHAR(10)),
 			a.addeddate
 			FROM STUDENT_ENROLLMENT a
-			INNER JOIN SUBJECT_CLASSOF b ON a.subject_id = b.subject_id
-			WHERE b.subject_id = @subject_id AND b.classof_id = @classof_id AND b.semester = @semester
+			INNER JOIN SUBJECT_CLASSOF b ON a.subject_id = b.subject_id AND a.classof_id = b.classof_id AND a.semester = b.semester
+			WHERE a.subject_id = @subject_id AND a.classof_id = @classof_id AND a.semester = @semester
 			ORDER BY a.logical_priority ASC, a.addeddate ASC
 
 	-- NOT GET ACCEPTED
@@ -547,8 +548,8 @@ BEGIN
 			'STANDBY',
 			a.addeddate
 			FROM STUDENT_ENROLLMENT a
-			INNER JOIN SUBJECT_CLASSOF b ON a.subject_id = b.subject_id
-			WHERE b.subject_id = @subject_id AND b.classof_id = @classof_id AND b.semester = @semester
+			INNER JOIN SUBJECT_CLASSOF b ON a.subject_id = b.subject_id AND a.classof_id = b.classof_id AND a.semester = b.semester
+			WHERE a.subject_id = @subject_id AND a.classof_id = @classof_id AND a.semester = @semester
 			AND a.student_id NOT IN (SELECT DISTINCT student_id FROM #TMP_STUDENTACCEPTED)
 			ORDER BY a.logical_priority ASC, a.addeddate ASC
 

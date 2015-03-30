@@ -85,7 +85,7 @@ $app->group('/api/v1', function() use ($app){
         $app->post('/delete', 'deleteClassOf');
     });
 
-    $app->group('/enrollmentadmin', function() use ($app){
+    $app->group('/enrolladmin', function() use ($app){
         $app->post('/detail', 'getSubjectEnrollmentInfoByIdPost');
         $app->post('/list', 'listEnrollmentByClassOfAndSemester');
         $app->post('/liststudent', 'listEnrollmentResultBySubject');
