@@ -1,0 +1,265 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>แสดงผลการเลือก: Y-Ex, MBA</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../scripts/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../scripts/css/jasny-bootstrap.min.css" rel="stylesheet">
+    <link href="../scripts/css/bootstrap-select.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../scripts/css/admin_template.css" rel="stylesheet">
+    <style>
+      .display-selection-function {
+        display: none;
+        background:#f6f6f6; 
+        width: 100%; 
+        border: 1px solid #c8c8c8; 
+        text-align: center;
+      }
+
+      .display-table-result {
+        display: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="topnavbar">
+        <div class="topnavbar-right">
+          <ul>
+            <li>
+              <p class="topnavbar-text"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Logged in as Admin</p>
+            </li>
+            <li>
+              <p class="topnavbar-text"><a href="../server/admin_logout.php">Log out</a></p>
+            </li>
+          </ul>
+        </div>
+    </div>
+
+    <div class="navmenu navmenu-default navmenu-fixed-left offcanvas">
+      <a class="navmenu-brand" href="#">Y-Ex, MBA</a>
+      <ul class="nav navmenu-nav">
+        <li><a href='admin_importdata.html'>ระบบ Import ข้อมูลวิชาเรียน</a></li>
+        <li><a href='admin_importstudent.html'>ระบบ Import ข้อมูลนิสิต</a></li>
+        <li><a href='admin_enrollconfig.html'>การลงทะเบียนวิชาเรียน</a></li>
+        <li class='active'><a href="#">แสดงผลการเลือก</a></li>
+      </ul>
+      <ul class="nav navmenu-nav">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Advance<b class="caret"></b></a>
+          <ul class="dropdown-menu navmenu-nav">
+            <li><a href="admin_account.html">จัดการสิทธิ์การเข้าถึงระบบ Admin</a></li>
+            <li><a href="admin_dataeditor.html">แก้ไขข้อมูลใน Database</a></li>
+          </ul>
+        </li>
+      </ul>
+      <ul class="nav navmenu-nav">
+        <li><a href="../index.html"><font color="red">ออกจากระบบ</font></a></li>
+      </uL>
+    </div>
+
+    <div class="navbar navbar-default navbar-fixed-top">
+      <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target=".navmenu" data-canvas="body">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+
+
+    <div class="container">
+
+      <ol class="breadcrumb">
+        <li><a href="admin_dashboard.html">Home</a></li>
+        <li class="active">ระบบแสดงผลการเลือก</li>
+      </ol>
+
+      <div class="starter-template">
+        <h1>ระบบแสดงผลการเลือก</h1>
+        <p>
+          รายชื่อวิชาเลือกที่เปิดในปีการศึกษา 2557
+        </p>
+      </div>
+      <div style='background:#f6f6f6; width: 100%; border: 1px solid #c8c8c8; text-align: center;'>
+            <div style='padding:10px;'>
+                <div style='padding: 5px 5px 5px 5px; margin-right: 5px; display: inline-block;'>
+                    <select id='studentClass' class="selectpicker">
+                        <option value="" selected disabled>รุ่นนิสิต</option>
+                        <option>20/1</option>
+                        <option>20/2</option>
+                        <option>21/1</option>
+                        <option>21/2</option>
+                    </select>
+                </div> 
+                <div style='padding: 5px 5px 5px 5px; margin-right: 5px; display: inline-block;'>
+                    <select id='studentClass' class="selectpicker">
+                        <option value="" selected disabled>เทอม</option>
+                        <option>4</option>
+                        <option>5</option>
+                        <option>6</option>
+                    </select>
+                </div> 
+                <div style='padding: 5px 5px 5px 5px; display: inline-block;'>
+                    <input id='bt_query' type='button' class="btn btn-success" onclick="submitSearch();" value='เลือก' />
+                </div>
+                <div style='clear:both'></div>
+            </div>
+      </div>
+
+      <hr>
+
+      <div style='margin-top:10px;display:none' id="listallsubject-notdone">
+        <div class="alert alert-danger" role="alert">
+          มีในบางวิชามีนิสิตต้องการลงทะเบียนมากกว่าจำนวนที่สามารถรองรับได้ ต้องทำการตัดสินก่อนที่จะแสดงผลการคัดเลือกสู่นิสิต
+          <button type="button" class="btn btn-warning" onclick="submitRandom()">กดที่นี่เพื่อทำการคัดเลือก</button>
+        </div>
+          <table class="table table-hover table-bordered">
+            <thead>
+              <tr>
+                <th>วิชา</th>
+                <th>เวลาเรียน</th>
+                <th>จำนวนนิสิตที่ต้องการลงทะเบียน</th>
+                <th>จำนวนนิสิตที่สามารถรับได้</th>
+                <th>จำนวนนิสิตขั้นต่ำสำหรับการเปิดสอน</th>
+                <th>วิธีที่ใช้ตัดสินในกรณีที่ไม่ลงตัว</th>
+                <th>สถานะ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="active">
+                <td><a href='admin_displayresult_subject.html?subject=MARKETING_MANAGEMENT&test_status=NOSHOW'>MARKETING MANAGEMENT</a></td>
+                <td>18:00 - 21:00 ทุกวันพฤหัส</td>
+                <td>40</td>
+                <td>35</td>
+                <td>ไม่มี</td>
+                <td>First come First serve</td>
+                <td class="warning">ต้องทำการเลือก</td>
+              </tr>
+              <tr class="active">
+                <td><a href='admin_displayresult_subject.html?subject=FINANCIAL_MANAGEMENT&test_status=NOSHOW'>FINANCIAL MANAGEMENT</a></td>
+                <td>18:00 - 21:00 ทุกวันอังคาร</td>
+                <td>10</td>
+                <td>30</td>
+                <td>20</td>
+                <td>Random out by rank</td>         
+                <td class="danger">ไม่สามารถเปิดได้</td>
+              </tr>
+              <tr class="active">
+                <td><a href='admin_displayresult_subject.html?subject=OPERATION_MANAGEMENT&test_status=NOSHOW'>OPERATION MANAGEMENT</a></td>
+                <td>18:00 - 21:00 ทุกวันพฤหัส</td>
+                <td>30</td>
+                <td>35</td>
+                <td>ไม่มี</td>
+                <td>Sorting by GPA</td>
+                <td class="success">พร้อมยืนยัน</td>
+              </tr>
+            </table>
+      </div>
+
+      <div style='margin-top:10px;display:none' id="listallsubject-done">
+        <div class="alert alert-success" role="alert" id="successRandom">
+          ระบบได้ทำการคัดเลือกนิสิตเรียบร้อยแล้ว Admin สามารถ click เข้าไปในแต่ละรายวิชาเพื่อตรวจสอบชื่อนิสิตหรือกดปุ่มเพื่อทำการส่งข้อมูลนี้ไปสู่นิสิต
+          <button type="button" class="btn btn-success" onclick="publishSubmit()" id="publishBtn">Publish ข้อมูลสู่นิสิต</button>
+        </div>
+        <div class="alert alert-success" role="alert" id="successPublish" style="display:none">
+          ข้อมูลวิชาเรียนและการลงทะเบียนได้ถูกนำส่งไปสู่นิสิตแล้ว
+        </div>
+          <table class="table table-hover table-bordered">
+            <thead>
+              <tr>
+                <th>วิชา</th>
+                <th>เวลาเรียน</th>
+                <th>จำนวนนิสิตที่ต้องการลงทะเบียน</th>
+                <th>จำนวนนิสิตที่สามารถรับได้</th>
+                <th>จำนวนนิสิตขั้นต่ำสำหรับการเปิดสอน</th>
+                <th>วิธีที่ใช้ตัดสินในกรณีที่ไม่ลงตัว</th>
+                <th>สถานะ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="active">
+                <td><a href='admin_displayresult_subject.html?subject=MARKETING_MANAGEMENT&test_status=SHOW'>MARKETING MANAGEMENT</a></td>
+                <td>18:00 - 21:00 ทุกวันพฤหัส</td>
+                <td>40</td>
+                <td>35</td>
+                <td>ไม่มี</td>
+                <td>First come First serve</td>
+                <td class="success">ยืนยัน</td>
+              </tr>
+              <tr class="active">
+                <td><a href='admin_displayresult_subject.html?subject=FINANCIAL_MANAGEMENT&test_status=SHOW'>FINANCIAL MANAGEMENT</a></td>
+                <td>18:00 - 21:00 ทุกวันอังคาร</td>
+                <td>10</td>
+                <td>30</td>
+                <td>20</td>
+                <td>Random out by rank</td>         
+                <td class="danger">ไม่สามารถเปิดได้</td>
+              </tr>
+              <tr class="active">
+                <td><a href='admin_displayresult_subject.html?subject=OPERATION_MANAGEMENT&test_status=SHOW'>OPERATION MANAGEMENT</a></td>
+                <td>18:00 - 21:00 ทุกวันพฤหัส</td>
+                <td>35</td>
+                <td>35</td>
+                <td>ไม่มี</td>
+                <td>Sorting by GPA</td>
+                <td class="success">ยืนยัน</td>
+              </tr>
+            </table>
+      </div>
+      
+      <hr>
+      <footer class="footer">
+          <div style='margin-bottom: 60px'>
+            We are the same <span style='color:#cb70d7; font-weight: bold;'>CHULA</span> so let talk together.
+          </div>
+        </footer>
+
+    </div><!-- /.container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../scripts/js/jquery.min.js"></script>
+    <script src="../scripts/js/bootstrap.min.js"></script>
+    <script src="../scripts/js/jasny-bootstrap.min.js"></script>    
+    <script src="../scripts/js/bootstrap-select.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../scripts/js/ie10-viewport-bug-workaround.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('.selectpicker').selectpicker();
+
+        });
+
+        function submitRandom(){
+          $('#listallsubject-notdone').fadeOut(10);
+          $('#listallsubject-done').fadeIn(300);
+        };
+
+        function publishSubmit(){
+          $('#successRandom').fadeOut(10);
+          $('#successPublish').fadeIn(300);
+        };
+
+        function submitSearch(){
+          $('#listallsubject-notdone').fadeIn(300);
+          $('#listallsubject-done').fadeOut(10);
+        };
+    </script>
+  
+    </body>
+</html>

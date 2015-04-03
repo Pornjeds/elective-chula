@@ -67,19 +67,19 @@ function listEnrollmentByClassOfAndSemester(){
 	    $semester = json_decode($request->getBody())->semester;
 		$sql = "select 
 				a.subject_id,
-				b.name,
+				b.name as subject_name,
 				a.dayofweek,
 				a.timeofday,
 				COUNT(c.student_id) AS studentcount,
 				a.maxstudent,
 				d.pickmethod_id,
-				e.name,
+				e.name as pickmethod,
 				CAST(CASE WHEN a.minstudent <> 0 THEN CAST(a.minstudent AS NCHAR(10)) ELSE 'No' END AS NCHAR(10)) AS minstudent,
 				CASE
 					WHEN COUNT(c.student_id) > a.maxstudent THEN 'Must choose' 
 					WHEN COUNT(c.student_id) <= a.maxstudent AND COUNT(c.student_id) >= a.minstudent THEN 'Can open'
 					WHEN COUNT(c.student_id) < a.minstudent THEN 'Cannot open'
-				END AS SubjectStatus
+				END AS subject_status
 				FROM SUBJECT_CLASSOF a
 				LEFT JOIN SUBJECT b ON a.subject_id = b.subject_id
 				LEFT JOIN STUDENT_ENROLLMENT c ON a.subject_id = c.subject_id
