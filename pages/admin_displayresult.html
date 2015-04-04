@@ -108,7 +108,7 @@
                     </select>
                 </div> 
                 <span>
-                  <input style='margin-left: 8px;' type='button' class="btn btn-success" onClick='getSubjectList();' value='Update' />
+                  <input style='margin-left: 8px;' type='button' class="btn btn-success" onClick='showSubjects();' value='Update' />
                 </span>
                 <div style='clear:both'></div>
             </div>
@@ -117,13 +117,15 @@
       <hr>
 
       <div style='margin-top:10px;display:none' id="listallsubject">
+        <div id="listallsubject-alert-notready" class="alert alert-danger" role="alert" style="display:none">
+          เทอมนี้ยังไม่มีการเปิดสอนและให้นิสิตลงทะเบียน โปรดใช้ระบบการลงทะเบียนวิชาเรียนเพื่อเปิดวิชาเรียน
+        </div>
         <div id="listallsubject-alert-notdone" class="alert alert-danger" role="alert" style="display:none">
           มีในบางวิชามีนิสิตต้องการลงทะเบียนมากกว่าจำนวนที่สามารถรองรับได้ ต้องทำการตัดสินก่อนที่จะแสดงผลการคัดเลือกสู่นิสิต
           <button type="button" class="btn btn-warning" onclick="submitRandom()">กดที่นี่เพื่อทำการคัดเลือก</button>
         </div>
         <div id="listallsubject-alert-done" class="alert alert-success" role="alert" id="successRandom" style="display:none">
-          ระบบได้ทำการคัดเลือกนิสิตเรียบร้อยแล้ว Admin สามารถ click เข้าไปในแต่ละรายวิชาเพื่อตรวจสอบชื่อนิสิตหรือกดปุ่มเพื่อทำการส่งข้อมูลนี้ไปสู่นิสิต
-          <button type="button" class="btn btn-success" onclick="publishSubmit()" id="publishBtn">Publish ข้อมูลสู่นิสิต</button>
+          ระบบได้ทำการคัดเลือกนิสิตเรียบร้อยแล้ว Admin สามารถ click เข้าไปในแต่ละรายวิชาเพื่อตรวจสอบชื่อนิสิต
         </div>
         <div id="listallsubject-alert-published" class="alert alert-success" role="alert" id="successPublish" style="display:none">
           ข้อมูลวิชาเรียนและการลงทะเบียนได้ถูกนำส่งไปสู่นิสิตแล้ว
@@ -169,10 +171,9 @@
         $(document).ready(function () {
             $('.selectpicker').selectpicker();
             getStudentClassList();
-
         });
 
-        function getStudentClassList(){
+        function getStudentClassList(classof_id, semester){
             var urlStr = window.location.origin + '/server/admin_api.php/api/v1/classof/list';
             $.ajax({
                 type: 'POST',
@@ -196,164 +197,193 @@
             });
         }
 
+        function showSubjects() {
+          var urlStr = window.location.origin + '/server/admin_api.php/api/v1/enrollmentadmin/status';
+          var jsonObj = {
+              'classof_id': $('#studentYear').val(),                  //1
+              'semester': $('#studentSemester').val()             //4
+          };
+          $.ajax({
+            type: 'POST',
+            contentType: 'application/json',
+            url: urlStr,
+            data: JSON.stringify( jsonObj ),
+            dataType: 'json',
+            contentType: "text/plain; charset=UTF-8",
+            success: function(data, textStatus, jqXHR){
+              switch (data[0].semester_state) {
+                case 0:
+                  $('#listallsubject-alert-notready').css('display', 'inline-block');
+                  break;
+                case 1:
+                  $('#listallsubject-alert-notdone').css('display', 'inline-block');
+                  break;
+                case 2:
+                  $('#listallsubject-alert-done').css('display', 'inline-block');
+                  break;
+              }
+
+              getSubjectList();
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                alert('get Student Class error: ' + textStatus);
+            }
+          });
+        }
+
         function getSubjectList(){
             if( $('#studentYear').val() === null || $('#studentSemester').val() === null ){
                 alert('Please select criteria first');
-            }
-            else{
-                var urlStr = window.location.origin + '/server/admin_api.php/api/v1/enrollmentadmin/list';
-                var jsonObj = {
-                    'classof_id': $('#studentYear').val(),                  //1
-                    'semester': $('#studentSemester').val()             //4
-                };
-                $.ajax({
-                    type: 'POST',
-                    contentType: 'application/json',
-                    url: urlStr,
-                    data: JSON.stringify( jsonObj ),
-                    dataType: 'json',
-                    contentType: "text/plain; charset=UTF-8",
-                    success: function(data, textStatus, jqXHR){
-                      /*
-                        subject_id: "1-2 "
-                        name: "First Come First Serve"
-                        dayofweek: 5
-                        timeofday: 2
-                        studentcount: 200
-                        maxstudent: 50
-                        pickmethod_id: 1
-                        minstudent: "20 "
-                        subject_status: "Must choose"
-                      */
-                      var tableRef = document.getElementById('table-subject').getElementsByTagName('tbody')[0];
-                      var cellSubject;
-                      var cellTime;
-                      var cellStudentCount;
-                      var cellMaxStudent;
-                      var cellMinStudent;
-                      var cellChooseMethod;
-                      var cellStatus;
-                      var newRow;
+            } else {
 
-                      var displayDateTime;
-                      var subjectStatus;
-                      var subjectStatusCssClass;
+              var urlStr = window.location.origin + '/server/admin_api.php/api/v1/enrollmentadmin/list';
+              var jsonObj = {
+                  'classof_id': $('#studentYear').val(),                  //1
+                  'semester': $('#studentSemester').val()             //4
+              };
+              $.ajax({
+                  type: 'POST',
+                  contentType: 'application/json',
+                  url: urlStr,
+                  data: JSON.stringify( jsonObj ),
+                  dataType: 'json',
+                  contentType: "text/plain; charset=UTF-8",
+                  success: function(data, textStatus, jqXHR){
+                    /*
+                      subject_id: "1-2 "
+                      name: "First Come First Serve"
+                      dayofweek: 5
+                      timeofday: 2
+                      studentcount: 200
+                      maxstudent: 50
+                      pickmethod_id: 1
+                      minstudent: "20 "
+                      subject_status: "Must choose"
+                    */
+                    var tableRef = document.getElementById('table-subject').getElementsByTagName('tbody')[0];
+                    var cellSubject;
+                    var cellTime;
+                    var cellStudentCount;
+                    var cellMaxStudent;
+                    var cellMinStudent;
+                    var cellChooseMethod;
+                    var cellStatus;
+                    var newRow;
 
-                      var classOfStatus = 1;
+                    var displayDateTime;
+                    var subjectStatus;
+                    var subjectStatusCssClass;
 
-                      for (var i = 0, dataLen = data.length; i < dataLen; i++) {
+                    var classOfStatus = 1;
 
-                        //build a row
-                        // Insert a row in the table at row index 0
-                        newRow   = tableRef.insertRow(tableRef.rows.length);
-                        cellSubject  = newRow.insertCell(0);
-                        cellTime = newRow.insertCell(1);
-                        cellStudentCount = newRow.insertCell(2);
-                        cellMaxStudent = newRow.insertCell(3);
-                        cellMinStudent = newRow.insertCell(4);
-                        cellChooseMethod = newRow.insertCell(5);
-                        cellStatus = newRow.insertCell(6);
+                    for (var i = 0, dataLen = data.length; i < dataLen; i++) {
 
-                        subjectStatus = '';
-                        displayDateTime = '';
-                        switch ($.trim(data[i].timeofday)) {
-                          case '0':
-                            displayDateTime = 'เช้า'
-                            break;
-                          case '1':
-                            displayDateTime = 'บ่าย'
-                            break;
-                          case '2':
-                            displayDateTime = 'เย็น'
-                            break;
-                        }
+                      //build a row
+                      // Insert a row in the table at row index 0
+                      newRow   = tableRef.insertRow(tableRef.rows.length);
+                      cellSubject  = newRow.insertCell(0);
+                      cellTime = newRow.insertCell(1);
+                      cellStudentCount = newRow.insertCell(2);
+                      cellMaxStudent = newRow.insertCell(3);
+                      cellMinStudent = newRow.insertCell(4);
+                      cellChooseMethod = newRow.insertCell(5);
+                      cellStatus = newRow.insertCell(6);
 
-                        switch ($.trim(data[i].dayofweek)) {
-                          case '0':
-                            displayDateTime += ' อาทิตย์'
-                            break;
-                          case '1':
-                            displayDateTime += ' จันทร์'
-                            break;
-                          case '2':
-                            displayDateTime += ' อังคาร'
-                            break;
-                          case '3':
-                            displayDateTime += ' พุธ'
-                            break;
-                          case '4':
-                            displayDateTime += ' พฤหัสบดี'
-                            break;
-                          case '5':
-                            displayDateTime += ' ศุกร์'
-                            break;
-                          case '6':
-                            displayDateTime += ' เสาร์'
-                            break;
-                        }
-
-                        switch ($.trim(data[i].subject_status)) {
-                          case 'Must choose':
-                            subjectStatus = 'ต้องทำการเลือก';
-                            subjectStatusCssClass = 'warning';
-                            classOfStatus *= 0;
-                            break;
-                          case 'Can open':
-                            subjectStatus = 'เปิดสอนได้';
-                            subjectStatusCssClass = 'success';
-                            classOfStatus *= 1;
-                            break;
-                          case 'Cannot open':
-                            subjectStatus = 'ไม่สามารถเปิดได้ จำนวนนิสิตไม่เพียงพอ';
-                            subjectStatusCssClass = 'danger';
-                            classOfStatus *= 0;
-                            break;
-                        }
-
-                        // Append a text node to the cell
-                        var cellData  = document.createTextNode($.trim(data[i].subject_name));
-                        cellSubject.appendChild(cellData);
-                        cellSubject.style.width = '150px';
-
-                        cellData = document.createTextNode(displayDateTime);
-                        cellTime.appendChild(cellData);
-                        cellTime.style.width = '70px';
-
-                        cellData = document.createTextNode($.trim(data[i].studentcount));
-                        cellStudentCount.appendChild(cellData);
-
-                        cellData = document.createTextNode($.trim(data[i].maxstudent));
-                        cellMaxStudent.appendChild(cellData);
-
-                        cellData = document.createTextNode($.trim(data[i].minstudent));
-                        cellMinStudent.appendChild(cellData);
-
-                        cellData = document.createTextNode($.trim(data[i].pickmethod));
-                        cellChooseMethod.appendChild(cellData);
-
-                        cellData = document.createTextNode(subjectStatus);
-                        cellStatus.appendChild(cellData);
-                        cellStatus.classList.add(subjectStatusCssClass);
-
+                      subjectStatus = '';
+                      displayDateTime = '';
+                      switch ($.trim(data[i].timeofday)) {
+                        case '0':
+                          displayDateTime = 'เช้า'
+                          break;
+                        case '1':
+                          displayDateTime = 'บ่าย'
+                          break;
+                        case '2':
+                          displayDateTime = 'เย็น'
+                          break;
                       }
 
-                      $('#listallsubject').css('display', 'inline-block');
-
-                      if (classOfStatus === 1) {
-                        $('#listallsubject-alert-done').display = 'inline-block';
-                      } else {
-                        $('#listallsubject-alert-notdone').display = 'inline-block';
+                      switch ($.trim(data[i].dayofweek)) {
+                        case '0':
+                          displayDateTime += ' อาทิตย์'
+                          break;
+                        case '1':
+                          displayDateTime += ' จันทร์'
+                          break;
+                        case '2':
+                          displayDateTime += ' อังคาร'
+                          break;
+                        case '3':
+                          displayDateTime += ' พุธ'
+                          break;
+                        case '4':
+                          displayDateTime += ' พฤหัสบดี'
+                          break;
+                        case '5':
+                          displayDateTime += ' ศุกร์'
+                          break;
+                        case '6':
+                          displayDateTime += ' เสาร์'
+                          break;
                       }
-                    },
-                    error: function(jqXHR, textStatus, errorThrown){
-                        alert('get Subject error: ' + textStatus);
+
+                      switch ($.trim(data[i].subject_status)) {
+                        case 'Must choose':
+                          subjectStatus = 'ต้องทำการเลือก';
+                          subjectStatusCssClass = 'warning';
+                          classOfStatus *= 0;
+                          break;
+                        case 'Can open':
+                          subjectStatus = 'เปิดสอนได้';
+                          subjectStatusCssClass = 'success';
+                          classOfStatus *= 1;
+                          break;
+                        case 'Cannot open':
+                          subjectStatus = 'ไม่สามารถเปิดได้ จำนวนนิสิตไม่เพียงพอ';
+                          subjectStatusCssClass = 'danger';
+                          classOfStatus *= 0;
+                          break;
+                      }
+
+                      // Append a text node to the cell
+                      var cellData  = document.createTextNode($.trim(data[i].subject_name));
+                      cellSubject.appendChild(cellData);
+                      cellSubject.style.width = '150px';
+
+                      cellData = document.createTextNode(displayDateTime);
+                      cellTime.appendChild(cellData);
+                      cellTime.style.width = '70px';
+
+                      cellData = document.createTextNode($.trim(data[i].studentcount));
+                      cellStudentCount.appendChild(cellData);
+
+                      cellData = document.createTextNode($.trim(data[i].maxstudent));
+                      cellMaxStudent.appendChild(cellData);
+
+                      cellData = document.createTextNode($.trim(data[i].minstudent));
+                      cellMinStudent.appendChild(cellData);
+
+                      cellData = document.createTextNode($.trim(data[i].pickmethod));
+                      cellChooseMethod.appendChild(cellData);
+
+                      cellData = document.createTextNode(subjectStatus);
+                      cellStatus.appendChild(cellData);
+                      cellStatus.classList.add(subjectStatusCssClass);
+
                     }
-                });
+
+                    $('#listallsubject').css('display', 'inline-block');
+
+                  },
+                  error: function(jqXHR, textStatus, errorThrown){
+                      
+                  }
+              });
             }
         }
 
         function submitRandom(){
-          var urlStr = window.location.origin + '/server/admin_api.php/api/v1/enrollmentadmin/list';
+          var urlStr = window.location.origin + '/server/admin_api.php/api/v1/enrollmentadmin/run';
           var jsonObj = {
               'classof_id': $('#studentYear').val(),                  //1
               'semester': $('#studentSemester').val()             //4
@@ -368,7 +398,8 @@
                     dataType: 'json',
                     contentType: "text/plain; charset=UTF-8",
                     success: function(data, textStatus, jqXHR){
-
+                      var result = data.status;
+                      alert(result);
                     }
           });
         };

@@ -210,8 +210,16 @@ class AdminStudentEnrollment
 		}
 	}
 
-	function moveAllConfrimedAcceptedStudentsFromTmpSelectionToStudentConfirmedEnrollment(){
-
+	function moveAllConfrimedAcceptedStudentsFromTmpSelectionToStudentConfirmedEnrollment($classof_id, $semester){
+		$sql = "INSERT INTO STUDENT_CONFIRMED_ENROLLMENT
+				SELECT student_id, subject_id, classof_id, semester, addeddate FROM TMP_SELECTION
+				WHERE classof_id = '$classof_id' AND semester = '$semester' AND status = 'CONFIRMED' AND type = 'ACCEPTED'";
+		if(!$this->db->setData($sql))
+		{
+			$this->db->rollbackWork();
+			$this->app->response->setBody(json_encode(array("status"=>"fail removeAcceptedLowPrioritySubjectStatus")));
+			return;
+		}
 	}
 
 	function setStatusClassOfSemester($semester_state){

@@ -2,6 +2,7 @@
 /*
 $app->group('/enrollmentadmin', function() use ($app){
         $app->post('/detail', 'getSubjectEnrollmentInfoByIdPost');
+        $app->post('/status', 'getEnrollmentStatusByClassOfAndSemester');
         $app->post('/list', 'listEnrollmentByClassOfAndSemester');
         $app->post('/liststudent', 'listEnrollmentResultBySubject');
         $app->post('/listpickmethod', 'listPickMethod');
@@ -58,41 +59,123 @@ function getSubjectEnrollmentInfoByIdPost(){
     }
 }
 
-function listEnrollmentByClassOfAndSemester(){
+function getEnrollmentStatusByClassOfAndSemester(){
 	try {
 		$app = \Slim\Slim::getInstance();
 		$app->response->headers->set('Content-Type', 'application/json');
 	    $request = $app->request();
 	    $classof_id = json_decode($request->getBody())->classof_id;
 	    $semester = json_decode($request->getBody())->semester;
-		$sql = "select 
-				a.subject_id,
-				b.name as subject_name,
-				a.dayofweek,
-				a.timeofday,
-				COUNT(c.student_id) AS studentcount,
-				a.maxstudent,
-				d.pickmethod_id,
-				e.name as pickmethod,
-				CAST(CASE WHEN a.minstudent <> 0 THEN CAST(a.minstudent AS NCHAR(10)) ELSE 'No' END AS NCHAR(10)) AS minstudent,
-				CASE
-					WHEN COUNT(c.student_id) > a.maxstudent THEN 'Must choose' 
-					WHEN COUNT(c.student_id) <= a.maxstudent AND COUNT(c.student_id) >= a.minstudent THEN 'Can open'
-					WHEN COUNT(c.student_id) < a.minstudent THEN 'Cannot open'
-				END AS subject_status
-				FROM SUBJECT_CLASSOF a
-				LEFT JOIN SUBJECT b ON a.subject_id = b.subject_id
-				LEFT JOIN STUDENT_ENROLLMENT c ON a.subject_id = c.subject_id
-				LEFT JOIN CLASSOF_SEMESTER d ON a.classof_id = d.classof_id AND a.semester = d.semester
-				LEFT JOIN PICKMETHOD e ON d.pickmethod_id = e.pickmethod_id
-				WHERE a.classof_id = '$classof_id' AND a.semester = '$semester'
-				GROUP BY a.subject_id, b.name, a.dayofweek, a.timeofday, a.maxstudent, d.pickmethod_id, e.name, minstudent";
+		$sql = "SELECT semester_state 
+				FROM CLASSOF_SEMESTER
+				WHERE classof_id = '$classof_id' AND semester = '$semester'";
+	} catch(Exception $e) {
+		$app->response->setBody(json_encode(array("error"=>array("source"=>"input", "reason"=>$e->getMessage()))));
+		return;
+	}
+    
+	try {
+		$db = new DBManager();
+		$result = $db->getData($sql);
+		$response_arr = array();
+		if ($result){
+			while($row = sqlsrv_fetch_array($result)){
+				array_push($response_arr, $row);
+			}
+		}
+		$db = null;
+        $app->response->setBody(json_encode($response_arr));
+	} catch(PDOException $e) {
+        $app->response->setBody(json_encode(array("error"=>array("source"=>"SQL", "reason"=>$e->getMessage()))));
+    }
+}
+
+function listEnrollmentByClassOfAndSemester(){
+
+	$semester_state = 0;
+	try {
+		$app = \Slim\Slim::getInstance();
+		$app->response->headers->set('Content-Type', 'application/json');
+	    $request = $app->request();
+	    $classof_id = json_decode($request->getBody())->classof_id;
+	    $semester = json_decode($request->getBody())->semester;
+
+	    //get semester state
+	    $sql_state = "SELECT semester_state 
+				FROM CLASSOF_SEMESTER
+				WHERE classof_id = '$classof_id' AND semester = '$semester'";
 	} catch(Exception $e) {
 		echo '{"error":{"source":"input","reason":'. $e->getMessage() .'}}';
 		return;
 	}
     
 	try {
+		$db = new DBManager();
+		$result = $db->getData($sql_state);
+		if ($result){
+			while($row = sqlsrv_fetch_array($result)){
+				$semester_state = $row['semester_state'];
+			}
+		}
+	} catch(PDOException $e) {
+        $app->response->setBody(json_encode(array("error"=>array("source"=>"SQL", "reason"=>$e->getMessage()))));
+    }
+
+    $sql = "";
+
+    try {
+    	if ($semester_state == 2) {
+    		$sql = "select 
+					a.subject_id,
+					b.name as subject_name,
+					a.dayofweek,
+					a.timeofday,
+					COUNT(c.student_id) AS studentcount,
+					a.maxstudent,
+					d.pickmethod_id,
+					e.name as pickmethod,
+					CAST(CASE WHEN a.minstudent <> 0 THEN CAST(a.minstudent AS NCHAR(10)) ELSE 'No' END AS NCHAR(10)) AS minstudent,
+					CASE
+						WHEN COUNT(c.student_id) > a.maxstudent THEN 'Must choose' 
+						WHEN COUNT(c.student_id) <= a.maxstudent AND COUNT(c.student_id) >= a.minstudent THEN 'Can open'
+						WHEN COUNT(c.student_id) < a.minstudent THEN 'Cannot open'
+					END AS subject_status
+					FROM SUBJECT_CLASSOF a
+					LEFT JOIN SUBJECT b ON a.subject_id = b.subject_id
+					LEFT JOIN STUDENT_CONFIRMED_ENROLLMENT c ON a.subject_id = c.subject_id
+					LEFT JOIN CLASSOF_SEMESTER d ON a.classof_id = d.classof_id AND a.semester = d.semester
+					LEFT JOIN PICKMETHOD e ON d.pickmethod_id = e.pickmethod_id
+					WHERE a.classof_id = '$classof_id' AND a.semester = '$semester'
+					GROUP BY a.subject_id, b.name, a.dayofweek, a.timeofday, a.maxstudent, d.pickmethod_id, e.name, minstudent";
+	    } else {
+	    	$sql = "select 
+					a.subject_id,
+					b.name as subject_name,
+					a.dayofweek,
+					a.timeofday,
+					COUNT(c.student_id) AS studentcount,
+					a.maxstudent,
+					d.pickmethod_id,
+					e.name as pickmethod,
+					CAST(CASE WHEN a.minstudent <> 0 THEN CAST(a.minstudent AS NCHAR(10)) ELSE 'No' END AS NCHAR(10)) AS minstudent,
+					CASE
+						WHEN COUNT(c.student_id) > a.maxstudent THEN 'Must choose' 
+						WHEN COUNT(c.student_id) <= a.maxstudent AND COUNT(c.student_id) >= a.minstudent THEN 'Can open'
+						WHEN COUNT(c.student_id) < a.minstudent THEN 'Cannot open'
+					END AS subject_status
+					FROM SUBJECT_CLASSOF a
+					LEFT JOIN SUBJECT b ON a.subject_id = b.subject_id
+					LEFT JOIN STUDENT_ENROLLMENT c ON a.subject_id = c.subject_id
+					LEFT JOIN CLASSOF_SEMESTER d ON a.classof_id = d.classof_id AND a.semester = d.semester
+					LEFT JOIN PICKMETHOD e ON d.pickmethod_id = e.pickmethod_id
+					WHERE a.classof_id = '$classof_id' AND a.semester = '$semester'
+					GROUP BY a.subject_id, b.name, a.dayofweek, a.timeofday, a.maxstudent, d.pickmethod_id, e.name, minstudent";
+	    }
+    } catch(PDOException $e) {
+        $app->response->setBody(json_encode(array("error"=>array("source"=>"SQL", "reason"=>$e->getMessage()))));
+    }
+    
+    try {
 		$db = new DBManager();
 		$result = $db->getData($sql);
 		$response_arr = array();
@@ -223,7 +306,7 @@ function performEnrollment(){
 		}
 		
 		//ย้าย data จาก TMP_SELECTION ไปไว้ใน StudentCOnfirmedEnrollment เป็นการ confirm ว่า user ลงทะเบียนแล้ว
-		$AdminEnroll->moveAllConfrimedAcceptedStudentsFromTmpSelectionToStudentConfirmedEnrollment();
+		$AdminEnroll->moveAllConfrimedAcceptedStudentsFromTmpSelectionToStudentConfirmedEnrollment($classof_id, $semester);
 
 		//จบกระบวนการเลือก update table classof_semester ของเทอมนี้ให้เป็น 2 
 		$AdminEnroll->setStatusClassOfSemester(2);

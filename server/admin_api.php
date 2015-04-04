@@ -87,6 +87,7 @@ $app->group('/api/v1', function() use ($app){
 
     $app->group('/enrollmentadmin', function() use ($app){
         $app->post('/detail', 'getSubjectEnrollmentInfoByIdPost');
+        $app->post('/status', 'getEnrollmentStatusByClassOfAndSemester');
         $app->post('/list', 'listEnrollmentByClassOfAndSemester');
         $app->post('/liststudent', 'listEnrollmentResultBySubject');
         $app->post('/listpickmethod', 'listPickMethod');

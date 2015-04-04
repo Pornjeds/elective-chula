@@ -309,14 +309,14 @@ CREATE TABLE [dbo].[STUDENT_CONFIRMED_ENROLLMENT](
 	[student_id] [nchar](10) NOT NULL,
 	[subject_id] [nchar](10) NOT NULL,
 	[classof_id] [int] NOT NULL,
-	[semester_id] [nchar](10) NOT NULL,
+	[semester] [nchar](10) NOT NULL,
 	[addeddate] [datetime] NOT NULL,
  CONSTRAINT [PK_STUDENT_CONFIRMED_ENROLLMENT] PRIMARY KEY CLUSTERED 
 (
 	[student_id] ASC,
 	[subject_id] ASC,
 	[classof_id] ASC,
-	[semester_id] ASC
+	[semester] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
