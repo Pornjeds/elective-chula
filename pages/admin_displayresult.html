@@ -121,7 +121,7 @@
           เทอมนี้ยังไม่มีการเปิดสอนและให้นิสิตลงทะเบียน โปรดใช้ระบบการลงทะเบียนวิชาเรียนเพื่อเปิดวิชาเรียน
         </div>
         <div id="listallsubject-alert-notdone" class="alert alert-danger" role="alert" style="display:none">
-          มีในบางวิชามีนิสิตต้องการลงทะเบียนมากกว่าจำนวนที่สามารถรองรับได้ ต้องทำการตัดสินก่อนที่จะแสดงผลการคัดเลือกสู่นิสิต
+          มีในบางวิชามีนิสิตต้องการลงทะเบียนมากกว่าจำนวนที่สามารถรองรับได้ ต้องทำการตัดสินก่อนที่จะแสดงผลการคัดเลือกสู่นิสิต <br>โดยระบบจะใช้วิธี <b><u><span id="chooseMethod"></span></u></b> ในการเลือก
           <button type="button" class="btn btn-warning" onclick="submitRandom()">กดที่นี่เพื่อทำการคัดเลือก</button>
         </div>
         <div id="listallsubject-alert-done" class="alert alert-success" role="alert" id="successRandom" style="display:none">
@@ -138,7 +138,6 @@
                 <th>จำนวนนิสิตที่ต้องการลงทะเบียน</th>
                 <th>จำนวนนิสิตที่สามารถรับได้</th>
                 <th>จำนวนนิสิตขั้นต่ำสำหรับการเปิดสอน</th>
-                <th>วิธีที่ใช้ตัดสินในกรณีที่ไม่ลงตัว</th>
                 <th>สถานะ</th>
               </tr>
             </thead>
@@ -217,6 +216,7 @@
                   break;
                 case 1:
                   $('#listallsubject-alert-notdone').css('display', 'inline-block');
+                  $('#chooseMethod').text(data[0].pickmethod);
                   break;
                 case 2:
                   $('#listallsubject-alert-done').css('display', 'inline-block');
@@ -286,8 +286,7 @@
                       cellStudentCount = newRow.insertCell(2);
                       cellMaxStudent = newRow.insertCell(3);
                       cellMinStudent = newRow.insertCell(4);
-                      cellChooseMethod = newRow.insertCell(5);
-                      cellStatus = newRow.insertCell(6);
+                      cellStatus = newRow.insertCell(5);
 
                       subjectStatus = '';
                       displayDateTime = '';
@@ -346,25 +345,29 @@
                       }
 
                       // Append a text node to the cell
-                      var cellData  = document.createTextNode($.trim(data[i].subject_name));
+                      var subject_id = $.trim(data[i].subject_id);
+                      var subject_name = $.trim(data[i].subject_name);
+                      var cellData = document.createElement('a');
+                      cellData.setAttribute('href', 'admin_displayresult_subject.html?subject_id=' + subject_id + '&&classof_id=' + $('#studentYear').val() + '&&semester=' + $('#studentSemester').val());
+                      cellData.appendChild(document.createTextNode('(' + subject_id + ') ' + subject_name));
                       cellSubject.appendChild(cellData);
-                      cellSubject.style.width = '150px';
+                      cellSubject.style.width = '300px';
 
                       cellData = document.createTextNode(displayDateTime);
                       cellTime.appendChild(cellData);
-                      cellTime.style.width = '70px';
+                      cellTime.style.width = '150px';
 
                       cellData = document.createTextNode($.trim(data[i].studentcount));
                       cellStudentCount.appendChild(cellData);
+                      cellStudentCount.style.width = '120px';
 
                       cellData = document.createTextNode($.trim(data[i].maxstudent));
                       cellMaxStudent.appendChild(cellData);
+                      cellMaxStudent.style.width = '120px';
 
                       cellData = document.createTextNode($.trim(data[i].minstudent));
                       cellMinStudent.appendChild(cellData);
-
-                      cellData = document.createTextNode($.trim(data[i].pickmethod));
-                      cellChooseMethod.appendChild(cellData);
+                      cellMinStudent.style.width = '120px';
 
                       cellData = document.createTextNode(subjectStatus);
                       cellStatus.appendChild(cellData);

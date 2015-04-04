@@ -66,9 +66,11 @@ function getEnrollmentStatusByClassOfAndSemester(){
 	    $request = $app->request();
 	    $classof_id = json_decode($request->getBody())->classof_id;
 	    $semester = json_decode($request->getBody())->semester;
-		$sql = "SELECT semester_state 
-				FROM CLASSOF_SEMESTER
-				WHERE classof_id = '$classof_id' AND semester = '$semester'";
+		$sql = "SELECT a.semester_state AS semester_state, 
+						b.name AS pickmethod
+				FROM CLASSOF_SEMESTER a
+				INNER JOIN PICKMETHOD b ON a.pickmethod_id = b.pickmethod_id
+				WHERE a.classof_id = '$classof_id' AND a.semester = '$semester'";
 	} catch(Exception $e) {
 		$app->response->setBody(json_encode(array("error"=>array("source"=>"input", "reason"=>$e->getMessage()))));
 		return;
