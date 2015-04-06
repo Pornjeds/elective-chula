@@ -144,7 +144,7 @@ function listEnrollmentByClassOfAndSemester(){
 				LEFT JOIN $table c ON a.subject_id = c.subject_id
 				LEFT JOIN CLASSOF_SEMESTER d ON a.classof_id = d.classof_id AND a.semester = d.semester
 				LEFT JOIN PICKMETHOD e ON d.pickmethod_id = e.pickmethod_id
-				WHERE a.classof_id = '$classof_id' AND a.semester = '$semester'
+				WHERE a.classof_id = '$classof_id' AND a.semester = '$semester' AND c.classof_id = '$classof_id' AND c.semester = '$semester'
 				GROUP BY a.subject_id, b.name, a.dayofweek, a.timeofday, a.maxstudent, d.pickmethod_id, e.name, minstudent";
 	    
     } catch(PDOException $e) {

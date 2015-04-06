@@ -81,12 +81,12 @@
 
       <ol class="breadcrumb">
         <li><a href="admin_dashboard.html">Home</a></li>
-        <li><a href="admin_displayresult.html">ระบบแสดงผลการเลือก</a></li>
-        <li class="active"><span id='subjectname'></span></li>
+        <li><span id="breadcrumb-displayresult"></span></li>
+        <li class="active">รายชื่อนิสิตที่มีสิทธิ์ในการลงทะเบียน</li>
       </ol>
 
       <div class="starter-template">
-        <h1>ระบบแสดงผลการเลือก</h1>
+        <h1>รายชื่อนิสิตที่มีสิทธิ์ในการลงทะเบียน</h1>
       </div>
       <div class="display-selection-function" id="display-subject-detail">
         
@@ -129,7 +129,10 @@
 
     <script>
         $(document).ready(function () {
-            $('.selectpicker').selectpicker();
+            var classof_id = getUrlParameter('classof_id');
+            var semester = getUrlParameter('semester');
+            $('#breadcrumb-displayresult').html('<a href=admin_displayresult.html?classof_id=' + classof_id + '&&semester=' + semester + '>ระบบแสดงผลการเลือก</a>');
+
             displaySubjectDetail();
             displayStudent();
         });
@@ -359,7 +362,7 @@
 
                   cellData = document.createTextNode(student_name);
                   cellStudentName.appendChild(cellData);
-                  cellStudentName.style.width = '350px';
+                  cellStudentName.style.width = '250px';
 
                   cellData = document.createTextNode(addeddate);
                   cellAddeddate.appendChild(cellData);
