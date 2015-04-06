@@ -118,8 +118,8 @@
           เทอมนี้ยังไม่มีการเปิดสอนและให้นิสิตลงทะเบียน โปรดใช้ระบบการลงทะเบียนวิชาเรียนเพื่อเปิดวิชาเรียน
         </div>
         <div id="listallsubject-alert-notdone" class="alert alert-danger" role="alert" style="display:none">
-          มีในบางวิชามีนิสิตต้องการลงทะเบียนมากกว่าจำนวนที่สามารถรองรับได้ ต้องทำการตัดสินก่อนที่จะแสดงผลการคัดเลือกสู่นิสิต <br>โดยระบบจะใช้วิธี <b><u><span id="chooseMethod"></span></u></b> ในการเลือก
-          <button type="button" class="btn btn-warning" onclick="submitRandom()">กดที่นี่เพื่อทำการคัดเลือก</button>
+          อยู่ในช่วงการเปิดระบบให้นิสิตลงทะเบียน ในกรณีที่นิสิตต้องการเรียนวิชาเลือกเดียวกันเป็นจำนวนมากและเกินกว่าที่วิชานั้นรับได้ ระบบจะใช้วิธี <b><u><span id="chooseMethod"></span></u></b> ในการเลือก
+          <button type="button" class="btn btn-warning" onclick="submitRandom()">กดที่นี่เพื่อทำการปิดการลงทะเบียนและเริ่มต้นกระบวนการเลือก</button>
         </div>
         <div id="listallsubject-alert-done" class="alert alert-success" role="alert" id="successRandom" style="display:none">
           ระบบได้ทำการคัดเลือกนิสิตเรียบร้อยแล้ว Admin สามารถ click เข้าไปในแต่ละรายวิชาเพื่อตรวจสอบชื่อนิสิต
@@ -444,9 +444,12 @@
                     contentType: "text/plain; charset=UTF-8",
                     success: function(data, textStatus, jqXHR){
                       var result = data.status;
-                      alert(result);
+                      if (result === "success") {
+                        window.location = window.location.origin + '/pages/admin_displayresult.html?classof_id=' + $('#studentYear').val() + '&&semester=' + $('#studentSemester').val();
+                      }
                     }
           });
+
         };
 
 

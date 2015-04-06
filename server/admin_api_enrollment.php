@@ -18,11 +18,6 @@ function getSubjectEnrollmentInfoByIdPost(){
 	    $semester = json_decode($request->getBody())->semester;
 
 	    $semester_state = getSemesterState($classof_id, $semester);
-	    if ($semester_state == 2) {
-    		$table = "STUDENT_CONFIRMED_ENROLLMENT";
-    	} else {
-    		$table = "STUDENT_ENROLLMENT";
-    	}
 
 		$sql = "select 
 				a.subject_id,
@@ -41,7 +36,7 @@ function getSubjectEnrollmentInfoByIdPost(){
 				END AS SubjectStatus
 				FROM SUBJECT_CLASSOF a
 				LEFT JOIN SUBJECT b ON a.subject_id = b.subject_id
-				LEFT JOIN $table c ON a.subject_id = c.subject_id
+				LEFT JOIN STUDENT_ENROLLMENT c ON a.subject_id = c.subject_id
 				LEFT JOIN CLASSOF_SEMESTER d ON a.classof_id = d.classof_id AND a.semester = d.semester
 				LEFT JOIN PICKMETHOD e ON d.pickmethod_id = e.pickmethod_id
 				WHERE a.classof_id = '$classof_id' AND a.semester = '$semester' AND a.subject_id = '$subject_id'
