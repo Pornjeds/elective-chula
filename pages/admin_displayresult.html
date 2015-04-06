@@ -164,10 +164,29 @@
     <script src="../scripts/js/ie10-viewport-bug-workaround.js"></script>
 
     <script>
+
+        var isTableShowed = false;
+
         $(document).ready(function () {
             $('.selectpicker').selectpicker();
-            getStudentClassList();
+            var classof_id = getUrlParameter('classof_id');
+            var semester = getUrlParameter('semester');
+            getStudentClassList(classof_id, semester);
         });
+
+        function getUrlParameter(sParam)
+        {
+            var sPageURL = window.location.search.substring(1);
+            var sURLVariables = sPageURL.split('&');
+            for (var i = 0; i < sURLVariables.length; i++) 
+            {
+                var sParameterName = sURLVariables[i].split('=');
+                if (sParameterName[0] == sParam) 
+                {
+                  return sParameterName[1];
+                }
+            }
+        };
 
         function getStudentClassList(classof_id, semester){
             var urlStr = window.location.origin + '/server/admin_api.php/api/v1/classof/list';
@@ -186,6 +205,19 @@
                         }
                     }
                     $('.selectpicker').selectpicker('refresh');
+                    if (classof_id) {
+                      $('select[id=studentYear]').val(classof_id);
+                      $('.selectpicker').selectpicker('refresh');
+                    }
+
+                    if (semester) {
+                      $('select[id=studentSemester]').val(semester);
+                      $('.selectpicker').selectpicker('refresh');
+                    }
+
+                    if (classof_id && semester) {
+                      showSubjects();
+                    }
                 },
                 error: function(jqXHR, textStatus, errorThrown){
                     alert('get Student Class error: ' + textStatus);
@@ -194,11 +226,18 @@
         }
 
         function showSubjects() {
+          
           var urlStr = window.location.origin + '/server/admin_api.php/api/v1/enrollmentadmin/status';
           var jsonObj = {
               'classof_id': $('#studentYear').val(),                  //1
               'semester': $('#studentSemester').val()             //4
           };
+
+          //clear alert box state
+          $('#listallsubject-alert-notready').css('display', 'none');
+          $('#listallsubject-alert-notdone').css('display', 'none');
+          $('#listallsubject-alert-done').css('display', 'none');
+          
           $.ajax({
             type: 'POST',
             contentType: 'application/json',
@@ -220,6 +259,7 @@
                   break;
               }
 
+              //display subject list
               getSubjectList();
             },
             error: function(jqXHR, textStatus, errorThrown){
@@ -229,6 +269,11 @@
         }
 
         function getSubjectList(){
+            if (isTableShowed) {
+              $('tbody').remove();
+              $('#table-subject').append('<tbody></tbody>');
+              isTableShowed = false;
+            }
             if( $('#studentYear').val() === null || $('#studentSemester').val() === null ){
                 alert('Please select criteria first');
             } else {
@@ -373,7 +418,7 @@
                     }
 
                     $('#listallsubject').css('display', 'inline-block');
-
+                    isTableShowed = true;
                   },
                   error: function(jqXHR, textStatus, errorThrown){
                       
