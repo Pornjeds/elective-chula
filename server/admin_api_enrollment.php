@@ -16,15 +16,23 @@ function getSubjectEnrollmentInfoByIdPost(){
 	    $subject_id = json_decode($request->getBody())->subject_id;
 	    $classof_id = json_decode($request->getBody())->classof_id;
 	    $semester = json_decode($request->getBody())->semester;
+
+	    $semester_state = getSemesterState($classof_id, $semester);
+	    if ($semester_state == 2) {
+    		$table = "STUDENT_CONFIRMED_ENROLLMENT";
+    	} else {
+    		$table = "STUDENT_ENROLLMENT";
+    	}
+
 		$sql = "select 
 				a.subject_id,
-				b.name,
+				b.name AS subject_name,
 				a.dayofweek,
 				a.timeofday,
 				COUNT(c.student_id) AS studentcount,
 				a.maxstudent,
 				d.pickmethod_id,
-				e.name,
+				e.name AS pickmethod,
 				CAST(CASE WHEN a.minstudent <> 0 THEN CAST(a.minstudent AS NCHAR(10)) ELSE 'No' END AS NCHAR(10)) AS minstudent,
 				CASE
 					WHEN COUNT(c.student_id) > a.maxstudent THEN 'Must choose' 
@@ -33,7 +41,7 @@ function getSubjectEnrollmentInfoByIdPost(){
 				END AS SubjectStatus
 				FROM SUBJECT_CLASSOF a
 				LEFT JOIN SUBJECT b ON a.subject_id = b.subject_id
-				LEFT JOIN STUDENT_ENROLLMENT c ON a.subject_id = c.subject_id
+				LEFT JOIN $table c ON a.subject_id = c.subject_id
 				LEFT JOIN CLASSOF_SEMESTER d ON a.classof_id = d.classof_id AND a.semester = d.semester
 				LEFT JOIN PICKMETHOD e ON d.pickmethod_id = e.pickmethod_id
 				WHERE a.classof_id = '$classof_id' AND a.semester = '$semester' AND a.subject_id = '$subject_id'
@@ -102,77 +110,43 @@ function listEnrollmentByClassOfAndSemester(){
 	    $classof_id = json_decode($request->getBody())->classof_id;
 	    $semester = json_decode($request->getBody())->semester;
 
-	    //get semester state
-	    $sql_state = "SELECT semester_state 
-				FROM CLASSOF_SEMESTER
-				WHERE classof_id = '$classof_id' AND semester = '$semester'";
 	} catch(Exception $e) {
 		echo '{"error":{"source":"input","reason":'. $e->getMessage() .'}}';
 		return;
 	}
     
-	try {
-		$db = new DBManager();
-		$result = $db->getData($sql_state);
-		if ($result){
-			while($row = sqlsrv_fetch_array($result)){
-				$semester_state = $row['semester_state'];
-			}
-		}
-	} catch(PDOException $e) {
-        $app->response->setBody(json_encode(array("error"=>array("source"=>"SQL", "reason"=>$e->getMessage()))));
-    }
-
-    $sql = "";
+	$semester_state = getSemesterState($classof_id, $semester);
 
     try {
     	if ($semester_state == 2) {
-    		$sql = "select 
-					a.subject_id,
-					b.name as subject_name,
-					a.dayofweek,
-					a.timeofday,
-					COUNT(c.student_id) AS studentcount,
-					a.maxstudent,
-					d.pickmethod_id,
-					e.name as pickmethod,
-					CAST(CASE WHEN a.minstudent <> 0 THEN CAST(a.minstudent AS NCHAR(10)) ELSE 'No' END AS NCHAR(10)) AS minstudent,
-					CASE
-						WHEN COUNT(c.student_id) > a.maxstudent THEN 'Must choose' 
-						WHEN COUNT(c.student_id) <= a.maxstudent AND COUNT(c.student_id) >= a.minstudent THEN 'Can open'
-						WHEN COUNT(c.student_id) < a.minstudent THEN 'Cannot open'
-					END AS subject_status
-					FROM SUBJECT_CLASSOF a
-					LEFT JOIN SUBJECT b ON a.subject_id = b.subject_id
-					LEFT JOIN STUDENT_CONFIRMED_ENROLLMENT c ON a.subject_id = c.subject_id
-					LEFT JOIN CLASSOF_SEMESTER d ON a.classof_id = d.classof_id AND a.semester = d.semester
-					LEFT JOIN PICKMETHOD e ON d.pickmethod_id = e.pickmethod_id
-					WHERE a.classof_id = '$classof_id' AND a.semester = '$semester'
-					GROUP BY a.subject_id, b.name, a.dayofweek, a.timeofday, a.maxstudent, d.pickmethod_id, e.name, minstudent";
-	    } else {
-	    	$sql = "select 
-					a.subject_id,
-					b.name as subject_name,
-					a.dayofweek,
-					a.timeofday,
-					COUNT(c.student_id) AS studentcount,
-					a.maxstudent,
-					d.pickmethod_id,
-					e.name as pickmethod,
-					CAST(CASE WHEN a.minstudent <> 0 THEN CAST(a.minstudent AS NCHAR(10)) ELSE 'No' END AS NCHAR(10)) AS minstudent,
-					CASE
-						WHEN COUNT(c.student_id) > a.maxstudent THEN 'Must choose' 
-						WHEN COUNT(c.student_id) <= a.maxstudent AND COUNT(c.student_id) >= a.minstudent THEN 'Can open'
-						WHEN COUNT(c.student_id) < a.minstudent THEN 'Cannot open'
-					END AS subject_status
-					FROM SUBJECT_CLASSOF a
-					LEFT JOIN SUBJECT b ON a.subject_id = b.subject_id
-					LEFT JOIN STUDENT_ENROLLMENT c ON a.subject_id = c.subject_id
-					LEFT JOIN CLASSOF_SEMESTER d ON a.classof_id = d.classof_id AND a.semester = d.semester
-					LEFT JOIN PICKMETHOD e ON d.pickmethod_id = e.pickmethod_id
-					WHERE a.classof_id = '$classof_id' AND a.semester = '$semester'
-					GROUP BY a.subject_id, b.name, a.dayofweek, a.timeofday, a.maxstudent, d.pickmethod_id, e.name, minstudent";
-	    }
+    		$table = "STUDENT_CONFIRMED_ENROLLMENT";
+    	} else {
+    		$table = "STUDENT_ENROLLMENT";
+    	}	
+
+		$sql = "select 
+				a.subject_id,
+				b.name as subject_name,
+				a.dayofweek,
+				a.timeofday,
+				COUNT(c.student_id) AS studentcount,
+				a.maxstudent,
+				d.pickmethod_id,
+				e.name as pickmethod,
+				CAST(CASE WHEN a.minstudent <> 0 THEN CAST(a.minstudent AS NCHAR(10)) ELSE 'No' END AS NCHAR(10)) AS minstudent,
+				CASE
+					WHEN COUNT(c.student_id) > a.maxstudent THEN 'Must choose' 
+					WHEN COUNT(c.student_id) <= a.maxstudent AND COUNT(c.student_id) >= a.minstudent THEN 'Can open'
+					WHEN COUNT(c.student_id) < a.minstudent THEN 'Cannot open'
+				END AS subject_status
+				FROM SUBJECT_CLASSOF a
+				LEFT JOIN SUBJECT b ON a.subject_id = b.subject_id
+				LEFT JOIN $table c ON a.subject_id = c.subject_id
+				LEFT JOIN CLASSOF_SEMESTER d ON a.classof_id = d.classof_id AND a.semester = d.semester
+				LEFT JOIN PICKMETHOD e ON d.pickmethod_id = e.pickmethod_id
+				WHERE a.classof_id = '$classof_id' AND a.semester = '$semester'
+				GROUP BY a.subject_id, b.name, a.dayofweek, a.timeofday, a.maxstudent, d.pickmethod_id, e.name, minstudent";
+	    
     } catch(PDOException $e) {
         $app->response->setBody(json_encode(array("error"=>array("source"=>"SQL", "reason"=>$e->getMessage()))));
     }
@@ -195,7 +169,50 @@ function listEnrollmentByClassOfAndSemester(){
 
 function listEnrollmentResultBySubject(){
 
+	try {
+		$app = \Slim\Slim::getInstance();
+		$app->response->headers->set('Content-Type', 'application/json');
+	    $request = $app->request();
+	    $subject_id = json_decode($request->getBody())->subject_id;
+	    $classof_id = json_decode($request->getBody())->classof_id;
+	    $semester = json_decode($request->getBody())->semester;
 
+	} catch(Exception $e) {
+		echo '{"error":{"source":"input","reason":'. $e->getMessage() .'}}';
+		return;
+	}
+
+	$semester_state = getSemesterState($classof_id, $semester);
+
+	if ($semester_state == 2) {
+    	$table = "STUDENT_CONFIRMED_ENROLLMENT";
+    } else {
+    	$table = "STUDENT_ENROLLMENT";
+    }
+
+    $sql = "SELECT 
+    		a.student_id AS student_id,
+    		b.name AS student_name,
+    		a.addeddate AS addeddate
+    		FROM $table a
+			INNER JOIN STUDENT b ON a.student_id = b.student_id
+			WHERE a.classof_id = '$classof_id' AND a.semester = '$semester' AND a.subject_id = '$subject_id'
+			";
+    
+	try {
+		$db = new DBManager();
+		$result = $db->getData($sql);
+		$response_arr = array();
+		if ($result){
+			while($row = sqlsrv_fetch_array($result)){
+				array_push($response_arr, $row);
+			}
+		}
+		$db = null;
+        $app->response->setBody(json_encode($response_arr));
+	} catch(PDOException $e) {
+        $app->response->setBody(json_encode(array("error"=>array("source"=>"SQL", "reason"=>$e->getMessage()))));
+    }
 }
 
 function listPickMethod(){
@@ -322,6 +339,19 @@ function performEnrollment(){
 	} catch(PDOException $e) {
         $app->response->setBody(json_encode(array("error"=>array("source"=>"SQL", "reason"=>$e->getMessage()))));
     }
+}
+
+function getSemesterState($classof_id, $semester){
+	$sql = "SELECT semester_state FROM CLASSOF_SEMESTER WHERE classof_id = '".$classof_id."' AND semester = '".$semester."'";
+	$db = new DBManager();
+	$result = $db->getData($sql);
+	if ($result){
+		while($row = sqlsrv_fetch_array($result)){
+			$semester_state = $row['semester_state'];
+		}
+	}
+
+	return $semester_state;
 }
 
 ?>
