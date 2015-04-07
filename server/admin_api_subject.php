@@ -215,7 +215,12 @@ input
 		$sqlRemove = "DELETE FROM SUBJECT_CLASSOF where classof_id = '$classof_id' AND semester = '$semester'";
 
 		//update semester_state of the other semesters of this classof_id to be 0
-		$sqlSemesterState = "UPDATE CLASSOF_SEMESTER set semester_state = 0 where classof_id = '$classof_id' AND semester <> '$semester'";
+		if ($semester_state == "1") {
+			$sqlSemesterState = "UPDATE CLASSOF_SEMESTER set semester_state = 0 where classof_id = '$classof_id' AND semester <> '$semester'";
+			$sqlClearTmpSelection = "DELETE FROM TMP_SELECTION where classof_id = '$classof_id' AND semester = '$semester'";
+			$sqlSetLogicalPriority = "UPDATE STUDENT_ENROLLMENT set logical_priority = priority where classof_id = '$classof_id' AND semester = '$semester'";
+			$sqlClearStudentConfirmedEnrollment = "DELETE FROM STUDENT_CONFIRMED_ENROLLMENT where classof_id = '$classof_id' AND semester = '$semester'";
+		}
 		
 	} catch(Exception $e) {
 		echo '{"error":{"source":"input","reason":'. $e->getMessage() .'}}';
@@ -241,11 +246,34 @@ input
         	}
 		}
 
-		if(!$db->setData($sqlSemesterState))
-		{
-			//echo $sqlRemove;
-			$submitStatus = false;
-			break;
+		if ($semester_state == "1") {
+			if(!$db->setData($sqlSemesterState))
+			{
+				//echo $sqlRemove;
+				$submitStatus = false;
+				break;
+			}
+
+			if(!$db->setData($sqlClearTmpSelection))
+			{
+				//echo $sqlRemove;
+				$submitStatus = false;
+				break;
+			}
+
+			if(!$db->setData($sqlSetLogicalPriority))
+			{
+				//echo $sqlRemove;
+				$submitStatus = false;
+				break;
+			}
+
+			if(!$db->setData($sqlClearStudentConfirmedEnrollment))
+			{
+				//echo $sqlRemove;
+				$submitStatus = false;
+				break;
+			}
 		}
 
 		if(!$db->setData($sqlClassofSemester))

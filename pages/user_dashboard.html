@@ -21,6 +21,10 @@
             width:232px;
             position: relative;
         }
+
+        .min-progressbar {
+            min-width: 3em;
+        }
     </style>
   </head>
 
@@ -238,7 +242,7 @@
                                 
                                 var progressSubElement = document.createElement('div');
                                 progressSubElement.id = 'progress' + i;
-                                progressSubElement.className = 'progress-bar progress-bar-striped active';
+                                progressSubElement.className = 'progress-bar progress-bar-striped min-progressbar active';
                                 progressSubElement.setAttribute('role', 'progressbar');
                                 progressSubElement.setAttribute( 'aria-valuenow', data[2].subjectlist[i].studentcount );
                                 progressSubElement.setAttribute('aria-valuemin', data[2].subjectlist[i].minstudent );

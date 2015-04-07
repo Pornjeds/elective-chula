@@ -119,7 +119,7 @@
         </div>
         <div id="listallsubject-alert-notdone" class="alert alert-danger" role="alert" style="display:none">
           อยู่ในช่วงการเปิดระบบให้นิสิตลงทะเบียน ในกรณีที่นิสิตต้องการเรียนวิชาเลือกเดียวกันเป็นจำนวนมากและเกินกว่าที่วิชานั้นรับได้ ระบบจะใช้วิธี <b><u><span id="chooseMethod"></span></u></b> ในการเลือก
-          <button type="button" class="btn btn-warning" onclick="submitRandom()">กดที่นี่เพื่อทำการปิดการลงทะเบียนและเริ่มต้นกระบวนการเลือก</button>
+          <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#confirmSubmit">กดที่นี่เพื่อทำการปิดการลงทะเบียนและเริ่มต้นกระบวนการเลือก</button>
         </div>
         <div id="listallsubject-alert-done" class="alert alert-success" role="alert" id="successRandom" style="display:none">
           ระบบได้ทำการคัดเลือกนิสิตเรียบร้อยแล้ว Admin สามารถ click เข้าไปในแต่ละรายวิชาเพื่อตรวจสอบชื่อนิสิต
@@ -152,7 +152,23 @@
 
     </div><!-- /.container -->
 
-
+    <div class="modal fade" id="confirmSubmit" tabindex="-1" role="dialog" aria-labelledby="confirmSubmitLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel" style='font-weight:bold'>ยืนยันการทำการปิดการลงทะเบียนและเริ่มต้นกระบวนการเลือก</h4>
+          </div>
+          <div class="modal-body" style='text-align:center'>
+            ระบบจะทำการคัดเลือกนิสิตตามวิธีที่ได้ระบุไว้และทำการปิดการลงทะเบียนของรุ่นนี้
+          </div>
+          <div class="modal-footer">
+            <button type="button" data-dismiss="modal" class="btn btn-primary" onclick="submitRandom()">ยืนยัน</button>
+            <button type="button" data-dismiss="modal" class="btn">ยกเลิก</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
@@ -451,7 +467,6 @@
           });
 
         };
-
 
     </script>
   
