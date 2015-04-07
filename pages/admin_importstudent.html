@@ -15,6 +15,7 @@
     <link href="../scripts/css/bootstrap.min.css" rel="stylesheet">
     <link href="../scripts/css/jasny-bootstrap.min.css" rel="stylesheet">
     <link href="../scripts/css/bootstrap-select.min.css" rel="stylesheet">
+    <link href="../scripts/css/loading.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <link href="../scripts/css/admin_template.css" rel="stylesheet">
@@ -128,6 +129,29 @@
         </div>
       </footer>
 
+        <div id="loadingDiv">
+            <div class="spinner">
+                <div class="spinner-container container1">
+                    <div class="circle1"></div>
+                    <div class="circle2"></div>
+                    <div class="circle3"></div>
+                    <div class="circle4"></div>
+                </div>
+                <div class="spinner-container container2">
+                    <div class="circle1"></div>
+                    <div class="circle2"></div>
+                    <div class="circle3"></div>
+                    <div class="circle4"></div>
+                </div>
+                <div class="spinner-container container3">
+                    <div class="circle1"></div>
+                    <div class="circle2"></div>
+                    <div class="circle3"></div>
+                    <div class="circle4"></div>
+                </div>
+            </div>
+        </div>
+
     </div><!-- /.container -->
 
     <!-- Bootstrap core JavaScript
@@ -153,6 +177,11 @@
         };
 
         function importBtClicked(){
+
+            //display loading and disable button
+            $('#loadingDiv').css("display", "block");
+            $('input[type="submit"], input[type="button"], button').prop('disabled', true);
+
              //CONVERT *.CSV FILE TO BE IN JSON OBJECT
             var files = $('#files')[0].files;
             if( files.length > 0 ){
@@ -283,9 +312,16 @@
                     document.getElementById("successClassName").innerHTML = document.getElementById('studentClass').selectedOptions[0].innerHTML
                     //GET STUDENTCLASS AGAIN
                     getStudentClassList();
+
+                    //display loading and disable button
+                    $('#loadingDiv').css('display', 'none');
+                    $('input[type="submit"], input[type="button"], button').prop('disabled', false);
                 },
                 error: function(jqXHR, textStatus, errorThrown){
                     alert('import Student error: ' + textStatus);
+                    //display loading and disable button
+                    $('#loadingDiv').css('display', 'none');
+                    $('input[type="submit"], input[type="button"], button').prop('disabled', false);
                 }
             });
         };

@@ -3,7 +3,7 @@ session_start();
 require_once '../server/DBManager_sqlserver.php';
 
 function adminLogin($username, $hashPassword){
-	return true;
+	
 	try{
 	    $db = new DBManager();
 	    $sql = "SELECT COUNT(1) AS loginStatus from STUDENT
