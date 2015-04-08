@@ -307,6 +307,7 @@
                                 var tmpDivElement = document.createElement('div');
                                 tmpTDElement.appendChild( tmpDivElement );
                                 tmpDivElement.id = 'cell' + day + '-' +  i    //(day, nomberOfSubjectInDay)
+                                tmpDivElement.style.wordBreak = 'break-all';
                                 //ADD SUBJECT TO DIV
                                 var subjectInformation = getInformationFromData( electiveSubjectArray[k], day); //MORNING, NOON, EVENING
                                 if( subjectInformation !== null ){
@@ -416,6 +417,7 @@
                                 var tmpDivElement = document.createElement('div');
                                 tmpTDElement.appendChild( tmpDivElement );
                                 tmpDivElement.id = 'cell' + day + '-' +  i + 'required';   //day, numberOfSubjectInDayRequired
+                                tmpDivElement.style.wordBreak = 'break-all';
                                 //ADD SUBJECT TO DIV
                                 var subjectInformation = getInformationFromData( requiredSubjectArray[k], day); //MORNING, NOON, EVENING
                                 if( subjectInformation !== null ){
