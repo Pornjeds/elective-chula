@@ -210,6 +210,40 @@ function listEnrollmentResultBySubject(){
     }
 }
 
+function listEnrollmentResultBySubjectGet($classof_id, $semester, $subject_id){
+
+	$app = \Slim\Slim::getInstance();
+	$app->response->headers->set('Content-Disposition', 'attachment;filename='.$subject_id.'.csv');
+	$semester_state = getSemesterState($classof_id, $semester);
+
+	if ($semester_state == 2) {
+    	$table = "STUDENT_CONFIRMED_ENROLLMENT";
+    } else {
+    	$table = "STUDENT_ENROLLMENT";
+    }
+
+    $sql = "SELECT 
+    		a.student_id AS student_id,
+    		b.name AS student_name
+    		FROM $table a
+			INNER JOIN STUDENT b ON a.student_id = b.student_id
+			WHERE a.classof_id = '$classof_id' AND a.semester = '$semester' AND a.subject_id = '$subject_id'
+			";
+    
+	try {
+		$db = new DBManager();
+		$result = $db->getData($sql);
+		if ($result){
+			while($row = sqlsrv_fetch_array($result)){
+				echo $row['student_id'].",\n";
+			}
+		}
+		$db = null;
+	} catch(PDOException $e) {
+        $app->response->setBody(json_encode(array("error"=>array("source"=>"SQL", "reason"=>$e->getMessage()))));
+    }
+}
+
 function listPickMethod(){
 	try {
 		$app = \Slim\Slim::getInstance();
