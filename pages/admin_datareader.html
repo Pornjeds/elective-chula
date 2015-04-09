@@ -93,6 +93,7 @@
                         <option value="" selected disabled>Template list</option>
                         <option value='studentInformation'>ข้อมูลของนิสิต</option>
                         <option value='subjectInformation'>ข้อมูลวิชาเรียน</option>
+                        <option value='adminLogInformation'>ข้อมูลการใช้งานของ admin</option>
                     </select>
                 </div> 
                 <div style='padding: 5px 5px 5px 5px; margin-right: 5px; float:left; display: none;'>
@@ -176,6 +177,9 @@
                 else if( $(this).val() === 'subjectInformation' ){
                     $('#studentClass').parent().css('display', 'none');
                 }
+                else if( $(this).val() === 'adminLogInformation' ){
+                    $('#studentClass').parent().css('display', 'none');
+                }
                 $('#bt_query').parent().css('display','');
             });            
         });
@@ -211,6 +215,9 @@
             }
             else if( $('#templateList').val() === 'subjectInformation' ){
                 getSubjectInformation();
+            }
+            else if( $('#templateList').val() === 'adminLogInformation' ){
+                getAdminLogInformation();
             }
         };
         //STUDENT INFORMATION
@@ -260,6 +267,37 @@
                     alert('get Student from Class error: ' + textStatus);
                 }
             });
+        };
+        //ADMIN LOG INFORMATION
+        //STUDENT INFORMATION
+        function getAdminLogInformation(){
+            //will work on this line na @gie
+            alert('will work on this line na @gie');
+            /*
+            var urlStr = window.location.origin + '/server/admin_api.php/api/v1/student/classof';
+            var jsonObj = {
+                'classof_id' : $('select[id="studentClass"').val()
+            };
+            $.ajax({
+                type: 'POST',
+                contentType: 'application/json',
+                url: urlStr,
+                dataType: 'json',
+                data: JSON.stringify( jsonObj ),
+                contentType: "text/plain; charset=UTF-8",
+                success: function(data, textStatus, jqXHR){
+                    $('#studentTable tbody').empty()
+                    for(var i=0; i<data.length; i++){
+                        $('#studentTable tbody').append('<tr><td>'+data[i].student_id+'</td><td>'+data[i].name+'</td><td>' +data[i].lastname+ '</td></tr>');
+                    }
+                    document.getElementById('subjectTable').style.display = 'none';
+                    document.getElementById('studentTable').style.display = '';
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    alert('get Student from Class error: ' + textStatus);
+                }
+            });
+            */
         };
         //
         /*
