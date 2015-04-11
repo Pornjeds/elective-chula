@@ -219,8 +219,8 @@
                 <div style="display: inline-block; margin-left: 15px; margin-top: 2px; vertical-align: middle;"><input type="checkbox" id='semesterState' value="1"><span style="margin-left: 5px; font-weight: bold;">Active?</span>
                 </div>
                 <div style='margin-top:8px; display:none;'>
-                    Start:<input type="text" class="datetimePicker form-control" value="" id="openPeriod"/>
-                    End:<input type="text" class="datetimePicker form-control" value="" id="closePeriod"/>
+                    วันเริ่มลงทะเบียน:<input type="text" class="datetimePicker form-control" value="" id="openPeriod"/>
+                    วันสุดท้ายของการลงทะเบียน:<input type="text" class="datetimePicker form-control" value="" id="closePeriod"/>
                 </div>
             </div>
             <div style='margin-top: 20px;' id='buttonArea'>
@@ -270,7 +270,8 @@
             //GET PICKMETHOD
             getPickMethodList();
             //DATETIME PICKER
-            $('.datetimePicker').datetimepicker();
+            $('#openPeriod').datetimepicker();
+            $('#closePeriod').datetimepicker();
             
             $('#semesterState').change(function(){
                 if( $('#semesterState:checked').length === 1 ){
