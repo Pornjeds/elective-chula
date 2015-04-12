@@ -99,7 +99,7 @@ $app->group('/api/v1', function() use ($app){
         $app->post('/id', 'getAdminId');
         $app->post('/checkPass', 'checkCurrentPassword');
         $app->post('/updatePass', 'updatePassword');
-
+        $app->post('/getAdminAdminLogin', 'getAuditAdminLogin');
     });
 });
 

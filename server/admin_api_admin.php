@@ -78,4 +78,31 @@ function updatePassword() {
     }
 }
 
+function getAuditAdminLogin() {
+    try {
+        $app = \Slim\Slim::getInstance();
+        $app->response->headers->set('Content-Type', 'application/json');
+        $request = $app->request();
+        $sql = "SELECT user_id, logdate FROM ADMIN_AUDITLOG where activity = 'Admin Login'";
+    } catch(Exception $e) {
+        echo '{"error":{"source":"input","reason":'. $e->getMessage() .'}}';
+        return;
+    }
+    
+    try {
+        $db = new DBManager();
+        $result = $db->getData($sql);
+        $response_arr = array();
+        if ($result){
+            while($row = sqlsrv_fetch_array($result)){
+                array_push($response_arr, $row);
+            }
+        }
+        $db = null;
+        $app->response->setBody(json_encode($response_arr));
+    } catch(PDOException $e) {
+        echo '{"error":{"source":"SQL","reason": SQL'. $e->getMessage() .'}}';
+    }
+}
+
 ?>

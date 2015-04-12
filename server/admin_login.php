@@ -17,6 +17,13 @@ function adminLogin($username, $hashPassword){
 	    }
 
 	    if ($loginStatus == 1){
+	    	//log audit
+	    	$sql = "INSERT INTO ADMIN_AUDITLOG (user_id, activity, logdate) VALUES ('$username', 'Admin Login', GETDATE())";
+	    	$db->beginSet();
+	        if($db->setData($sql))
+	        {
+	            $db->commitWork();
+	        }
 	        return true;
 	    }
 
@@ -24,6 +31,7 @@ function adminLogin($username, $hashPassword){
 	    echo '{"error":{"source":"SQL","reason": SQL'. $e->getMessage() .'}}';
 	}
 }
+
 
 $username = $_POST["txtUsername"];
 $hashPassword = $_POST["hashPassword"];
@@ -33,10 +41,10 @@ if(isset($username) && isset($hashPassword) && adminLogin($username, $hashPasswo
 	$_SESSION['loginUsername'] = $username;
 	$_SESSION['loginStatus'] = 1;
 	$_SESSION['loginType'] = 'admin';
+
 	header('Location: ../pages/admin_dashboard.html');
 }else{
 	header('Location: ../admin_login.html');
 }
-
 
 ?>
