@@ -92,6 +92,7 @@ $app->group('/api/v1', function() use ($app){
         $app->get('/liststudent/:classof_id/:semester/:subject_id', 'listEnrollmentResultBySubjectGet');
         $app->post('/liststudent', 'listEnrollmentResultBySubject');
         $app->post('/listpickmethod', 'listPickMethod');
+        $app->post('/activate', 'activateClassofSemester');
         $app->post('/run', 'performEnrollment');
     });
 

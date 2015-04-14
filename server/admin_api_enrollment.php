@@ -383,4 +383,48 @@ function getSemesterState($classof_id, $semester){
 	return $semester_state;
 }
 
+function activateClassofSemester() {
+	try {
+		$app = \Slim\Slim::getInstance();
+		$app->response->headers->set('Content-Type', 'application/json');
+	    $request = $app->request();
+	    $classof_id = json_decode($request->getBody())->classof_id;
+	    $semester = json_decode($request->getBody())->semester;
+		$sql1 = "UPDATE CLASSOF_SEMESTER
+				SET semester_state = '1', updatedate = GETDATE()
+				WHERE classof_id = '$classof_id' AND semester = '$semester'";
+		$sql2 = "UPDATE CLASSOF_SEMESTER
+				SET semester_state = '0', updatedate = GETDATE()
+				WHERE classof_id = '$classof_id' AND semester != '$semester' AND semester_state = '1'";
+	} catch(Exception $e) {
+		$app->response->setBody(json_encode(array("error"=>array("source"=>"input", "reason"=>$e->getMessage()))));
+		return;
+	}
+    
+	try {
+		$db = new DBManager();
+		$db->beginSet();
+        if($db->setData($sql1))
+        {
+        	if($db->setData($sql2))
+        	{
+        		$db->commitWork();	
+        	}
+        	else
+        	{
+        		$db->rollbackWork();
+        	}
+        }
+        else
+        {
+        	//$db->rollbackWork();
+        }
+		$db = null;
+        $app->response->setBody(json_encode(array("status"=>"success")));
+
+	} catch(PDOException $e) {
+        $app->response->setBody(json_encode(array("error"=>array("source"=>"SQL", "reason"=>$e->getMessage()))));
+    }
+}
+
 ?>
