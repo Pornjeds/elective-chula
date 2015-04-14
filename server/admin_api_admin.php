@@ -83,7 +83,7 @@ function getAuditAdminLogin() {
         $app = \Slim\Slim::getInstance();
         $app->response->headers->set('Content-Type', 'application/json');
         $request = $app->request();
-        $sql = "SELECT user_id, logdate FROM ADMIN_AUDITLOG where activity = 'Admin Login'";
+        $sql = "SELECT user_id, user_ip, logdate FROM ADMIN_AUDITLOG where activity = 'Admin Login'";
     } catch(Exception $e) {
         echo '{"error":{"source":"input","reason":'. $e->getMessage() .'}}';
         return;

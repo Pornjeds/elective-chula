@@ -18,7 +18,8 @@ function adminLogin($username, $hashPassword){
 
 	    if ($loginStatus == 1){
 	    	//log audit
-	    	$sql = "INSERT INTO ADMIN_AUDITLOG (user_id, activity, logdate) VALUES ('$username', 'Admin Login', GETDATE())";
+	    	$user_ip = get_client_ip();
+	    	$sql = "INSERT INTO ADMIN_AUDITLOG (user_id, user_ip, activity, logdate) VALUES ('$username', '$user_ip', 'Admin Login', GETDATE())";
 	    	$db->beginSet();
 	        if($db->setData($sql))
 	        {
@@ -30,6 +31,26 @@ function adminLogin($username, $hashPassword){
 	} catch(PDOException $e) {
 	    echo '{"error":{"source":"SQL","reason": SQL'. $e->getMessage() .'}}';
 	}
+}
+
+// Function to get the client IP address
+function get_client_ip() {
+    $ipaddress = '';
+    if ($_SERVER['HTTP_CLIENT_IP'])
+        $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+    else if($_SERVER['HTTP_X_FORWARDED_FOR'])
+        $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+    else if($_SERVER['HTTP_X_FORWARDED'])
+        $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+    else if($_SERVER['HTTP_FORWARDED_FOR'])
+        $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+    else if($_SERVER['HTTP_FORWARDED'])
+        $ipaddress = $_SERVER['HTTP_FORWARDED'];
+    else if($_SERVER['REMOTE_ADDR'])
+        $ipaddress = $_SERVER['REMOTE_ADDR'];
+    else
+        $ipaddress = 'UNKNOWN';
+    return $ipaddress;
 }
 
 

@@ -328,6 +328,7 @@ GO
 CREATE TABLE [dbo].[ADMIN_AUDITLOG](
 	[id] [int] NOT NULL IDENTITY(1,1),
 	[user_id] [nchar](10) NOT NULL,
+	[user_ip] [nvarchar](50) NOT NULL,
 	[activity] [nvarchar](max) NOT NULL,
 	[logdate] [datetime] NOT NULL,
  CONSTRAINT [PK_ADMIN_AUDITLOG] PRIMARY KEY CLUSTERED 

@@ -140,6 +140,7 @@
         <thead>
           <tr class='active'>
             <th style='width:100px;'>ล็อคอิน  id</th>
+            <th style='width:100px;'>ล็อคอิน  ip</th>
             <th style='width:150px;'>เวลาที่เข้ามา</th>
           </tr>
         </thead>
@@ -282,7 +283,7 @@
         };
         //ADMIN LOG INFORMATION
         function getAdminLogInformation(){
-            var urlStr = window.location.origin + '/server/admin_api.php/api/v1/admin/getAdminAdminLogin';
+            var urlStr = window.location.origin + '/server/admin_api.php/api/v1/admin/getAuditAdminLogin';
             $.ajax({
                 type: 'POST',
                 contentType: 'application/json',
@@ -292,7 +293,7 @@
                 success: function(data, textStatus, jqXHR){
                    $('#adminTable tbody').empty()
                     for(var i=0; i<data.length; i++){
-                        $('#adminTable tbody').append('<tr><td>'+$.trim( data[i].user_id )+'</td><td>'+ data[i].logdate.date +'</td></tr>');
+                        $('#adminTable tbody').append('<tr><td>'+$.trim( data[i].user_id )+'</td><td>'+ data[i].user_ip +'</td><td>'+ data[i].logdate.date +'</td></tr>');
                     }
                     document.getElementById('studentTable').style.display = 'none';
                     document.getElementById('subjectTable').style.display = 'none';
