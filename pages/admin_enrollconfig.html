@@ -87,7 +87,7 @@
         }
         
         .datetimePicker{
-            width: 150px;
+            width: 140px;
             display: inline-block;
             margin-left: 10px;
             margin-right: 10px;
@@ -216,12 +216,22 @@
                 <select class='selectpicker' id='methodPicker'>
                     <option value='N/A' selected disabled>วิธีที่ใช้ตัดสินกรณีไม่ลงตัว</option>
                 </select>
-                <div style="display: inline-block; margin-left: 15px; margin-top: 2px; vertical-align: middle;"><input type="checkbox" id='semesterState' value="1"><span style="margin-left: 5px; font-weight: bold;">Active?</span>
-                </div>
-                <div style='margin-top:8px; display:none;'>
-                    วันเริ่มลงทะเบียน:<input type="text" class="datetimePicker form-control" value="" id="openPeriod"/>
-                    วันสุดท้ายของการลงทะเบียน:<input type="text" class="datetimePicker form-control" value="" id="closePeriod"/>
-                </div>
+                <div style="margin-left: 15px; margin-top: 2px; vertical-align: middle; display:inline-block;"><input type="checkbox" id='semesterState' value="1"><span style="margin-left: 5px; font-weight: bold;">Active?</span>
+                 </div>
+                 <div id='manageActive' style='display:none; margin-top:8px; background-color: #efefef;'>
+                    <div class="radio" style='display:inline-block; margin-left: 20px;'>
+                        <input type="radio" style='margin-top:6px;' name="optionsRadios" value="option1" checked>
+                        Now
+                    </div>
+                    <div class="radio" style='display:inline-block; margin-left: 30px;'>
+                        <input type="radio" style='margin-top:6px;' name="optionsRadios" value="option2">
+                        By Schedule
+                        <div style='display:none; margin-left:10px;'>
+                                        วันเริ่มลงทะเบียน:<input type="text" class="datetimePicker form-control" value="" id="openPeriod"/>
+                                        วันสุดท้ายของการลงทะเบียน:<input type="text" class="datetimePicker form-control" value="" id="closePeriod"/>
+                        </div>
+                    </div>
+                 </div>
             </div>
             <div style='margin-top: 20px;' id='buttonArea'>
                 <input  type='button' class="btn btn-primary" onClick='toggleToSteps(1)' value='Back' />
@@ -275,10 +285,22 @@
             
             $('#semesterState').change(function(){
                 if( $('#semesterState:checked').length === 1 ){
-                    $('#closePeriod').parent().fadeIn(300);
+                    $('#manageActive').fadeIn(300);
                 }
                 else{
+                    $('#manageActive').fadeOut(300);
+                }
+            });
+            
+            //MANAGE ACTIVE NOW/SCHEDULE
+            $('input[name="optionsRadios"]').change(function(){
+                if( $(this).attr('value') === 'option1' ){
                     $('#closePeriod').parent().fadeOut(300);
+                    $('input[value="option2"]').css('margin-top', '6px');
+                }else{
+                    $('#closePeriod').parent().fadeIn(300);
+                    $('#closePeriod').parent().css('display','inline-block');
+                    $('input[value="option2"]').css('margin-top', '10px');
                 }
             });
         });
@@ -603,11 +625,11 @@
                     var semesterCheckbox = true;
                     if (classOfSemesterObj['semester_state'] === 1){
                         semesterCheckbox = true;
-                        $('#closePeriod').parent().css('display', '');
+                        $('#manageActive').css('display', '');
                         //FILL-IN OPEN/END PERIOD HERE @gie
                     }else{
                         semesterCheckbox = false;
-                        $('#closePeriod').parent().css('display', 'none');
+                        $('#manageActive').css('display', 'none');
                     }
                     $('#semesterState').attr('checked', semesterCheckbox);
 
