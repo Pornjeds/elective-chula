@@ -132,51 +132,220 @@ function listAllSubjects(){
 function submitSubjectRegistration(){
 /*
 input
+
+//NOT ACTIVE NOW -- schedule
 {
-"subjectsdata":
-[
-	{
-		"subject_id": 0,
-		"dayofweek": 1,
-		"timeofday": 2,
-		"credit": 3,
-		"instructor": "Dr. Worawat XYZ",
-		"minstudent": 10,
-		"maxstudent": 40,
-		"isRequired": 1
-	},
-	{
-		"subject_id": 3,
-		"dayofweek": 4,
-		"timeofday": 2,
-		"credit": 3,
-		"instructor": "Dr. Worawat XYZ",
-		"minstudent": 10,
-		"maxstudent": 40,
-		"isRequired": 1
-	}
-],
-	"classof_id": 1,
-	"semester": 4,
-	"mincredit": 3,
-	"maxcredit": 9,
-	"pickermethod": 1
+  "subjectsdata": [
+    {
+      "subject_id": "2602601",
+      "dayofweek": null,
+      "timeofday": null,
+      "credit": "3",
+      "instructor": "a",
+      "minstudent": "30",
+      "maxstudent": "50",
+      "isRequired": 0
+    },
+    {
+      "subject_id": "2602648",
+      "dayofweek": null,
+      "timeofday": null,
+      "credit": "3",
+      "instructor": "b",
+      "minstudent": "30",
+      "maxstudent": "50",
+      "isRequired": 0
+    },
+    {
+      "subject_id": "2602650",
+      "dayofweek": null,
+      "timeofday": null,
+      "credit": "3",
+      "instructor": "c",
+      "minstudent": "30",
+      "maxstudent": "50",
+      "isRequired": 0
+    },
+    {
+      "subject_id": "2604644",
+      "dayofweek": null,
+      "timeofday": null,
+      "credit": "3",
+      "instructor": "d",
+      "minstudent": "30",
+      "maxstudent": "50",
+      "isRequired": 0
+    },
+    {
+      "subject_id": "2605620",
+      "dayofweek": null,
+      "timeofday": null,
+      "credit": "3",
+      "instructor": "e",
+      "minstudent": "30",
+      "maxstudent": "50",
+      "isRequired": 0
+    },
+    {
+      "subject_id": "2605624",
+      "dayofweek": null,
+      "timeofday": null,
+      "credit": "3",
+      "instructor": "f",
+      "minstudent": "30",
+      "maxstudent": "50",
+      "isRequired": 0
+    },
+    {
+      "subject_id": "2605671",
+      "dayofweek": null,
+      "timeofday": null,
+      "credit": "3",
+      "instructor": "g",
+      "minstudent": "30",
+      "maxstudent": "50",
+      "isRequired": 0
+    }
+  ],
+  "classof_id": "2",
+  "semester": "4",
+  "mincredit": "9",
+  "maxcredit": "9",
+  "semester_state": "1",
+  "pickermethod": "1",
+  "isActiveNow": "0",
+  "startDate": "2015/04/24 22:31",
+  "endDate": "2015/04/28 22:31"
+}
+
+//ACTIVE NOW (or already active)
+{
+  "subjectsdata": [
+    {
+      "subject_id": "2602601",
+      "dayofweek": null,
+      "timeofday": null,
+      "credit": "3",
+      "instructor": "a",
+      "minstudent": "30",
+      "maxstudent": "50",
+      "isRequired": 0
+    },
+    {
+      "subject_id": "2602648",
+      "dayofweek": null,
+      "timeofday": null,
+      "credit": "3",
+      "instructor": "b",
+      "minstudent": "30",
+      "maxstudent": "50",
+      "isRequired": 0
+    },
+    {
+      "subject_id": "2602650",
+      "dayofweek": null,
+      "timeofday": null,
+      "credit": "3",
+      "instructor": "c",
+      "minstudent": "30",
+      "maxstudent": "50",
+      "isRequired": 0
+    },
+    {
+      "subject_id": "2604644",
+      "dayofweek": null,
+      "timeofday": null,
+      "credit": "3",
+      "instructor": "d",
+      "minstudent": "30",
+      "maxstudent": "50",
+      "isRequired": 0
+    },
+    {
+      "subject_id": "2605620",
+      "dayofweek": null,
+      "timeofday": null,
+      "credit": "3",
+      "instructor": "e",
+      "minstudent": "30",
+      "maxstudent": "50",
+      "isRequired": 0
+    },
+    {
+      "subject_id": "2605624",
+      "dayofweek": null,
+      "timeofday": null,
+      "credit": "3",
+      "instructor": "f",
+      "minstudent": "30",
+      "maxstudent": "50",
+      "isRequired": 0
+    },
+    {
+      "subject_id": "2605671",
+      "dayofweek": null,
+      "timeofday": null,
+      "credit": "3",
+      "instructor": "g",
+      "minstudent": "30",
+      "maxstudent": "50",
+      "isRequired": 0
+    }
+  ],
+  "classof_id": "2",
+  "semester": "4",
+  "mincredit": "9",
+  "maxcredit": "9",
+  "semester_state": "1",
+  "pickermethod": "1",
+  "isActiveNow": "1",
+  "startDate": "",
+  "endDate": ""
 }
 */
 
 	try {
 		$app = \Slim\Slim::getInstance();
-		$app->response->headers->set('Content-Type', 'application/json');
+		//$app->response->headers->set('Content-Type', 'application/json');
 	    $request = $app->request();
-	    $subjectarr = json_decode($request->getBody())->subjectsdata;
-	    $classof_id = json_decode($request->getBody())->classof_id;
-	    $semester = json_decode($request->getBody())->semester;
-	    $semester_mincredit = json_decode($request->getBody())->mincredit;
-	    $semester_maxcredit = json_decode($request->getBody())->maxcredit;
-	    $semester_state = json_decode($request->getBody())->semester_state;
-	    $semester_pickermethod = json_decode($request->getBody())->pickermethod;
+	    $jsonInput = json_decode($request->getBody());
+	    $subjectarr = $jsonInput->subjectsdata;
+	    $classof_id = $jsonInput->classof_id;
+	    $semester = $jsonInput->semester;
+	    $semester_mincredit = $jsonInput->mincredit;
+	    $semester_maxcredit = $jsonInput->maxcredit;
+	    $semester_pickermethod = $jsonInput->pickermethod;
+	    $isActiveNow = $jsonInput->isActiveNow;
+	    $activeStartDate = $jsonInput->startDate;
+	    $activeEndDate = $jsonInput->endDate;
+	    $semester_state = $jsonInput->semester_state;
 
-	    //prepare sql for insert subject data
+		if ($isActiveNow == "1") {			
+			$sqlRemoveActivateJob = "DELETE FROM ADMIN_ACTIVATESCHEDULE where classof_id = '$classof_id' AND semester = '$semester'";
+			//update semester_state of the other semesters of this classof_id to be 0
+			if ($semester_state == "1") {
+				$sqlSemesterState = "UPDATE CLASSOF_SEMESTER set semester_state = 0 where classof_id = '$classof_id' AND semester <> '$semester'";
+				$sqlClearTmpSelection = "DELETE FROM TMP_SELECTION where classof_id = '$classof_id' AND semester = '$semester'";
+				$sqlSetLogicalPriority = "UPDATE STUDENT_ENROLLMENT set logical_priority = priority where classof_id = '$classof_id' AND semester = '$semester'";
+				$sqlClearStudentConfirmedEnrollment = "DELETE FROM STUDENT_CONFIRMED_ENROLLMENT where classof_id = '$classof_id' AND semester = '$semester'";
+			}
+		} else {
+			$semester_state = "0";
+			$sqlActivateJob = "merge ADMIN_ACTIVATESCHEDULE as target
+				using (values ('activate classof semester', '$classof_id', '$semester', '$activeStartDate', '$activeEndDate', 0, GETDATE()))
+				    as source (jobname, classof_id, semester, startdate, finishdate, status, logdate)
+				    on target.classof_id = '$classof_id' AND target.semester = '$semester'
+				when matched then
+				    update
+				    set startdate = source.startdate,
+				        finishdate = source.finishdate,
+				        logdate = source.logdate
+				when not matched then
+				    insert ( jobname, classof_id, semester, startdate, finishdate, status, logdate)
+				    values ( source.jobname, source.classof_id, source.semester, source.startdate, source.finishdate, source.status, source.logdate);";
+		}
+
+		//prepare sql for insert subject data
 	    $sqlarr = array();
 	    $i = 0;
 	    foreach ($subjectarr as $subject) {
@@ -213,14 +382,7 @@ input
 
 		//sql to remove the current SUBJECT_CLASSOF of the specified classof_id and semester
 		$sqlRemove = "DELETE FROM SUBJECT_CLASSOF where classof_id = '$classof_id' AND semester = '$semester'";
-
-		//update semester_state of the other semesters of this classof_id to be 0
-		if ($semester_state == "1") {
-			$sqlSemesterState = "UPDATE CLASSOF_SEMESTER set semester_state = 0 where classof_id = '$classof_id' AND semester <> '$semester'";
-			$sqlClearTmpSelection = "DELETE FROM TMP_SELECTION where classof_id = '$classof_id' AND semester = '$semester'";
-			$sqlSetLogicalPriority = "UPDATE STUDENT_ENROLLMENT set logical_priority = priority where classof_id = '$classof_id' AND semester = '$semester'";
-			$sqlClearStudentConfirmedEnrollment = "DELETE FROM STUDENT_CONFIRMED_ENROLLMENT where classof_id = '$classof_id' AND semester = '$semester'";
-		}
+		
 		
 	} catch(Exception $e) {
 		echo '{"error":{"source":"input","reason":'. $e->getMessage() .'}}';
@@ -246,35 +408,52 @@ input
         	}
 		}
 
-		if ($semester_state == "1") {
-			if(!$db->setData($sqlSemesterState))
-			{
-				//echo $sqlRemove;
-				$submitStatus = false;
-				break;
-			}
+		if ($isActiveNow == "1") {
+			//please activate now
+			if ($semester_state == "1") {
+				if(!$db->setData($sqlRemoveActivateJob))
+				{
+					$submitStatus = false;
+					break;
+				}
 
-			if(!$db->setData($sqlClearTmpSelection))
-			{
-				//echo $sqlRemove;
-				$submitStatus = false;
-				break;
-			}
+				if(!$db->setData($sqlSemesterState))
+				{
+					//echo $sqlRemove;
+					$submitStatus = false;
+					break;
+				}
 
-			if(!$db->setData($sqlSetLogicalPriority))
-			{
-				//echo $sqlRemove;
-				$submitStatus = false;
-				break;
-			}
+				if(!$db->setData($sqlClearTmpSelection))
+				{
+					//echo $sqlRemove;
+					$submitStatus = false;
+					break;
+				}
 
-			if(!$db->setData($sqlClearStudentConfirmedEnrollment))
+				if(!$db->setData($sqlSetLogicalPriority))
+				{
+					//echo $sqlRemove;
+					$submitStatus = false;
+					break;
+				}
+
+				if(!$db->setData($sqlClearStudentConfirmedEnrollment))
+				{
+					//echo $sqlRemove;
+					$submitStatus = false;
+					break;
+				}
+			}
+		} else {
+			//Will be activated later, so set up a schedule job
+			if(!$db->setData($sqlActivateJob))
 			{
-				//echo $sqlRemove;
 				$submitStatus = false;
 				break;
 			}
 		}
+
 
 		if(!$db->setData($sqlClassofSemester))
     	{
