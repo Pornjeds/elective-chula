@@ -600,3 +600,99 @@ BEGIN
 END
 GO
 
+
+CREATE procedure addEnrollmentSchedule
+	@job nvarchar(128),
+	@jobScheduleName nvarchar(128),
+	@command1 nvarchar(max),
+	@command2 nvarchar(max),
+	@command3 nvarchar(max),
+	@command4 nvarchar(max),
+	@command5 nvarchar(max),
+	@servername nvarchar(28),
+	@startdate nvarchar(8),
+	@starttime nvarchar(8)
+as
+--Add a job
+EXEC msdb.dbo.sp_add_job
+    @job_name = @job ;
+--Add a job step named process step. This step runs the stored procedure
+EXEC msdb.dbo.sp_add_jobstep
+    @job_name = @job,
+    @step_name = N'process step 1',
+    @step_id=1,
+    @on_success_action=3,
+    @subsystem = N'TSQL',
+    @command = @command1
+
+EXEC msdb.dbo.sp_add_jobstep
+    @job_name = @job,
+    @step_name = N'process step 2',
+    @step_id=2,
+    @on_success_action=3,
+    @subsystem = N'TSQL',
+    @command = @command2
+
+EXEC msdb.dbo.sp_add_jobstep
+    @job_name = @job,
+    @step_name = N'process step 3',
+    @step_id=3,
+    @on_success_action=3,
+    @subsystem = N'TSQL',
+    @command = @command3
+
+EXEC msdb.dbo.sp_add_jobstep
+    @job_name = @job,
+    @step_name = N'process step 4',
+    @step_id=4,
+    @on_success_action=3,
+    @subsystem = N'TSQL',
+    @command = @command4
+
+EXEC msdb.dbo.sp_add_jobstep
+    @job_name = @job,
+    @step_name = N'process step 5',
+    @step_id=5,
+    @on_success_action=1,
+    @subsystem = N'TSQL',
+    @command = @command5
+--Schedule the job at a specified date and time
+exec msdb.dbo.sp_add_jobschedule @job_name = @job,
+@name = @jobScheduleName,
+@freq_type=1,
+@active_start_date = @startdate,
+@active_start_time = @starttime
+-- Add the job to the SQL Server Server
+EXEC msdb.dbo.sp_add_jobserver
+    @job_name =  @job
+
+
+CREATE procedure deactivateEnrollmentSchedule
+	@job nvarchar(128),
+	@jobScheduleName nvarchar(128),
+	@command1 nvarchar(max),
+	@servername nvarchar(28),
+	@startdate nvarchar(8),
+	@starttime nvarchar(8)
+as
+--Add a job
+EXEC msdb.dbo.sp_add_job
+    @job_name = @job ;
+--Add a job step named process step. This step runs the stored procedure
+EXEC msdb.dbo.sp_add_jobstep
+    @job_name = @job,
+    @step_name = N'process step 1',
+    @step_id=1,
+    @on_success_action=1,
+    @subsystem = N'TSQL',
+    @command = @command1
+
+--Schedule the job at a specified date and time
+exec msdb.dbo.sp_add_jobschedule @job_name = @job,
+@name = @jobScheduleName,
+@freq_type=1,
+@active_start_date = @startdate,
+@active_start_time = @starttime
+-- Add the job to the SQL Server Server
+EXEC msdb.dbo.sp_add_jobserver
+    @job_name =  @job

@@ -321,7 +321,7 @@ input
 	    $semester_state = $jsonInput->semester_state;
 
 		if ($isActiveNow == "1") {			
-			$sqlRemoveActivateJob = "DELETE FROM ADMIN_ACTIVATESCHEDULE where classof_id = '$classof_id' AND semester = '$semester'";
+			$sqlRemoveActivateJob = "DELETE FROM ADMIN_ACTIVATESCHEDULE where classof_id = '$classof_id' AND semester = '$semester' AND status = 0";
 			//update semester_state of the other semesters of this classof_id to be 0
 			if ($semester_state == "1") {
 				$sqlSemesterState = "UPDATE CLASSOF_SEMESTER set semester_state = 0 where classof_id = '$classof_id' AND semester <> '$semester'";
@@ -411,11 +411,6 @@ input
 		if ($isActiveNow == "1") {
 			//please activate now
 			if ($semester_state == "1") {
-				if(!$db->setData($sqlRemoveActivateJob))
-				{
-					$submitStatus = false;
-					break;
-				}
 
 				if(!$db->setData($sqlSemesterState))
 				{
