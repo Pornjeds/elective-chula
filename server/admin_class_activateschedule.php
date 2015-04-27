@@ -34,23 +34,23 @@ class AdminActivateSchedule
 		
 		if(!$this->db->setData($updateSql))
 		{
-			echo "fail 1: $updateSql<br>";
+			//echo "fail 1: $updateSql<br>";
 		}
 		if(!$this->db->setData($deleteSchedule_activate))
 		{
-			echo "fail 2: $deleteSchedule_activate<br>";
+			//echo "fail 2: $deleteSchedule_activate<br>";
 		}
 		if(!$this->db->setData($deleteJob_activate))
 		{
-			echo "fail 3: $deleteJob_activate<br>";
+			//echo "fail 3: $deleteJob_activate<br>";
 		}
 		if(!$this->db->setData($deleteSchedule_deactivate))
 		{
-			echo "fail 4: $deleteSchedule_deactivate<br>";
+			//echo "fail 4: $deleteSchedule_deactivate<br>";
 		}
 		if(!$this->db->setData($deleteJob_deactivate))
 		{
-			echo "fail 5: $deleteJob_deactivate<br>";
+			//echo "fail 5: $deleteJob_deactivate<br>";
 		}
 		
 		//Add job schedule - activate
@@ -75,7 +75,7 @@ class AdminActivateSchedule
 
 		if(!$this->db->setData($sql))
 		{
-			echo "fail 6: $sql<br>";
+			//echo "fail 6: $sql<br>";
 		}
 
 		//Add job schedule - deactivate
@@ -90,7 +90,7 @@ class AdminActivateSchedule
 					";
 		if(!$this->db->setData($sql))
 		{
-			echo "fail 7: $sql<br>";
+			//echo "fail 7: $sql<br>";
 		}
 	}
 }

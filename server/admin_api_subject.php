@@ -62,7 +62,9 @@ function listSubjectByClassOfAndSemester(){
 	    $classof_id = json_decode($request->getBody())->classof_id;
 	    $semester = json_decode($request->getBody())->semester;
 		$sql = "exec listSubjectByClassOfAndSemester @classof_id = '$classof_id', @semester = '$semester'";
-		$sql2 = "SELECT * FROM CLASSOF_SEMESTER WHERE classof_id = '$classof_id' AND semester = '$semester'";
+		$sql2 = "SELECT * FROM CLASSOF_SEMESTER a
+				INNER JOIN ADMIN_ACTIVATESCHEDULE b ON a.classof_id = b.classof_id AND a.semester = b.semester
+				WHERE a.classof_id = '$classof_id' AND a.semester = '$semester'";
 		
 	} catch(Exception $e) {
 		echo '{"error":{"source":"input","reason":'. $e->getMessage() .'}}';
@@ -306,7 +308,7 @@ input
 
 	try {
 		$app = \Slim\Slim::getInstance();
-		//$app->response->headers->set('Content-Type', 'application/json');
+		$app->response->headers->set('Content-Type', 'application/json');
 	    $request = $app->request();
 	    $jsonInput = json_decode($request->getBody());
 	    $subjectarr = $jsonInput->subjectsdata;
@@ -320,8 +322,31 @@ input
 	    $activeEndDate = $jsonInput->endDate;
 	    $semester_state = $jsonInput->semester_state;
 
+	    $startDate = "";
+	    $endDate = "";
+	    $startTime = "";
+	    $endTIme = "";
+
+	    if (strlen($activeStartDate) > 0) {
+	    	//2015/04/22 00:36
+	    	$tmp = explode(" ", $activeStartDate);
+	    	$tmp_startDate = explode("/", $tmp[0]);
+	    	$tmp_startTime = explode(":", $tmp[1]);
+	    	$startDate = $tmp_startDate[0].$tmp_startDate[1].$tmp_startDate[2];
+	    	$startTime = $tmp_startTime[0].$tmp_startTime[1]."00";
+	    } 
+
+	    if (strlen($activeEndDate) > 0) {
+	    	//2015/04/22 00:36
+	    	$tmp = explode(" ", $activeStartDate);
+	    	$tmp_endDate = explode("/", $tmp[0]);
+	    	$tmp_endTime = explode(":", $tmp[1]);
+	    	$endDate = $tmp_endDate[0].$tmp_endDate[1].$tmp_endDate[2];
+	    	$endTime = $tmp_endTime[0].$tmp_endTime[1]."00";
+	    }
+
 		if ($isActiveNow == "1") {			
-			$sqlRemoveActivateJob = "DELETE FROM ADMIN_ACTIVATESCHEDULE where classof_id = '$classof_id' AND semester = '$semester' AND status = 0";
+			$sqlUpdateActivateJob = "UPDATE ADMIN_ACTIVATESCHEDULE set status = 2 where classof_id = $classof_id AND semester = $semester";
 			//update semester_state of the other semesters of this classof_id to be 0
 			if ($semester_state == "1") {
 				$sqlSemesterState = "UPDATE CLASSOF_SEMESTER set semester_state = 0 where classof_id = '$classof_id' AND semester <> '$semester'";
@@ -330,7 +355,7 @@ input
 				$sqlClearStudentConfirmedEnrollment = "DELETE FROM STUDENT_CONFIRMED_ENROLLMENT where classof_id = '$classof_id' AND semester = '$semester'";
 			}
 		} else {
-			$semester_state = "0";
+			$semester_state = "3";
 			$sqlActivateJob = "merge ADMIN_ACTIVATESCHEDULE as target
 				using (values ('activate classof semester', '$classof_id', '$semester', '$activeStartDate', '$activeEndDate', 0, GETDATE()))
 				    as source (jobname, classof_id, semester, startdate, finishdate, status, logdate)
@@ -447,6 +472,9 @@ input
 				$submitStatus = false;
 				break;
 			}
+
+			$Activator = new AdminActivateSchedule($db, $classof_id, $semester);
+			$Activator->addActivateSchedule($startDate, $startTime, $endDate, $endTime);
 		}
 
 
