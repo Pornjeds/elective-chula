@@ -306,6 +306,18 @@ input
 }
 */
 
+/*
+ * semester_state
+ * 0 -- created but not open for enrollment AND not scheduled
+ * 1 -- created and open for enrollment (either by schedule or manual -- will be known by var status)
+ * 2 -- enrollment is done. Selection already took place
+ *
+ * isActiveNow
+ * 0 -- no meaning
+ * 1 -- schedule is created
+ * 2 -- schedule was run
+*/
+
 	try {
 		$app = \Slim\Slim::getInstance();
 		$app->response->headers->set('Content-Type', 'application/json');
@@ -345,7 +357,7 @@ input
 	    	$endTime = $tmp_endTime[0].$tmp_endTime[1]."00";
 	    }
 
-		if ($isActiveNow == "1") {			
+		if ($isActiveNow == "2") {			
 			$sqlUpdateActivateJob = "UPDATE ADMIN_ACTIVATESCHEDULE set status = 2 where classof_id = $classof_id AND semester = $semester";
 			//update semester_state of the other semesters of this classof_id to be 0
 			if ($semester_state == "1") {
@@ -433,7 +445,7 @@ input
         	}
 		}
 
-		if ($isActiveNow == "1") {
+		if ($isActiveNow == "2") {
 			//please activate now
 			if ($semester_state == "1") {
 

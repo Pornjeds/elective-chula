@@ -619,15 +619,41 @@
                 });
                 $('.selectpicker').selectpicker();
                 //BLUE AREA
+                /*
+                 * semester_state
+                 * 0 -- created but not open for enrollment AND not scheduled
+                 * 1 -- created and open for enrollment (either by schedule or manual -- will be known by var status)
+                 * 2 -- enrollment is done. Selection already took place
+                 *
+                 * status
+                 * 0 -- no meaning
+                 * 1 -- schedule is created
+                 * 2 -- schedule was run
+                */
                 if( classOfSemesterObj && typeof( classOfSemesterObj['mincredit'] ) !== 'undefined' && typeof( classOfSemesterObj['maxcredit'] ) !== 'undefined' && typeof( classOfSemesterObj['pickmethod_id'] ) !== 'undefined'){
                     $('#minUnitTerm').val( classOfSemesterObj['mincredit'] );
                     $('#maxUnitTerm').val( classOfSemesterObj['maxcredit'] );
                     var semesterCheckbox = true;
-                    if (classOfSemesterObj['semester_state'] === 1){
+                    if (classOfSemesterObj.semester_state === 1){
+                        semesterCheckbox = true;
+                        $('#manageActive').css('display', '');
+                    } else if (classOfSemesterObj.semester_state === 3) { 
                         semesterCheckbox = true;
                         $('#manageActive').css('display', '');
                         //FILL-IN OPEN/END PERIOD HERE @gie
-                    }else{
+                        if (classOfSemesterObj.status == 1) {
+                            //schedule is created
+                            var optionsRadios = document.getElementsByName('optionsRadios');
+                            optionsRadios[1].checked = true;
+                            $('#closePeriod').parent().css('display','inline-block');
+                            $('input[value="option2"]').css('margin-top', '10px');
+
+                            $('#openPeriod')[0].value = parseSqlDateToJSFormat(classOfSemesterObj.startdate.date);
+                            $('#closePeriod')[0].value = parseSqlDateToJSFormat(classOfSemesterObj.finishdate.date);
+                        } else {
+                            //at this point, it can be only 2
+                        }
+                    } else {
                         semesterCheckbox = false;
                         $('#manageActive').css('display', 'none');
                     }
@@ -659,7 +685,20 @@
             var idStartPeriod = '#openPeriod';
             var idEndPeriod = '#closePeriod';
             //alert( $(idStartPeriod).val() + ', ' + $(idEndPeriod).val() );
-            
+            var startDate = '';
+            var endDate = '';
+
+            var isActiveNow = 0;
+            var optionsRadios = document.getElementsByName('optionsRadios');
+            if (optionsRadios[0].checked) {
+                isActiveNow = 2;
+            } else if (optionsRadios[1].checked) {
+                isActiveNow = 1;
+                semesterCheckbox = 3;
+                startDate = $('#openPeriod')[0].value;
+                endDate = $('#closePeriod')[0].value;
+            }
+
             var jsonObj = { 
                 'subjectsdata' : [],
                 'classof_id' :  $('#studentYear').val(),
@@ -667,7 +706,10 @@
                 'mincredit' : $(idMinUnitTerm).val(),
                 'maxcredit' : $(idMaxUnitTerm).val(),
                 'semester_state' : semesterCheckbox,
-                'pickermethod' : $(idMethod).val()
+                'pickermethod' : $(idMethod).val(),
+                'isActiveNow' : isActiveNow,
+                'startDate' : startDate,
+                'endDate' : endDate
             };
             //
             $('#step2Area').children().first().children().each( function(index){
@@ -914,6 +956,16 @@
                 }
             });
         }
+
+        function parseSqlDateToJSFormat(dateInput) {
+            //2015-05-02 16:09:34.747
+            var dateSplit = dateInput.split(' ');
+            var sdate = dateSplit[0].split('-');
+            var stime = dateSplit[1].substr(0,5);
+            
+            return sdate[0] + '/' + sdate[1] + '/' + sdate[2] + ' ' + stime;
+        }
+
     </script>
   
     </body>
