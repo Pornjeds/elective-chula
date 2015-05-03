@@ -5,11 +5,13 @@ Class DBManager
 	var $serverName;
 	var $connectionInfo;
 	var $conn;
+	var $dbname;
 
 	function DBManager()
 	{
 		global $host,$user,$passwd,$dbname,$servernames;
 		$this->serverName = $servernames; //serverName\instanceName
+		$this->dbname = $dbname;
 		$this->connectionInfo = array( "Database"=>$dbname, "UID"=>$user, "PWD"=>$passwd, "CharacterSet" => "UTF-8");
 		$this->conn = sqlsrv_connect( $this->serverName, $this->connectionInfo);
 		if ($this->conn === false)

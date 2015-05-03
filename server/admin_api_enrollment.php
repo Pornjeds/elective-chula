@@ -294,10 +294,12 @@ function performEnrollment(){
 		//0 หมายถึงเทอมนั้นไม่ active
 		//1 หมายถึงเทอมนั้น active และเปิดให้ลงทะเบียน
 		//2 หมายถึงทำการเลือกแล้วและรู้ผลแล้ว
+		//3 หมายถึงทำการ schedule การลงทะเบียนไว้แต่ยังไม่เปิดให้ลง
+		//4 หมายถึงปิดการลงทะเบียนด้วย sql schedule (ห้ามลงทะเบียน แต่ยังไม่ทำการเลือก)
 		$semester_state = $AdminEnroll->getSemesterState();
 		$pickmethod_id = $AdminEnroll->pickmethod_id;
 
-		if ($semester_state != 1){
+		if ($semester_state != 1 && $semester_state != 4){
 			$app->response->setBody(json_encode(array("status"=>"Not in the correct semester state to call this function")));
 			return;
 		}

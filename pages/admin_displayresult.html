@@ -273,6 +273,10 @@
                 case 2:
                   $('#listallsubject-alert-done').css('display', 'inline-block');
                   break;
+                case 4:
+                  $('#listallsubject-alert-notdone').css('display', 'inline-block');
+                  $('#chooseMethod').text(data[0].pickmethod);
+                  break;
               }
 
               //display subject list

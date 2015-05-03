@@ -12,6 +12,8 @@ $startTime = "100000";
 $endDate = "20150426";
 $endTime = "110000";
 
-$a->addActivateSchedule($startDate, $startTime, $endDate, $endTime);
+echo $db->dbname;
+
+//$a->addActivateSchedule($startDate, $startTime, $endDate, $endTime);
 
 ?>

@@ -449,6 +449,12 @@ input
 			//please activate now
 			if ($semester_state == "1") {
 
+				if(!$db->setData($sqlUpdateActivateJob))
+				{
+					$submitStatus = false;
+					break;
+				}
+
 				if(!$db->setData($sqlSemesterState))
 				{
 					//echo $sqlRemove;
@@ -477,6 +483,10 @@ input
 					break;
 				}
 			}
+
+			$Activator = new AdminActivateSchedule($db, $classof_id, $semester);
+			$Activator->removeActivateSchedule();
+
 		} else {
 			//Will be activated later, so set up a schedule job
 			if(!$db->setData($sqlActivateJob))

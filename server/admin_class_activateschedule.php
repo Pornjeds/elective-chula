@@ -6,6 +6,7 @@ class AdminActivateSchedule
 {
 	var $app;
 	var $db;
+	var $dbname;
 	var $classof_id;
 	var $semester;
 	var $activateScheduleName;
@@ -16,6 +17,7 @@ class AdminActivateSchedule
 	function __construct($db, $classof_id, $semester)
 	{
 		$this->db = $db;
+		$this->dbname = $db->dbname;
 		$this->classof_id = $classof_id;
 		$this->semester = $semester;
 		$this->activateSchedule = $classof_id . '_' . $semester . '_activate_schedule';
@@ -54,11 +56,11 @@ class AdminActivateSchedule
 		}
 		
 		//Add job schedule - activate
-		$command1 = "UPDATE CLASSOF_SEMESTER set semester_state = 0 where classof_id = $this->classof_id AND semester <> $this->semester and semester_state = 1";
-		$command2 = "UPDATE CLASSOF_SEMESTER set semester_state = 1 where classof_id = $this->classof_id AND semester = $this->semester";
-		$command3 = "DELETE FROM TMP_SELECTION where classof_id = $this->classof_id AND semester = $this->semester";
-		$command4 = "UPDATE STUDENT_ENROLLMENT set logical_priority = priority where classof_id = $this->classof_id AND semester $this->semester";
-		$command5 = "DELETE FROM STUDENT_CONFIRMED_ENROLLMENT where classof_id = $this->classof_id AND semester = $this->semester";
+		$command1 = "use $this->dbname UPDATE CLASSOF_SEMESTER set semester_state = 0 where classof_id = $this->classof_id AND semester <> $this->semester and semester_state = 1";
+		$command2 = "use $this->dbname UPDATE CLASSOF_SEMESTER set semester_state = 1 where classof_id = $this->classof_id AND semester = $this->semester";
+		$command3 = "use $this->dbname DELETE FROM TMP_SELECTION where classof_id = $this->classof_id AND semester = $this->semester";
+		$command4 = "use $this->dbname UPDATE STUDENT_ENROLLMENT set logical_priority = priority where classof_id = $this->classof_id AND semester = $this->semester";
+		$command5 = "use $this->dbname DELETE FROM STUDENT_CONFIRMED_ENROLLMENT where classof_id = $this->classof_id AND semester = $this->semester";
 
 		$sql = "EXEC addEnrollmentSchedule 
 					@job = '$this->activateJob', 
@@ -79,7 +81,7 @@ class AdminActivateSchedule
 		}
 
 		//Add job schedule - deactivate
-		$command1 = "UPDATE CLASSOF_SEMESTER set semester_state = 4 where classof_id = $this->classof_id AND semester = $this->semester";
+		$command1 = "use $this->dbname UPDATE CLASSOF_SEMESTER set semester_state = 4 where classof_id = $this->classof_id AND semester = $this->semester";
 		$sql = "EXEC deactivateEnrollmentSchedule 
 					@job = '$this->deActivateJob', 
 					@jobScheduleName = '$this->deActivateSchedule', 
@@ -92,5 +94,31 @@ class AdminActivateSchedule
 		{
 			//echo "fail 7: $sql<br>";
 		}
+	}
+
+	function removeActivateSchedule() {
+		//remove job
+		$sql = "EXEC msdb.dbo.sp_delete_job @job_name = N'$this->activateJob';";
+		if(!$this->db->setData($sql))
+		{
+			//echo "fail 7: $sql<br>";
+		}
+		$sql = "EXEC msdb.dbo.sp_delete_job @job_name = N'$this->deActivateJob';";
+		if(!$this->db->setData($sql))
+		{
+			//echo "fail 7: $sql<br>";
+		}
+		//remove schedule
+		$sql = "EXEC msdb.dbo.sp_delete_schedule @schedule_name = N'$this->activateSchedule', @force_delete = 1;";
+		if(!$this->db->setData($sql))
+		{
+			//echo "fail 7: $sql<br>";
+		}
+		$sql = "EXEC msdb.dbo.sp_delete_schedule @schedule_name = N'$this->deActivateSchedule', @force_delete = 1;";
+		if(!$this->db->setData($sql))
+		{
+			//echo "fail 7: $sql<br>";
+		}
+
 	}
 }
