@@ -609,6 +609,7 @@ CREATE procedure addEnrollmentSchedule
 	@command3 nvarchar(max),
 	@command4 nvarchar(max),
 	@command5 nvarchar(max),
+	@command6 nvarchar(max),
 	@servername nvarchar(28),
 	@startdate nvarchar(8),
 	@starttime nvarchar(8)
@@ -653,9 +654,17 @@ EXEC msdb.dbo.sp_add_jobstep
     @job_name = @job,
     @step_name = N'process step 5',
     @step_id=5,
-    @on_success_action=1,
+    @on_success_action=3,
     @subsystem = N'TSQL',
     @command = @command5
+
+EXEC msdb.dbo.sp_add_jobstep
+    @job_name = @job,
+    @step_name = N'process step 6',
+    @step_id=6,
+    @on_success_action=1,
+    @subsystem = N'TSQL',
+    @command = @command6
 --Schedule the job at a specified date and time
 exec msdb.dbo.sp_add_jobschedule @job_name = @job,
 @name = @jobScheduleName,
@@ -671,6 +680,7 @@ CREATE procedure deactivateEnrollmentSchedule
 	@job nvarchar(128),
 	@jobScheduleName nvarchar(128),
 	@command1 nvarchar(max),
+	@command2 nvarchar(max),
 	@servername nvarchar(28),
 	@startdate nvarchar(8),
 	@starttime nvarchar(8)
@@ -683,9 +693,17 @@ EXEC msdb.dbo.sp_add_jobstep
     @job_name = @job,
     @step_name = N'process step 1',
     @step_id=1,
-    @on_success_action=1,
+    @on_success_action=3,
     @subsystem = N'TSQL',
     @command = @command1
+
+EXEC msdb.dbo.sp_add_jobstep
+    @job_name = @job,
+    @step_name = N'process step 2',
+    @step_id=2,
+    @on_success_action=1,
+    @subsystem = N'TSQL',
+    @command = @command2
 
 --Schedule the job at a specified date and time
 exec msdb.dbo.sp_add_jobschedule @job_name = @job,

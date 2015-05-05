@@ -221,7 +221,7 @@
                  <div id='manageActive' style='display:none; margin-top:8px; background-color: #efefef;'>
                     <div class="radio" style='display:inline-block; margin-left: 20px;'>
                         <input type="radio" style='margin-top:6px;' name="optionsRadios" value="option1" checked>
-                        Now
+                        Now <span id="scheduledJob"></span>
                     </div>
                     <div class="radio" style='display:inline-block; margin-left: 30px;'>
                         <input type="radio" style='margin-top:6px;' name="optionsRadios" value="option2">
@@ -628,13 +628,17 @@
                  * status
                  * 0 -- no meaning
                  * 1 -- schedule is created
-                 * 2 -- schedule was run
+                 * 2 -- schedule - active was run
+                 * 3 -- schedule - deactive was run
                 */
                 if( classOfSemesterObj && typeof( classOfSemesterObj['mincredit'] ) !== 'undefined' && typeof( classOfSemesterObj['maxcredit'] ) !== 'undefined' && typeof( classOfSemesterObj['pickmethod_id'] ) !== 'undefined'){
                     $('#minUnitTerm').val( classOfSemesterObj['mincredit'] );
                     $('#maxUnitTerm').val( classOfSemesterObj['maxcredit'] );
                     var semesterCheckbox = true;
                     if (classOfSemesterObj.semester_state === 1){
+                        if (classOfSemesterObj.status == 2) {
+                            $('#scheduledJob').html('[<i>scheduled: ' + parseSqlDateToJSFormat(classOfSemesterObj.startdate.date) + ' - ' + parseSqlDateToJSFormat(classOfSemesterObj.finishdate.date) + ']</i>');
+                        }
                         semesterCheckbox = true;
                         $('#manageActive').css('display', '');
                     } else if (classOfSemesterObj.semester_state === 3) { 
@@ -650,8 +654,6 @@
 
                             $('#openPeriod')[0].value = parseSqlDateToJSFormat(classOfSemesterObj.startdate.date);
                             $('#closePeriod')[0].value = parseSqlDateToJSFormat(classOfSemesterObj.finishdate.date);
-                        } else {
-                            //at this point, it can be only 2 or 0
                         }
                     } else {
                         semesterCheckbox = false;

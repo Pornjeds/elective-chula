@@ -61,6 +61,7 @@ class AdminActivateSchedule
 		$command3 = "use $this->dbname DELETE FROM TMP_SELECTION where classof_id = $this->classof_id AND semester = $this->semester";
 		$command4 = "use $this->dbname UPDATE STUDENT_ENROLLMENT set logical_priority = priority where classof_id = $this->classof_id AND semester = $this->semester";
 		$command5 = "use $this->dbname DELETE FROM STUDENT_CONFIRMED_ENROLLMENT where classof_id = $this->classof_id AND semester = $this->semester";
+		$command6 = "use $this->dbname UPDATE ADMIN_ACTIVATESCHEDULE set status = 2 where classof_id = $this->classof_id AND semester = $this->semester";
 
 		$sql = "EXEC addEnrollmentSchedule 
 					@job = '$this->activateJob', 
@@ -69,7 +70,8 @@ class AdminActivateSchedule
 					@command2 = N'$command2', 
 					@command3 = N'$command3', 
 					@command4 = N'$command4', 
-					@command5 = N'$command5', 
+					@command5 = N'$command5',
+					@command6 = N'$command6', 
 					@startdate = '$startDate', 
 					@startTime = '$startTime',
 					@servername = 'localhost'
@@ -82,10 +84,12 @@ class AdminActivateSchedule
 
 		//Add job schedule - deactivate
 		$command1 = "use $this->dbname UPDATE CLASSOF_SEMESTER set semester_state = 4 where classof_id = $this->classof_id AND semester = $this->semester";
+		$command2 = "use $this->dbname UPDATE ADMIN_ACTIVATESCHEDULE set status = 3 where classof_id = $this->classof_id AND semester = $this->semester";
 		$sql = "EXEC deactivateEnrollmentSchedule 
 					@job = '$this->deActivateJob', 
 					@jobScheduleName = '$this->deActivateSchedule', 
 					@command1 = N'$command1', 
+					@command2 = N'$command2', 
 					@startdate = '$endDate', 
 					@startTime = '$endTime',
 					@servername = 'localhost'

@@ -47,7 +47,7 @@ function getUserDashboardInfo(){
 		$mincredit = "";
 		$maxcredit = "";
 
-		$sql_getSubjectState = "SELECT * FROM CLASSOF_SEMESTER WHERE classof_id = '$classof_id' AND semester_state <> 0";
+		$sql_getSubjectState = "SELECT * FROM CLASSOF_SEMESTER WHERE classof_id = '$classof_id' AND semester_state = 1";
 		$result = $db->getData($sql_getSubjectState);
 		if ($result){
 			while($row = sqlsrv_fetch_array($result)){
@@ -68,7 +68,7 @@ function getUserDashboardInfo(){
 									COUNT(c.student_id) AS studentcount
 								FROM SUBJECT_CLASSOF a 
 								INNER JOIN SUBJECT b ON a.subject_id = b.subject_id
-								LEFT JOIN STUDENT_ENROLLMENT c ON a.subject_id = c.subject_id
+								LEFT JOIN STUDENT_ENROLLMENT c ON a.subject_id = c.subject_id AND c.classof_id = '$classof_id' AND c.semester = '$semester'
 								WHERE a.classof_id = '$classof_id' AND a.semester = '$semester'
 								GROUP BY a.subject_id, b.name, b.description, a.minstudent, a.maxstudent
 								ORDER BY b.name ASC";

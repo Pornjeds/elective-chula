@@ -315,7 +315,8 @@ input
  * isActiveNow
  * 0 -- no meaning
  * 1 -- schedule is created
- * 2 -- schedule was run
+ * 2 -- schedule - activate was run
+ * 3 -- schedule - deactivate was run
 */
 
 	try {
@@ -358,7 +359,8 @@ input
 	    }
 
 		if ($isActiveNow == "2") {			
-			$sqlUpdateActivateJob = "UPDATE ADMIN_ACTIVATESCHEDULE set status = 2 where classof_id = $classof_id AND semester = $semester";
+			//$sqlUpdateActivateJob = "UPDATE ADMIN_ACTIVATESCHEDULE set status = 2 where classof_id = $classof_id AND semester = $semester";
+			$sqlDeleteJob = "DELETE FROM ADMIN_ACTIVATESCHEDULE where classof_id = $classof_id AND semester = $semester AND (status = 1 OR status = 0 OR status = 3)";
 			//update semester_state of the other semesters of this classof_id to be 0
 			if ($semester_state == "1") {
 				$sqlSemesterState = "UPDATE CLASSOF_SEMESTER set semester_state = 0 where classof_id = '$classof_id' AND semester <> '$semester'";
@@ -449,7 +451,8 @@ input
 			//please activate now
 			if ($semester_state == "1") {
 
-				if(!$db->setData($sqlUpdateActivateJob))
+				//if(!$db->setData($sqlUpdateActivateJob))
+				if(!$db->setData($sqlDeleteJob))
 				{
 					$submitStatus = false;
 					break;
@@ -483,10 +486,7 @@ input
 					break;
 				}
 			}
-
-			$Activator = new AdminActivateSchedule($db, $classof_id, $semester);
-			$Activator->removeActivateSchedule();
-
+			
 		} else {
 			//Will be activated later, so set up a schedule job
 			if(!$db->setData($sqlActivateJob))
