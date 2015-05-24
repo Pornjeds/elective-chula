@@ -613,7 +613,8 @@ CREATE procedure addEnrollmentSchedule
 	@servername nvarchar(28),
 	@startdate nvarchar(8),
 	@starttime nvarchar(8)
-as
+AS
+BEGIN
 --Add a job
 EXEC msdb.dbo.sp_add_job
     @job_name = @job ;
@@ -675,6 +676,8 @@ exec msdb.dbo.sp_add_jobschedule @job_name = @job,
 EXEC msdb.dbo.sp_add_jobserver
     @job_name =  @job
 
+END
+GO
 
 CREATE procedure deactivateEnrollmentSchedule
 	@job nvarchar(128),
@@ -684,7 +687,8 @@ CREATE procedure deactivateEnrollmentSchedule
 	@servername nvarchar(28),
 	@startdate nvarchar(8),
 	@starttime nvarchar(8)
-as
+AS
+BEGIN
 --Add a job
 EXEC msdb.dbo.sp_add_job
     @job_name = @job ;
@@ -714,3 +718,6 @@ exec msdb.dbo.sp_add_jobschedule @job_name = @job,
 -- Add the job to the SQL Server Server
 EXEC msdb.dbo.sp_add_jobserver
     @job_name =  @job
+
+END
+GO

@@ -63,7 +63,7 @@ function listSubjectByClassOfAndSemester(){
 	    $semester = json_decode($request->getBody())->semester;
 		$sql = "exec listSubjectByClassOfAndSemester @classof_id = '$classof_id', @semester = '$semester'";
 		$sql2 = "SELECT * FROM CLASSOF_SEMESTER a
-				INNER JOIN ADMIN_ACTIVATESCHEDULE b ON a.classof_id = b.classof_id AND a.semester = b.semester
+				LEFT JOIN ADMIN_ACTIVATESCHEDULE b ON a.classof_id = b.classof_id AND a.semester = b.semester
 				WHERE a.classof_id = '$classof_id' AND a.semester = '$semester'";
 		
 	} catch(Exception $e) {
