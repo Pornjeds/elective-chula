@@ -514,6 +514,7 @@
         //
         //GET/CHANGE INFORMATION FROM DATA
         function getInformationFromData( objectDataArray, targetDate ){
+            targetDate = targetDate - 1;
             for( var i=0; i< objectDataArray.length; i++ ){
                 if( objectDataArray[i].studyDate === targetDate ){
                     objectDataArray[i].studyDate = -1;
