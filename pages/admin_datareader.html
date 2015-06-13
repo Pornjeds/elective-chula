@@ -15,6 +15,7 @@
     <link href="../scripts/css/bootstrap.min.css" rel="stylesheet">
     <link href="../scripts/css/jasny-bootstrap.min.css" rel="stylesheet">
     <link href="../scripts/css/bootstrap-select.min.css" rel="stylesheet">
+    <link href="../font-awesome/css/font-awesome.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <link href="../scripts/css/admin_template.css" rel="stylesheet">
@@ -24,7 +25,20 @@
       -->
       <!--<script src="../scripts/js/handsontable.full.min.js"></script>
       <link rel="stylesheet" media="screen" href="../scripts/css/handsontable.full.min.css">-->
-  
+    <style>
+        table, th {
+            text-align: center;
+        }
+        .reset-password:hover {
+            cursor: pointer;
+            color: red;
+        }
+        .delete-user:hover {
+            cursor: pointer;
+            color: red;
+        }
+    </style>
+    
   </head>
 
   <body>
@@ -114,9 +128,11 @@
 
       <hr>
 
-    <table id='studentTable' class="table table-hover table-bordered" style='width: 500px; display:none;'>
+    <table id='studentTable' class="table table-hover table-bordered" style='width: 600px; display:none;'>
         <thead>
           <tr class='active'>
+            <th style='width:50px;'>Reset</th>
+            <th style='width:50px;'>Delete</th>
             <th style='width:150px;'>รหัสนักศึกษา</th>
             <th style='width:150px;'>ชื่อ</th>
             <th style='width:200px;'>นามสกุล</th>
@@ -247,11 +263,33 @@
                 success: function(data, textStatus, jqXHR){
                     $('#studentTable tbody').empty()
                     for(var i=0; i<data.length; i++){
-                        $('#studentTable tbody').append('<tr><td>'+data[i].student_id+'</td><td>'+data[i].name+'</td><td>' +data[i].lastname+ '</td></tr>');
+                        $('#studentTable tbody').append('<tr><td><i class="fa fa-key reset-password" title="To reset password"></i></td><td><i class="fa fa-trash delete-user" title="To delete this user"></i></td><td class="student-id">'+data[i].student_id+'</td><td>'+data[i].name+'</td><td>' +data[i].lastname+ '</td></tr>');
                     }
                     document.getElementById('subjectTable').style.display = 'none';
                     document.getElementById('adminTable').style.display = 'none';
                     document.getElementById('studentTable').style.display = '';
+                    
+                    // MANAGE RESET PASSWORD FOR USER
+                    $(".reset-password").off("click").on("click", function(){
+                        var target_id = $.trim($(this).parent().parent().find(".student-id").text())
+                        var rConfirm = confirm("Are you sure to rest password to default for user id: " + target_id);
+                        
+                        if( rConfirm ){
+                            //TODO: @gie you can use this "target_id" to reset password to default.
+                            alert( "target id to reset password to default is " + target_id );
+                        }
+                    });
+                    
+                    // MANAGE DELETE USER
+                    $(".delete-user").off("click").on("click", function(){
+                        var target_id = $.trim($(this).parent().parent().find(".student-id").text())                       
+                        var rConfirm = confirm("Are you sure to delete user id: " + target_id);
+                        
+                        if ( rConfirm ) {
+                            //TODO: @gie you can use this "target_id" to delete this user.
+                            alert( "target id to delete is " + target_id );
+                        }
+                    });
                 },
                 error: function(jqXHR, textStatus, errorThrown){
                     alert('get Student from Class error: ' + textStatus);

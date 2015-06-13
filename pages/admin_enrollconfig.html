@@ -548,7 +548,11 @@
                         itemDivTeacherInput.setAttribute('type', 'text');
                         itemDivTeacherInput.style.width = '140px';
                         itemDivTeacherInput.setAttribute('placeholder', 'ชื่ออาจารย์ผู้สอน');
-                        if (tmpPersistObj.instructor) itemDivTeacherInput.setAttribute('value', tmpPersistObj.instructor);
+                        if (tmpPersistObj.instructor) {
+                            itemDivTeacherInput.setAttribute('value', tmpPersistObj.instructor);
+                        }else{
+                            itemDivTeacherInput.setAttribute('value', 'N/A');
+                        }
                         itemDivTeacher.appendChild( itemDivTeacherInput );
                         //TEXT MINIMUM NUMBER TO OPEN
                         var itemDivMinNumber = document.createElement('div');
@@ -569,7 +573,12 @@
                         itemDivNumberSupportInput.style.paddingTop = '4px';
                         itemDivNumberSupportInput.setAttribute('type', 'text');
                         itemDivNumberSupportInput.setAttribute('placeholder', '#สูงสุด');
-                        if (tmpPersistObj.maxstudent) itemDivNumberSupportInput.setAttribute('value', tmpPersistObj.maxstudent);
+                        if (tmpPersistObj.maxstudent){
+                            itemDivNumberSupportInput.setAttribute('value', tmpPersistObj.maxstudent);
+                        }
+                        else{
+                            itemDivNumberSupportInput.setAttribute('value', 60);
+                        }
                         itemDivNumberSupportInput.onkeypress = function(evt){
                             return isNumber(evt);
                         };
@@ -581,7 +590,12 @@
                         itemDivMinNumberInput.style.paddingTop = '4px';
                         itemDivMinNumberInput.setAttribute('type', 'text');
                         itemDivMinNumberInput.setAttribute('placeholder', '#ขั้นต่ำ');
-                        if (tmpPersistObj.minstudent) itemDivMinNumberInput.setAttribute('value', tmpPersistObj.minstudent);
+                        if (tmpPersistObj.minstudent){
+                            itemDivMinNumberInput.setAttribute('value', tmpPersistObj.minstudent);
+                        }
+                        else{
+                            itemDivMinNumberInput.setAttribute('value', 10);
+                        }
                         itemDivMinNumber.appendChild( itemDivMinNumberInput );
                         itemDivMinNumberInput.onkeypress = function(evt){
                             return isNumber(evt);
