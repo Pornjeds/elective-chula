@@ -229,7 +229,40 @@ function deleteStudent(){
     }
 }
 
-function passwordEncryption($password,$student_id){
-	return sha1($password.$student_id);
+function resetStudentPassword(){
+	try {
+		$app = \Slim\Slim::getInstance();
+		$app->response->headers->set('Content-Type', 'application/json');
+	    $request = $app->request();
+	    $student_id = json_decode($request->getBody())->student_id;
+	    $newpassword = passwordEncryption($student_id, passwordEncryption($student_id, 'welcome1'));
+		$sql = "UPDATE STUDENT set password = '$newpassword' where student_id = '$student_id'";
+	} catch(Exception $e) {
+		echo '{"error":{"source":"input","reason":'. $e->getMessage() .'}}';
+		return;
+	}
+    
+	try {
+		$db = new DBManager();
+        $db->beginSet();
+        if($db->setData($sql))
+        {
+            $db->commitWork();
+            $app->response->setBody(json_encode(array("status"=>"success")));
+        }
+        else
+        {
+            $db->rollbackWork();
+            $app->response->setBody(json_encode(array("status"=>"fail")));
+            $app->response->write(json_encode($db->errmsg()));   
+        }
+		$db = null;
+	} catch(PDOException $e) {
+        echo '{"error":{"source":"SQL","reason": SQL'. $e->getMessage() .'}}';
+    }
+}
+
+function passwordEncryption($a, $b){
+	return sha1($a.$b);
 }
 ?>

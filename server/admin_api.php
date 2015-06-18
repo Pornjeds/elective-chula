@@ -57,6 +57,7 @@ $app->group('/api/v1', function() use ($app){
 		$app->post('/add' , 'addStudent');
         $app->post('/update', 'updateStudent');
         $app->post('/delete' , 'deleteStudent');
+        $app->post('/resetpassword', 'resetStudentPassword');
 	});
 
     $app->group('/import', function() use ($app){

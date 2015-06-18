@@ -263,7 +263,7 @@
                 success: function(data, textStatus, jqXHR){
                     $('#studentTable tbody').empty()
                     for(var i=0; i<data.length; i++){
-                        $('#studentTable tbody').append('<tr><td><i class="fa fa-key reset-password" title="To reset password"></i></td><td><i class="fa fa-trash delete-user" title="To delete this user"></i></td><td class="student-id">'+data[i].student_id+'</td><td>'+data[i].name+'</td><td>' +data[i].lastname+ '</td></tr>');
+                        $('#studentTable tbody').append('<tr id=tr'+data[i].student_id+'><td><i class="fa fa-key reset-password" title="To reset password"></i></td><td><i class="fa fa-trash delete-user" title="To delete this user"></i></td><td class="student-id">'+data[i].student_id+'</td><td>'+data[i].name+'</td><td>' +data[i].lastname+ '</td></tr>');
                     }
                     document.getElementById('subjectTable').style.display = 'none';
                     document.getElementById('adminTable').style.display = 'none';
@@ -272,11 +272,28 @@
                     // MANAGE RESET PASSWORD FOR USER
                     $(".reset-password").off("click").on("click", function(){
                         var target_id = $.trim($(this).parent().parent().find(".student-id").text())
-                        var rConfirm = confirm("Are you sure to rest password to default for user id: " + target_id);
+                        var rConfirm = confirm("Are you sure to reset password to default for user id: " + target_id);
                         
                         if( rConfirm ){
-                            //TODO: @gie you can use this "target_id" to reset password to default.
-                            alert( "target id to reset password to default is " + target_id );
+                            var urlStr = window.location.origin + '/server/admin_api.php/api/v1/student/resetpassword';
+                            var jsonObj = {
+                                'student_id' : target_id
+                            };
+                            $.ajax({
+                                type: 'POST',
+                                contentType: 'application/json',
+                                url: urlStr,
+                                dataType: 'json',
+                                data: JSON.stringify( jsonObj ),
+                                dataType: 'json',
+                                contentType: "text/plain; charset=UTF-8",
+                                success: function(data, textStatus, jqXHR){
+                                    alert( "the student password has been reseted: " + target_id );
+                                },
+                                error: function(jqXHR, textStatus, errorThrown){
+                                    alert('Server error, cannot reset student password: ' + textStatus);
+                                }
+                            });
                         }
                     });
                     
@@ -286,8 +303,26 @@
                         var rConfirm = confirm("Are you sure to delete user id: " + target_id);
                         
                         if ( rConfirm ) {
-                            //TODO: @gie you can use this "target_id" to delete this user.
-                            alert( "target id to delete is " + target_id );
+                            var urlStr = window.location.origin + '/server/admin_api.php/api/v1/student/delete';
+                            var jsonObj = {
+                                'student_id' : target_id
+                            };
+                            $.ajax({
+                                type: 'POST',
+                                contentType: 'application/json',
+                                url: urlStr,
+                                dataType: 'json',
+                                data: JSON.stringify( jsonObj ),
+                                dataType: 'json',
+                                contentType: "text/plain; charset=UTF-8",
+                                success: function(data, textStatus, jqXHR){
+                                    $('#tr'+target_id).remove();
+                                    alert( "the student has been deleted: " + target_id );
+                                },
+                                error: function(jqXHR, textStatus, errorThrown){
+                                    alert('Server error, cannot reset student password: ' + textStatus);
+                                }
+                            });
                         }
                     });
                 },
