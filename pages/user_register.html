@@ -516,7 +516,7 @@
         function getInformationFromData( objectDataArray, targetDate ){
             targetDate = targetDate - 1;
             for( var i=0; i< objectDataArray.length; i++ ){
-                if( objectDataArray[i].studyDate === targetDate ){
+                if( objectDataArray[i].studyDate === targetDate && targetDate !== -1){
                     objectDataArray[i].studyDate = -1;
                     return [ $.trim(objectDataArray[i].subject_id), $.trim(objectDataArray[i].subjectName), $.trim(objectDataArray[i].numUnit) ];
                 }
