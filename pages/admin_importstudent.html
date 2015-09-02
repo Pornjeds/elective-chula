@@ -164,6 +164,7 @@
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="../scripts/js/ie10-viewport-bug-workaround.js"></script>
     <script src="../scripts/js/papaparse.min.js"></script>
+    <script lang="javascript" src="../bower_components/js-xlsx/dist/xlsx.core.min.js"></script>
 
     <script>
         $(document).ready(function () {
@@ -182,94 +183,43 @@
             $('#loadingDiv').css("display", "block");
             $('input[type="submit"], input[type="button"], button').prop('disabled', true);
 
-             //CONVERT *.CSV FILE TO BE IN JSON OBJECT
-            var files = $('#files')[0].files;
-            if( files.length > 0 ){
-                var config = buildConfig();                
-                if (files.length > 0){
-                    for (var i = 0; i < files.length; i++){
-                        if (files[i].size > 1024 * 1024 * 10){
-                            alert("A file you've selected is larger than 10 MB; please let admin know.");
-                            return;
+            //CONVERT .XLSX to JSON Object
+            var f = $('#files')[0].files[0];
+            if (f) {
+                var reader = new FileReader();
+                var name = f.name;
+                reader.onload = function(e) {
+                    var data = e.target.result;
+                    var workbook = XLSX.read(data, {type: 'binary'});
+                    var workSheetName = workbook.SheetNames[0];
+                    var xlsxObj = XLSX.utils.sheet_to_json(workbook.Sheets[workSheetName]);
+                    
+                    var jsonObj = { 
+                        'data' : [],
+                        'classof_id' : $('select[id="studentClass"').val()
+                    };
+                    
+                    xlsxObj.forEach(function(node) {
+                        var tmpObj = {
+                                'student_id': node.student_id,
+                                'name': node.name,
+                                'lastname': node.lastname,
+                                'email': node.email,
+                                'password': 'welcome1',
+                                'profilepic': 'default.jpg',
+                                'GPA': node.GPA,
+                                'status': 1
                         }
-                    }
-                    start = performance.now();
-                    $('#files').parse({
-                        config: config,
-                        before: function(file, inputElem)
-                        {
-                            console.log("Parsing file:", file);
-                        },
-                        complete: function()
-                        {
-                            //document.getElementById('import-success').style.display = 'block';
-                            //document.getElementById('import-warning').style.display = 'none';
-                        }
+                        jsonObj.data.push(tmpObj); 
                     });
-                
-                }
-            }else{
-                alert("Please choose File to import first.");
+
+                    //THEN SEND THIS DATA TO WEB SERVICE
+                    importStudentToDatabase(jsonObj);
+                };
+                reader.readAsBinaryString(f);
             }
         };
-        //
-        function buildConfig(){
-            return {
-                newline: getLineEnding(),
-                complete: completeFn,
-                error: errorFn
-            };
-            function getLineEnding()
-            {
-                if ($('#newline-n').is(':checked'))
-                    return "\n";
-                else if ($('#newline-r').is(':checked'))
-                    return "\r";
-                else if ($('#newline-rn').is(':checked'))
-                    return "\r\n";
-                else
-                    return "";
-            }
-        };
-        function errorFn(error, file){
-            console.log("ERROR:", error, file);
-        };
-        function completeFn()
-        {
-            end = performance.now();
-            if (!$('#stream').prop('checked')
-                    && !$('#chunk').prop('checked')
-                    && arguments[0]
-                    && arguments[0].data)
-                rows = arguments[0].data.length;
-            //console.log("Finished input (async). Time:", end-start, arguments);
-            
-            //TRANSFORM TO JSON OBJ
-            var jsonObj = { 
-                'data' : [],
-                'classof_id' : $('select[id="studentClass"').val()
-            };
-            
-            for(var i=0; i< arguments[0].data.length; i++){ //SKIP HEADER COL ROW
-                if( arguments[0].data[i][0] == '' ){
-                    continue;
-                }
-                var tmpObj = {
-                        'student_id': arguments[0].data[i][0],
-                        'name': arguments[0].data[ i ][1].split("  ")[0],
-                        'lastname': arguments[0].data[ i ][1].split("  ")[1],
-                        'email': 'default@gmail.com',
-                        'password': 'welcome1',
-                        'profilepic': 'default.jpg',
-                        'GPA': 0,
-                        'status': 1
-                }
-                jsonObj.data.push(tmpObj);                
-            }
-            //console.log( JSON.stringify( jsonObj ) );            
-            //THEN SEND THIS DATA TO WEB SERVICE
-            importStudentToDatabase( jsonObj );
-        };
+
         //
         function studentClassOnChange(sel){
           if (sel.value === 'add'){

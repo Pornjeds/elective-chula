@@ -65,7 +65,10 @@ function getUserDashboardInfo(){
 									b.description,
 									a.minstudent,
 									a.maxstudent,
-									COUNT(c.student_id) AS studentcount
+									COUNT(c.student_id) AS studentcount,
+									SUM(CASE WHEN c.priority = 1 THEN 1 ELSE 0 END) AS first_studentcount,
+									SUM(CASE WHEN c.priority = 2 THEN 1 ELSE 0 END) AS second_studentcount,
+									SUM(CASE WHEN c.priority = 3 THEN 1 ELSE 0 END) AS third_studentcount
 								FROM SUBJECT_CLASSOF a 
 								INNER JOIN SUBJECT b ON a.subject_id = b.subject_id
 								LEFT JOIN STUDENT_ENROLLMENT c ON a.subject_id = c.subject_id AND c.classof_id = '$classof_id' AND c.semester = '$semester'
