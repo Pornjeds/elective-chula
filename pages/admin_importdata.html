@@ -111,6 +111,7 @@
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="../scripts/js/ie10-viewport-bug-workaround.js"></script>
     <script src="../scripts/js/papaparse.min.js"></script>
+    <script lang="javascript" src="../bower_components/js-xlsx/dist/xlsx.core.min.js"></script>
 
     <script>
         $(document).ready(function () {
@@ -119,35 +120,54 @@
         });
 
         function importBtClicked(){
-            //CONVERT *.CSV FILE TO BE IN JSON OBJECT
-            var files = $('#files')[0].files;
-            if( files.length > 0 ){
-                var config = buildConfig();                
-                if (files.length > 0){
-                    for (var i = 0; i < files.length; i++){
-                        if (files[i].size > 1024 * 1024 * 10){
-                            alert("A file you've selected is larger than 10 MB; please let admin know.");
-                            return;
-                        }
-                    }
-                    start = performance.now();
-                    $('#files').parse({
-                        config: config,
-                        before: function(file, inputElem)
-                        {
-                            console.log("Parsing file:", file);
-                        },
-                        complete: function()
-                        {
-                            document.getElementById('import-success').style.display = 'block';
+
+            //CONVERT .XLSX to JSON Object
+            var f = $('#files')[0].files[0];
+            if (f) {
+                var reader = new FileReader();
+                var name = f.name;
+                reader.onload = function(e) {
+                    var data = e.target.result;
+                    var workbook = XLSX.read(data, {type: 'binary'});
+                    var workSheetName = workbook.SheetNames[0];
+                    var xlsxObj = XLSX.utils.sheet_to_json(workbook.Sheets[workSheetName]);
+                    
+                    var jsonObj = { data: [] };
+                    xlsxObj.forEach(function(node) {
+                        if (validDateXlsxData(node)) {
+                            var tmpObj = {
+                                    'id': node.id,
+                                    'name': node.name,
+                                    'description': node.description,
+                                    'credit': node.credit
+                            }
+                            jsonObj.data.push(tmpObj); 
+                        } else {
+                            alert('ข้อมูล Format ไม่ถูกต้อง ไม่สามารถ upload เข้าสู่ระบบได้');
                         }
                     });
-                
-                }
-            }else{
+
+                    //THEN SEND THIS DATA TO WEB SERVICE
+                    console.log( JSON.stringify( jsonObj ) );            
+                    //THEN SEND THIS DATA TO WEB SERVICE
+                    document.getElementById('import-success').style.display = 'none';
+                    importSubjectToDatabase( jsonObj );
+                    document.getElementById('import-success').style.display = 'block';
+                };
+                reader.readAsBinaryString(f);
+            } else {
                 alert("Please choose File to import first.");
             }
         };
+        
+        function validDateXlsxData(data) {
+            if (data && typeof data.id !== 'undefined' && typeof data.name !== 'undefined' && typeof data.description !== 'undefined' && typeof data.credit !== 'undefined') {
+                return true;
+            } else {
+                return false;
+            }
+        };
+
         //
         function buildConfig(){
             return {

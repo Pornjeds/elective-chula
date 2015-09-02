@@ -200,23 +200,35 @@
                     };
                     
                     xlsxObj.forEach(function(node) {
-                        var tmpObj = {
-                                'student_id': node.student_id,
-                                'name': node.name,
-                                'lastname': node.lastname,
-                                'email': node.email,
-                                'password': 'welcome1',
-                                'profilepic': 'default.jpg',
-                                'GPA': node.GPA,
-                                'status': 1
+                        if (validDateXlsxData(node)) {
+                            var tmpObj = {
+                                    'student_id': node.student_id,
+                                    'name': node.name,
+                                    'lastname': node.lastname,
+                                    'email': node.email,
+                                    'password': 'welcome1',
+                                    'profilepic': 'default.jpg',
+                                    'GPA': node.GPA,
+                                    'status': 1
+                            }
+                            jsonObj.data.push(tmpObj);  
+                        } else {
+                            alert('ข้อมูล Format ไม่ถูกต้อง ไม่สามารถ upload เข้าสู่ระบบได้');
                         }
-                        jsonObj.data.push(tmpObj); 
                     });
 
                     //THEN SEND THIS DATA TO WEB SERVICE
                     importStudentToDatabase(jsonObj);
                 };
                 reader.readAsBinaryString(f);
+            }
+        };
+
+        function validDateXlsxData(data) {
+            if (data && typeof data.student_id !== 'undefined' && typeof data.name !== 'undefined' && typeof data.lastname !== 'undefined' && typeof data.email !== 'undefined' && typeof data.GPA !== 'undefined') {
+                return true;
+            } else {
+                return false;
             }
         };
 
