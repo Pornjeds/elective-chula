@@ -131,9 +131,11 @@
                     var workbook = XLSX.read(data, {type: 'binary'});
                     var workSheetName = workbook.SheetNames[0];
                     var xlsxObj = XLSX.utils.sheet_to_json(workbook.Sheets[workSheetName]);
+                    var isError = false;
                     
                     var jsonObj = { data: [] };
-                    xlsxObj.forEach(function(node) {
+                    for (var i = 0, dataLen = xlsxObj.length; i < dataLen; i++) {
+                        var node = xlsxObj[i];
                         if (validDateXlsxData(node)) {
                             var tmpObj = {
                                     'id': node.id,
@@ -144,15 +146,18 @@
                             jsonObj.data.push(tmpObj); 
                         } else {
                             alert('ข้อมูล Format ไม่ถูกต้อง ไม่สามารถ upload เข้าสู่ระบบได้');
+                            isError = true;
+                            break;
                         }
-                    });
+                    }
 
                     //THEN SEND THIS DATA TO WEB SERVICE
                     console.log( JSON.stringify( jsonObj ) );            
                     //THEN SEND THIS DATA TO WEB SERVICE
                     document.getElementById('import-success').style.display = 'none';
-                    importSubjectToDatabase( jsonObj );
-                    document.getElementById('import-success').style.display = 'block';
+                    if (!isError) {
+                        importSubjectToDatabase( jsonObj );
+                    }
                 };
                 reader.readAsBinaryString(f);
             } else {
@@ -168,56 +173,6 @@
             }
         };
 
-        //
-        function buildConfig(){
-            return {
-                newline: getLineEnding(),
-                complete: completeFn,
-                error: errorFn
-            };
-            function getLineEnding()
-            {
-                if ($('#newline-n').is(':checked'))
-                    return "\n";
-                else if ($('#newline-r').is(':checked'))
-                    return "\r";
-                else if ($('#newline-rn').is(':checked'))
-                    return "\r\n";
-                else
-                    return "";
-            }
-        };
-        function errorFn(error, file)
-        {
-            console.log("ERROR:", error, file);
-        }
-        function completeFn()
-        {
-            end = performance.now();
-            if (!$('#stream').prop('checked')
-                    && !$('#chunk').prop('checked')
-                    && arguments[0]
-                    && arguments[0].data)
-                rows = arguments[0].data.length;
-            //console.log("Finished input (async). Time:", end-start, arguments);
-            
-            //TRANSFORM TO JSON OBJ
-            var jsonObj = { data: [] };
-            for(var i=0; i< arguments[0].data.length; i++){ //SKIP HEADER COL ROW
-                var tmpObj = {
-                        'id': $.trim( arguments[0].data[i][0] ),
-                        'name': $.trim( arguments[0].data[i][1] ),
-                        'description': $.trim( arguments[0].data[i][2] ),
-                        'credit': $.trim( arguments[0].data[i][3] ) === '' ? '3' : $.trim( arguments[0].data[i][3] )
-                }
-                jsonObj.data.push(tmpObj);                
-            }
-            
-            console.log( JSON.stringify( jsonObj ) );            
-            //THEN SEND THIS DATA TO WEB SERVICE
-            document.getElementById('import-success').style.display = 'none';
-            importSubjectToDatabase( jsonObj );
-        }
         //
         function importSubjectToDatabase(jsonObj){
             var jsonString = JSON.stringify( jsonObj );
