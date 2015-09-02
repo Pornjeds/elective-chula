@@ -201,14 +201,26 @@
                     
                     xlsxObj.forEach(function(node) {
                         if (validDateXlsxData(node)) {
+                            var name = node['name-lastname-thai'].split('  ')[0];
+                            var lastname = node['name-lastname-thai'].split('  ')[1];
+                            var email = '';
+                            var GPA = 0;
+                            if (node.email) {
+                                email = node.email;
+                            }
+
+                            if (node.GPA) {
+                                GPA = node.GPA;
+                            }
+
                             var tmpObj = {
                                     'student_id': node.student_id,
-                                    'name': node.name,
-                                    'lastname': node.lastname,
-                                    'email': node.email,
+                                    'name': name,
+                                    'lastname': lastname,
+                                    'email': email,
                                     'password': 'welcome1',
                                     'profilepic': 'default.jpg',
-                                    'GPA': node.GPA,
+                                    'GPA': GPA,
                                     'status': 1
                             }
                             jsonObj.data.push(tmpObj);  
@@ -225,7 +237,7 @@
         };
 
         function validDateXlsxData(data) {
-            if (data && typeof data.student_id !== 'undefined' && typeof data.name !== 'undefined' && typeof data.lastname !== 'undefined' && typeof data.email !== 'undefined' && typeof data.GPA !== 'undefined') {
+            if (data && typeof data.student_id !== 'undefined' && typeof data['name-lastname-thai'] !== 'undefined') {
                 return true;
             } else {
                 return false;
