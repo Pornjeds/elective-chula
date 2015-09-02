@@ -300,7 +300,10 @@
                     $('#studentClass').empty();
                     $('#studentClass').append( "<option value='' selected disabled>รุ่นนิสิต</option>");
                     for(var i=0; i< data.length; i++){
-                        $('#studentClass').append( "<option studentCount='" + data[i]['student_count'] + "' value='" + data[i]['classof_id'] + "'>" + $.trim( data[i]['classof_description'] ) +'</option>' );
+                        var classof_description = data[i]['classof_description'].trim();
+                        if (classof_description !== 'Admin') {
+                            $('#studentClass').append( "<option studentCount='" + data[i]['student_count'] + "' value='" + data[i]['classof_id'] + "'>" + classof_description +'</option>' );
+                        }
                     }
                     $('#studentClass').append( "<option value='add' >เพิ่มรุ่นนิสิต</option>");
                     $('.selectpicker').selectpicker('refresh');
