@@ -70,7 +70,24 @@
                     <div style='border: 1px solid #efefef;'>
                         <div style='color:#777; background-color: #e7e7e7; border-color: #e1e1e1;padding: 10px;'>
                           <h3 class="panel-title">สถานะของวิชาเลือก</h3>
-                        </div>        
+                        </div>
+                        <div style='margin-top: 5px'>
+                            ความหมายของแต่ละสี
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: 25%">
+                                    #เลือกลำดับ 1
+                                </div>
+                                <div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: 25%">
+                                    #เลือกลำดับ 2
+                                </div>
+                                <div class="progress-bar progress-bar-warning progress-bar-striped" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: 25%">
+                                    #เลือกลำดับ 3
+                                </div>
+                                <div class="progress-bar progress-bar-striped" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: 25%">
+                                    #เลือกลำดับ 4 ขึ้นไป
+                                </div>
+                            </div>
+                        </div>
                         <div class="panel-body" id='appendSubjectStatus'>
                         
                         </div>
@@ -221,7 +238,7 @@
                                 aElement.setAttribute('data-parent', '#accordion');
                                 aElement.setAttribute('href', '#collapse' + i );
                                 aElement.style.fontSize = '18px';
-                                aElement.innerHTML = '[' + $.trim( data[2].subjectlist[i].subject_id ) + ']-' + data[2].subjectlist[i].name ;
+                                aElement.innerHTML = '[' + $.trim( data[2].subjectlist[i].subject_id ) + ']-' + data[2].subjectlist[i].name + ' (min ' + data[2].subjectlist[i].minstudent + ' / max ' + data[2].subjectlist[i].maxstudent + ')';
                                 accordionElement.appendChild( aElement );
                                 
                                 var collapseElement = document.createElement('div');
@@ -240,29 +257,66 @@
                                 progressElement.className = 'progress';
                                 accordionElement.appendChild( progressElement );
                                 
-                                var progressSubElement = document.createElement('div');
-                                progressSubElement.id = 'progress' + i;
-                                progressSubElement.className = 'progress-bar progress-bar-striped min-progressbar active';
-                                progressSubElement.setAttribute('role', 'progressbar');
-                                progressSubElement.setAttribute( 'aria-valuenow', data[2].subjectlist[i].studentcount );
-                                progressSubElement.setAttribute('aria-valuemin', data[2].subjectlist[i].minstudent );
-                                progressSubElement.setAttribute('aria-valuemax', data[2].subjectlist[i].maxstudent );
+                                var progressSubElements = [];
+                                var percentValues = [];
+
+                                progressSubElements[0] = document.createElement('div');
+                                progressSubElements[0].id = 'progress' + i;
+                                progressSubElements[0].className = 'progress-bar progress-bar-striped min-progressbar active progress-bar-success';
+                                progressSubElements[0].setAttribute('role', 'progressbar');
+                                progressSubElements[0].setAttribute( 'aria-valuenow', data[2].subjectlist[i].studentcount );
+                                progressSubElements[0].setAttribute('aria-valuemin', data[2].subjectlist[i].minstudent );
+                                progressSubElements[0].setAttribute('aria-valuemax', data[2].subjectlist[i].maxstudent );
+
+                                progressSubElements[1] = document.createElement('div');
+                                progressSubElements[1].id = 'progress' + i;
+                                progressSubElements[1].className = 'progress-bar progress-bar-striped min-progressbar active progress-bar-info';
+                                progressSubElements[1].setAttribute('role', 'progressbar');
+                                progressSubElements[1].setAttribute( 'aria-valuenow', data[2].subjectlist[i].studentcount );
+                                progressSubElements[1].setAttribute('aria-valuemin', data[2].subjectlist[i].minstudent );
+                                progressSubElements[1].setAttribute('aria-valuemax', data[2].subjectlist[i].maxstudent );
+
+                                progressSubElements[2] = document.createElement('div');
+                                progressSubElements[2].id = 'progress' + i;
+                                progressSubElements[2].className = 'progress-bar progress-bar-striped min-progressbar active progress-bar-warning';
+                                progressSubElements[2].setAttribute('role', 'progressbar');
+                                progressSubElements[2].setAttribute( 'aria-valuenow', data[2].subjectlist[i].studentcount );
+                                progressSubElements[2].setAttribute('aria-valuemin', data[2].subjectlist[i].minstudent );
+                                progressSubElements[2].setAttribute('aria-valuemax', data[2].subjectlist[i].maxstudent );
+
+                                progressSubElements[3] = document.createElement('div');
+                                progressSubElements[3].id = 'progress' + i;
+                                progressSubElements[3].className = 'progress-bar progress-bar-striped min-progressbar active';
+                                progressSubElements[3].setAttribute('role', 'progressbar');
+                                progressSubElements[3].setAttribute( 'aria-valuenow', data[2].subjectlist[i].studentcount );
+                                progressSubElements[3].setAttribute('aria-valuemin', data[2].subjectlist[i].minstudent );
+                                progressSubElements[3].setAttribute('aria-valuemax', data[2].subjectlist[i].maxstudent );
+
+                                percentValues[0] = (data[2].subjectlist[i].first_studentcount * 100)/data[2].subjectlist[i].maxstudent;
+                                progressSubElements[0].style.width = percentValues[0] + '%';
+                                progressSubElements[0].innerHTML = data[2].subjectlist[i].first_studentcount;
+
+                                percentValues[1] = (data[2].subjectlist[i].second_studentcount * 100)/data[2].subjectlist[i].maxstudent;
+                                progressSubElements[1].style.width = percentValues[1] + '%';
+                                progressSubElements[1].innerHTML = data[2].subjectlist[i].second_studentcount;
+
+                                percentValues[2] = (data[2].subjectlist[i].third_studentcount * 100)/data[2].subjectlist[i].maxstudent;
+                                progressSubElements[2].style.width = percentValues[2] + '%';
+                                progressSubElements[2].innerHTML = data[2].subjectlist[i].third_studentcount;
+
+                                var remainingStudent = data[2].subjectlist[i].studentcount - (data[2].subjectlist[i].first_studentcount + data[2].subjectlist[i].second_studentcount + data[2].subjectlist[i].third_studentcount);
+                                percentValues[3] = (remainingStudent * 100)/data[2].subjectlist[i].maxstudent;
+                                progressSubElements[3].style.width = percentValues[2] + '%';
+                                progressSubElements[3].innerHTML = remainingStudent;
                                 
-                                var percentValue = (data[2].subjectlist[i].studentcount * 100)/data[2].subjectlist[i].maxstudent;
-                                progressSubElement.style.width = percentValue + '%';
-                                progressSubElement.innerHTML = data[2].subjectlist[i].studentcount + '/' + data[2].subjectlist[i].maxstudent;
-                                //
-                                if( percentValue >= 80 && percentValue < 100 ){
-                                    progressSubElement.className = progressSubElement.className + ' progress-bar-warning';
+                                for (var j = 0; j < progressSubElements.length; j++) {
+                                    if (percentValues[j] > 0) {
+                                        progressElement.appendChild(progressSubElements[j]);
+                                    }
                                 }
-                                else if( percentValue >= 100){
-                                    progressSubElement.className = progressSubElement.className + ' progress-bar-danger';
-                                }
-                                else{
-                                    progressSubElement.className = progressSubElement.className + ' progress-bar-success';
-                                }
-                                progressElement.appendChild( progressSubElement );
-                                bodySubject.appendChild( accordionElement );
+
+                                bodySubject.appendChild(accordionElement);
+                                
                             }    
                         }
                         else if( data[1].semester_state === 2 ){
